@@ -1,0 +1,111 @@
+version: 2.1
+defaults: &defaults
+    working_directory: ~/repo
+    docker:
+        - image: microsoft/dotnet:2.1-sdk
+          environment:
+            DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+            DOTNET_CLI_TELEMETRY_OPTOUT: 1
+commands:
+    set_env:
+        description: "Sets the build environment variables"
+        steps:
+            - run:
+                name: "set build environment"
+                command: |
+                    if [[ -z "$CI_BUILD_NUMBER" ]]; then
+                        echo 'export CI_BUILD_NUMBER="$CIRCLE_BUILD_NUM"' >> "$BASH_ENV"
+                        echo 'export BRANCH_NAME="$CIRCLE_BRANCH"' >> "$BASH_ENV"
+                        echo 'export TAG_NAME="$CIRCLE_TAG"' >> "$BASH_ENV"
+                    fi
+                    
+                    # Exporting / sourcing the path before installing the tool prevents the message about the PATH
+                    echo 'export PATH="$PATH:/root/.dotnet/tools"' >> "$BASH_ENV"
+jobs:
+    build_test_pack:
+        <<: *defaults
+        steps:
+            - checkout
+            - set_env
+            - run:
+                name: init
+                command: |
+                    chmod ugo+x ./build.sh
+                    dotnet tool install -g trx2junit
+            - run:
+                name: build
+                command: ./build.sh build
+            - run:
+                name: test
+                command: ./build.sh test
+            - run:
+                name: test results
+                command: |
+                    if [[ -d "tests/TestResults" ]]; then
+                        find tests/TestResults -name "*.trx" | xargs -n1 trx2junit
+                        #rm tests/TestResults/*.trx
+                    fi
+                when: always
+            - run:
+                name: pack
+                command: ./build.sh pack
+            - persist_to_workspace:
+                root: .
+                paths:
+                    - build.sh
+                    - NuGet-Packed
+            - store_test_results:
+                path: tests/TestResults
+            - store_artifacts:
+                path: tests/TestResults
+                destination: TestResults
+    deploy_nuget:
+        <<: *defaults
+        steps:
+            - set_env
+            - attach_workspace:
+                at: .
+            - run:
+                name: deploy to NuGet
+                command: |
+                    chmod ugo+x ./build.sh
+                    ./build.sh deploy nuget
+    deploy_myget:
+        <<: *defaults
+        steps:
+            - set_env
+            - attach_workspace:
+                at: .
+            - run:
+                name: deploy to MyGet
+                command: |
+                    chmod ugo+x ./build.sh
+                    ./build.sh deploy myget
+
+workflows:
+    version: 2
+    build_test_deploy:
+        jobs:
+            - build_test_pack:
+                filters:
+                    tags:
+                        only: /^v[0-9]\.[0-9]\.[0-9](-preview-[0-9]+)?$/
+            - deploy_nuget:
+                requires:
+                    - build_test_pack
+                filters:
+                    branches:
+                        ignore: /.*/
+                    tags:
+                        only: /^v[0-9]\.[0-9]\.[0-9]$/
+                context: org-global
+            - deploy_myget:
+                requires:
+                    - build_test_pack
+                filters:
+                    branches:
+                        #only: master
+                        ignore: /.*/
+                    tags:
+                        only: /^v[0-9]\.[0-9]\.[0-9](-preview-[0-9]+)?$/
+                context: org-global

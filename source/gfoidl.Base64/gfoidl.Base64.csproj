@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(StandardTfms)</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Description>A library for base64 encoding / decoding, as well as base64url support.
+For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
+        </Description>
+        <PackageProjectUrl>https://github.com/gfoidl/Base64</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/gfoidl/Base64/blob/master/LICENSE</PackageLicenseUrl>
+        <PackageTags>base64;base64url;simd</PackageTags>
+        <RepositoryUrl>https://github.com/gfoidl/Base64</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
+
+</Project>

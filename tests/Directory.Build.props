@@ -1,0 +1,21 @@
+﻿<Project>
+
+    <Import Project="../Directory.Build.props" />
+
+    <PropertyGroup>
+        <DeveloperBuildTestTfms>netcoreapp2.1</DeveloperBuildTestTfms>
+        <StandardTestTfms>$(DeveloperBuildTestTfms)</StandardTestTfms>
+        <StandardTestTfms Condition="'$(OS)' == 'Windows_NT'">$(StandardTestTfms);net471</StandardTestTfms>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+        <PackageReference Include="NUnit" Version="3.11.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.11.0" />
+    </ItemGroup>
+
+</Project>
