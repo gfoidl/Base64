@@ -6,3 +6,7 @@
 
 A library for base64 encoding / decoding, as well as base64url support.  
 For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
+
+## Note
+
+This project is WIP, as hardware intrinsics in .NET Core are also WIP.

@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>$(StandardTfms)</TargetFrameworks>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -14,5 +15,28 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
         <RepositoryUrl>https://github.com/gfoidl/Base64</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+        <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="4.6.0-preview1-26724-02" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Strings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Strings.resx</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="Strings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
 
 </Project>
