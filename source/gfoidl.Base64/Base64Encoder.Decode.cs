@@ -3,8 +3,11 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+#if NETCOREAPP2_1
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+#endif
 
 // Sequential based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
@@ -98,7 +101,7 @@ namespace gfoidl.Base64
             int srcLength   = inputLength & ~0x3;   // only decode input up to the closest multiple of 4.
 
             ref byte destBytes  = ref MemoryMarshal.GetReference(data);
-
+#if NETCOREAPP2_1
             if (Sse2.IsSupported && Ssse3.IsSupported && srcLength >= 24)
             {
                 if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
@@ -107,8 +110,8 @@ namespace gfoidl.Base64
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
-
         Sequential:
+#endif
             ref sbyte decodingMap = ref s_decodingMap[0];
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
@@ -240,8 +243,9 @@ namespace gfoidl.Base64
 
             if (srcLength != inputLength)
                 goto InvalidExit;
-
+#if NETCOREAPP2_1
         DoneExit:
+#endif
             consumed = sourceIndex;
             written  = destIndex;
             return OperationStatus.Done;
@@ -260,6 +264,7 @@ namespace gfoidl.Base64
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP2_1
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref int sourceIndex, ref int destIndex)
         {
@@ -335,6 +340,7 @@ namespace gfoidl.Base64
 
             return success;
         }
+#endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int Decode<T>(ref T encoded, ref sbyte decodingMap)
@@ -386,12 +392,13 @@ namespace gfoidl.Base64
             Unsafe.Add(ref destination, 2) = (byte)value;
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP2_1
         private static readonly Vector128<sbyte> s_decodeShuffleVec;
         private static readonly Vector128<sbyte> s_decodeLutLo;
         private static readonly Vector128<sbyte> s_decodeLutHi;
         private static readonly Vector128<sbyte> s_decodeLutRoll;
         private static readonly Vector128<sbyte> s_decodeMask2F;
-
+#endif
         // internal because tests use this map too
         internal static readonly sbyte[] s_decodingMap = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

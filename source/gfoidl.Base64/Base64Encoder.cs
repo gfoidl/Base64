@@ -1,4 +1,6 @@
-﻿using System.Runtime.Intrinsics.X86;
+﻿#if NETCOREAPP2_1
+using System.Runtime.Intrinsics.X86;
+#endif
 
 namespace gfoidl.Base64
 {
@@ -6,6 +8,7 @@ namespace gfoidl.Base64
     {
         static Base64Encoder()
         {
+#if NETCOREAPP2_1
             if (Sse2.IsSupported && Ssse3.IsSupported)
             {
                 s_encodeShuffleVec = Sse2.SetVector128(
@@ -47,6 +50,7 @@ namespace gfoidl.Base64
 
                 s_decodeMask2F = Sse2.SetAllVector128((sbyte)0x2F); // ASCII: /
             }
+#endif
         }
         //---------------------------------------------------------------------
         private const byte EncodingPad = (byte)'=';     // '=', for padding

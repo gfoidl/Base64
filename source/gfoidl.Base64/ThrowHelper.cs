@@ -7,12 +7,13 @@ namespace gfoidl.Base64
     internal static class ThrowHelper
     {
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) => throw GetArgumentOutOfRangeException(argument);
-        public static void ThrowForOperationNotDone(OperationStatus status)             => throw GetExceptionForOperationNotDone(status);
         //---------------------------------------------------------------------
         private static Exception GetArgumentOutOfRangeException(ExceptionArgument argument)
         {
             return new ArgumentOutOfRangeException(GetArgumentName(argument));
         }
+        //---------------------------------------------------------------------
+        public static void ThrowForOperationNotDone(OperationStatus status) => throw GetExceptionForOperationNotDone(status);
         //---------------------------------------------------------------------
         private static Exception GetExceptionForOperationNotDone(OperationStatus status)
         {

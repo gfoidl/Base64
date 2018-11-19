@@ -35,7 +35,11 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 if (typeof(T) == typeof(byte))
                 {
                     Span<byte> encodedBytes = MemoryMarshal.AsBytes(encoded);
+#if NETCOREAPP2_1
                     encodedText = Encoding.ASCII.GetString(encodedBytes).AsSpan();
+#else
+                    encodedText = Encoding.ASCII.GetString(encodedBytes.ToArray()).AsSpan();
+#endif
                     decodedLength = sut.GetDecodedLength(encodedBytes);
                 }
                 else if (typeof(T) == typeof(char))
@@ -47,9 +51,12 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 {
                     throw new NotSupportedException(); // just in case new types are introduced in the future
                 }
-
+#if NETCOREAPP2_1
                 string expectedText = Convert.ToBase64String(source);
-                Assert.True(encodedText.SequenceEqual(expectedText));
+#else
+                string expectedText = Convert.ToBase64String(source.ToArray());
+#endif
+                Assert.True(encodedText.SequenceEqual(expectedText.AsSpan()));
 
                 Span<byte> decoded = new byte[decodedLength];
                 status = sut.DecodeCore<T>(encoded, decoded, out consumed, out written);
@@ -75,11 +82,14 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
             {
                 Span<byte> source      = bytes.AsSpan(0, i + 1);
                 string encoded         = sut.Encode(source);
+#if NETCOREAPP2_1
                 string encodedExpected = Convert.ToBase64String(source);
-
+#else
+                string encodedExpected = Convert.ToBase64String(source.ToArray());
+#endif
                 Assert.AreEqual(encodedExpected, encoded);
 
-                Span<byte> decoded = sut.Decode(encoded);
+                Span<byte> decoded = sut.Decode(encoded.AsSpan());
 
                 Assert.IsTrue(source.SequenceEqual(decoded));
             }

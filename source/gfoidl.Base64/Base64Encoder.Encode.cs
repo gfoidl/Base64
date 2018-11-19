@@ -3,8 +3,11 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+#if NETCOREAPP2_1
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+#endif
 
 // Sequential based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
@@ -13,6 +16,9 @@ namespace gfoidl.Base64
 {
     partial class Base64Encoder
     {
+#if !NETCOREAPP2_1
+        private const int MaxStackallocBytes = 256;
+#endif
         public const int MaximumEncodeLength = (int.MaxValue / 4) * 3; // 1610612733
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -32,7 +38,7 @@ namespace gfoidl.Base64
             if (data.IsEmpty) return string.Empty;
 
             int encodedLength = this.GetEncodedLength(data.Length);
-
+#if NETCOREAPP2_1
             fixed (byte* ptr = data)
             {
                 return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
@@ -45,6 +51,40 @@ namespace gfoidl.Base64
                     Debug.Assert(encoded.Length == written);
                 });
             }
+#elif NETCOREAPP2_0
+            char[] arrayToReturnToPool = null;
+            try
+            {
+                Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
+                    ? stackalloc char[encodedLength]
+                    : arrayToReturnToPool = ArrayPool<char>.Shared.Rent(encodedLength);
+
+                OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written);
+                Debug.Assert(status        == OperationStatus.Done);
+                Debug.Assert(data.Length   == consumed);
+                Debug.Assert(encodedLength == written);
+
+                fixed (char* ptr = encoded)
+                    return new string(ptr, 0, written);
+            }
+            finally
+            {
+                if (arrayToReturnToPool != null)
+                    ArrayPool<char>.Shared.Return(arrayToReturnToPool);
+            }
+#else
+            Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
+                ? stackalloc char[encodedLength]
+                : new char[encodedLength];
+
+            OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written);
+            Debug.Assert(status         == OperationStatus.Done);
+            Debug.Assert(data.Length    == consumed);
+            Debug.Assert(encoded.Length == written);
+
+            fixed (char* ptr = encoded)
+                return new string(ptr, 0, written);
+#endif
         }
         //---------------------------------------------------------------------
         internal OperationStatus EncodeCore<T>(ReadOnlySpan<byte> data, Span<T> encoded, out int consumed, out int written)
@@ -69,7 +109,7 @@ namespace gfoidl.Base64
             int destIndex   = 0;
 
             ref T dest = ref MemoryMarshal.GetReference(encoded);
-
+#if NETCOREAPP2_1
             if (Sse2.IsSupported && Ssse3.IsSupported && srcLength >= 16)
             {
                 Sse2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
@@ -77,7 +117,7 @@ namespace gfoidl.Base64
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
-
+#endif
             int maxSrcLength = 0;
 
             if (srcLength <= MaximumEncodeLength && destLength >= this.GetEncodedLength(srcLength))
@@ -109,8 +149,9 @@ namespace gfoidl.Base64
                 destIndex   += 4;
                 sourceIndex += 2;
             }
-
+#if NETCOREAPP2_1
         DoneExit:
+#endif
             consumed = sourceIndex;
             written  = destIndex;
             return OperationStatus.Done;
@@ -121,6 +162,7 @@ namespace gfoidl.Base64
             return OperationStatus.DestinationTooSmall;
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP2_1
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref int sourceIndex, ref int destIndex)
         {
@@ -188,6 +230,7 @@ namespace gfoidl.Base64
             src  = ref srcStart;
             dest = ref destStart;
         }
+#endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeThreeBytes<T>(ref byte threeBytes, ref T encoded, ref byte encodingMap)
@@ -273,9 +316,10 @@ namespace gfoidl.Base64
             }
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP2_1
         private static readonly Vector128<sbyte> s_encodeShuffleVec;
         private static readonly Vector128<sbyte> s_encodeLut;
-
+#endif
         // internal because tests use this map too
         internal static readonly byte[] s_encodingMap = {
             65, 66, 67, 68, 69, 70, 71, 72,         //A..H

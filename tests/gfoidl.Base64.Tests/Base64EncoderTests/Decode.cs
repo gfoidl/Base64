@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
 using NUnit.Framework;
 
 namespace gfoidl.Base64.Tests.Base64EncoderTests
@@ -32,7 +30,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
             var sut        = new Base64Encoder();
             string encoded = string.Empty;
 
-            byte[] actual = sut.Decode(encoded);
+            byte[] actual = sut.Decode(encoded.AsSpan());
 
             Assert.AreEqual(Array.Empty<byte>(), actual);
         }
@@ -42,7 +40,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         {
             var sut = new Base64Encoder();
 
-            Assert.Throws<FormatException>(() => sut.Decode(input));
+            Assert.Throws<FormatException>(() => sut.Decode(input.AsSpan()));
         }
         //---------------------------------------------------------------------
         private static IEnumerable<TestCaseData> Malformed_input___throws_FormatException_TestCases()
