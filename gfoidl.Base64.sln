@@ -19,11 +19,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4259BCE
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{B58B10E0-3AC2-4DE0-B484-F17898711CAF}"
-	ProjectSection(SolutionItems) = preProject
-		.circleci\config.yml = .circleci\config.yml
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{8B042DF3-9060-43DB-8A38-776A636C5469}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B8A6D1B4-8EEC-4D78-8E28-B00116FFF157}"
@@ -66,7 +61,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B58B10E0-3AC2-4DE0-B484-F17898711CAF} = {E4259BCE-EA4C-434C-8896-CEBBEC38222D}
 		{3C85A6AA-23A7-43CC-A744-BD225193369F} = {8B042DF3-9060-43DB-8A38-776A636C5469}
 		{3385B383-37A8-4D67-9C84-4B1F32EF15F5} = {B8A6D1B4-8EEC-4D78-8E28-B00116FFF157}
 		{14D978E3-737F-46B0-A37C-84A580417498} = {E4259BCE-EA4C-434C-8896-CEBBEC38222D}

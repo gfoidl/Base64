@@ -12,6 +12,7 @@
 #
 # Environment-Variables:
 #   NAME                project-name used for packaging
+#   BUILD_CONFIG        Debug / Release as build configuration, defaults to Release
 #   CI_BUILD_NUMBER     build-number used for version-info
 #   BRANCH_NAME         branch the commit is on
 #   TAG_NAME            tag the commit is on
@@ -48,6 +49,8 @@ help() {
 }
 #------------------------------------------------------------------------------
 setBuildEnv() {
+    export BUILD_CONFIG=${BUILD_CONFIG-Release}
+
     # BuildNumber is used by MsBuild for version information.
     # ci tools clone usually to depth 50, so this is not good
     #export BuildNumber=$(git log --oneline | wc -l)
@@ -72,7 +75,7 @@ setBuildEnv() {
 #------------------------------------------------------------------------------
 build() {
     dotnet restore
-    dotnet build -c Release --no-restore
+    dotnet build -c $BUILD_CONFIG --no-restore
 }
 #------------------------------------------------------------------------------
 _testCore() {
@@ -89,7 +92,7 @@ _testCore() {
     testNameWOExtension=$(basename "$testDir")
     testName=$(basename "$testFullName")
     testResultName="$testName-$(date +%s).trx"
-    dotnetTestArgs="-c Release --no-build --logger \"trx;LogFileName=$testResultName\" $testFullName"
+    dotnetTestArgs="-c $BUILD_CONFIG --no-build --logger \"trx;LogFileName=$testResultName\" $testFullName"
 
     if [[ -n "$TESTS_TO_SKIP" ]]; then
         testsToSkip=(${TESTS_TO_SKIP//;/ })
@@ -144,7 +147,7 @@ test() {
 }
 #------------------------------------------------------------------------------
 pack() {
-    find source -name "*.csproj" -print0 | xargs -0 -n1 dotnet pack -o "$(pwd)/NuGet-Packed" --no-build -c Release
+    find source -name "*.csproj" -print0 | xargs -0 -n1 dotnet pack -o "$(pwd)/NuGet-Packed" --no-build -c $BUILD_CONFIG
 
     ls -l ./NuGet-Packed
     echo ""

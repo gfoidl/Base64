@@ -1,6 +1,6 @@
-| CircleCI | Azure Pipelines |  
-| -- | -- |  
-| [![CircleCI](https://circleci.com/gh/gfoidl/Base64/tree/master.svg?style=svg)](https://circleci.com/gh/gfoidl/Base64/tree/master) | [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/Base64)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=2) |  
+| Azure Pipelines |  
+| -- |  
+| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5) |  
 
 # gfoidl.Base64
 
