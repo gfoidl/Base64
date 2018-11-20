@@ -46,18 +46,11 @@ namespace gfoidl.Base64
             return maxLen - padding;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0
-        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-#else
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         internal int GetDecodedLength(int encodedLength)
         {
             if (encodedLength < 0)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
 
-            // TODO: check CQ for this shortcut
-            //return encodedLength == 0 ? 0 : (encodedLength >> 2) * 3;
             return (encodedLength >> 2) * 3;
         }
         //---------------------------------------------------------------------
@@ -103,9 +96,9 @@ namespace gfoidl.Base64
 #endif
         private OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written)
         {
-            int sourceIndex = 0;
-            int destIndex   = 0;
-            int srcLength   = inputLength & ~0x3;   // only decode input up to the closest multiple of 4.
+            uint sourceIndex = 0;
+            uint destIndex   = 0;
+            int srcLength    = inputLength & ~0x3;      // only decode input up to the closest multiple of 4.
 
             ref byte destBytes  = ref MemoryMarshal.GetReference(data);
 #if NETCOREAPP2_1 || NETCOREAPP3_0
@@ -146,12 +139,12 @@ namespace gfoidl.Base64
 
             while (sourceIndex < maxSrcLength)
             {
-                int result = Decode(ref Unsafe.Add(ref src, sourceIndex), ref decodingMap);
+                int result = Decode(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
                 if (result < 0)
                     goto InvalidExit;
 
-                WriteThreeLowOrderBytes(ref Unsafe.Add(ref destBytes, destIndex), result);
+                WriteThreeLowOrderBytes(ref Unsafe.Add(ref destBytes, (IntPtr)destIndex), result);
                 destIndex   += 3;
                 sourceIndex += 4;
             }
@@ -170,41 +163,41 @@ namespace gfoidl.Base64
             // if isFinalBlock is false, we will never reach this point
 
             // Handle last four bytes. There are 0, 1, 2 padding chars.
-            int i0 = 0, i1 = 0, i2 = 0, i3 = 0;
+            uint t0, t1, t2, t3;
 
             if (typeof(T) == typeof(byte))
             {
                 ref byte tmp = ref Unsafe.As<T, byte>(ref src);
-                i0 = Unsafe.Add(ref tmp, srcLength - 4);
-                i1 = Unsafe.Add(ref tmp, srcLength - 3);
-                i2 = Unsafe.Add(ref tmp, srcLength - 2);
-                i3 = Unsafe.Add(ref tmp, srcLength - 1);
+                t0 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 4));
+                t1 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 3));
+                t2 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 2));
+                t3 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 1));
             }
             else if (typeof(T) == typeof(char))
             {
                 ref char tmp = ref Unsafe.As<T, char>(ref src);
-                i0 = Unsafe.Add(ref tmp, srcLength - 4);
-                i1 = Unsafe.Add(ref tmp, srcLength - 3);
-                i2 = Unsafe.Add(ref tmp, srcLength - 2);
-                i3 = Unsafe.Add(ref tmp, srcLength - 1);
+                t0 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 4));
+                t1 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 3));
+                t2 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 2));
+                t3 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 1));
             }
             else
             {
                 throw new NotSupportedException();  // just in case new types are introduced in the future
             }
 
-            i0 = Unsafe.Add(ref decodingMap, i0);
-            i1 = Unsafe.Add(ref decodingMap, i1);
+            int i0 = Unsafe.Add(ref decodingMap, (IntPtr)t0);
+            int i1 = Unsafe.Add(ref decodingMap, (IntPtr)t1);
 
             i0 <<= 18;
             i1 <<= 12;
 
             i0 |= i1;
 
-            if (i3 != EncodingPad)
+            if (t3 != EncodingPad)
             {
-                i2 = Unsafe.Add(ref decodingMap, i2);
-                i3 = Unsafe.Add(ref decodingMap, i3);
+                int i2 = Unsafe.Add(ref decodingMap, (IntPtr)t2);
+                int i3 = Unsafe.Add(ref decodingMap, (IntPtr)t3);
 
                 i2 <<= 6;
 
@@ -217,12 +210,12 @@ namespace gfoidl.Base64
                 if (destIndex > destLength - 3)
                     goto DestinationSmallExit;
 
-                WriteThreeLowOrderBytes(ref Unsafe.Add(ref destBytes, destIndex), i0);
+                WriteThreeLowOrderBytes(ref Unsafe.Add(ref destBytes, (IntPtr)destIndex), i0);
                 destIndex += 3;
             }
-            else if (i2 != EncodingPad)
+            else if (t2 != EncodingPad)
             {
-                i2 = Unsafe.Add(ref decodingMap, i2);
+                int i2 = Unsafe.Add(ref decodingMap, (IntPtr)t2);
 
                 i2 <<= 6;
 
@@ -234,8 +227,8 @@ namespace gfoidl.Base64
                 if (destIndex > destLength - 2)
                     goto DestinationSmallExit;
 
-                Unsafe.Add(ref destBytes, destIndex) = (byte)(i0 >> 16);
-                Unsafe.Add(ref destBytes, destIndex + 1) = (byte)(i0 >> 8);
+                Unsafe.Add(ref destBytes, (IntPtr)destIndex)       = (byte)(i0 >> 16);
+                Unsafe.Add(ref destBytes, (IntPtr)(destIndex + 1)) = (byte)(i0 >> 8);
                 destIndex += 2;
             }
             else
@@ -246,43 +239,43 @@ namespace gfoidl.Base64
                 if (destIndex > destLength - 1)
                     goto DestinationSmallExit;
 
-                Unsafe.Add(ref destBytes, destIndex) = (byte)(i0 >> 16);
+                Unsafe.Add(ref destBytes, (IntPtr)destIndex) = (byte)(i0 >> 16);
                 destIndex += 1;
             }
 
             sourceIndex += 4;
 
-            if (srcLength != inputLength)
+            if (srcLength != (uint)inputLength)
                 goto InvalidExit;
 #if NETCOREAPP2_1 || NETCOREAPP3_0
         DoneExit:
 #endif
-            consumed = sourceIndex;
-            written  = destIndex;
+            consumed = (int)sourceIndex;
+            written  = (int)destIndex;
             return OperationStatus.Done;
 
         DestinationSmallExit:
-            if (srcLength != inputLength && isFinalBlock)
+            if (srcLength != (uint)inputLength && isFinalBlock)
                 goto InvalidExit; // if input is not a multiple of 4, and there is no more data, return invalid data instead
 
-            consumed = sourceIndex;
-            written  = destIndex;
+            consumed = (int)sourceIndex;
+            written  = (int)destIndex;
             return OperationStatus.DestinationTooSmall;
 
         InvalidExit:
-            consumed = sourceIndex;
-            written  = destIndex;
+            consumed = (int)sourceIndex;
+            written  = (int)destIndex;
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP2_1 || NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref int sourceIndex, ref int destIndex)
+        private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
         {
             bool success       = true;
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, sourceLength - 24 + 1);
+            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 24 + 1));
 
             // The JIT won't hoist these "constants", so help him
             Vector128<sbyte> lutHi            = s_decodeLutHi;
@@ -296,19 +289,16 @@ namespace gfoidl.Base64
             //while (remaining >= 24)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
-                //Vector128<sbyte> str = Unsafe.ReadUnaligned<Vector128<sbyte>>(ref srcBytes);
                 Vector128<sbyte> str;
 
                 if (typeof(T) == typeof(byte))
                 {
-                    ref byte srcBytes = ref Unsafe.As<T, byte>(ref src);
-                    str = Unsafe.ReadUnaligned<Vector128<sbyte>>(ref srcBytes);
+                    str = Unsafe.As<T, Vector128<sbyte>>(ref src);
                 }
                 else if (typeof(T) == typeof(char))
                 {
-                    ref byte srcBytes = ref Unsafe.As<T, byte>(ref src);
-                    Vector128<short> c0 = Unsafe.ReadUnaligned<Vector128<short>>(ref srcBytes);
-                    Vector128<short> c1 = Unsafe.ReadUnaligned<Vector128<short>>(ref Unsafe.Add(ref srcBytes, 16));
+                    Vector128<short> c0 = Unsafe.As<T, Vector128<short>>(ref src);
+                    Vector128<short> c1 = Unsafe.As<T, Vector128<short>>(ref Unsafe.Add(ref src, 8));
 
                     str = Sse.StaticCast<byte, sbyte>(Sse2.PackUnsignedSaturate(c0, c1));
                 }
@@ -321,10 +311,12 @@ namespace gfoidl.Base64
                 Vector128<sbyte> loNibbles = Sse2.And(str, mask2F);
                 Vector128<sbyte> hi        = Ssse3.Shuffle(lutHi, hiNibbles);
                 Vector128<sbyte> lo        = Ssse3.Shuffle(lutLo, loNibbles);
-#if NETCOREAPP2_1
+#if NETCOREAPP3_0
+                // https://github.com/dotnet/coreclr/issues/21130
+                //Vector128<sbyte> zero = Vector128<sbyte>.Zero;
                 Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
-#elif NETCOREAPP3_0
-                Vector128<sbyte> zero = Vector128<sbyte>.Zero;
+#elif NETCOREAPP2_1
+                Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 #endif
                 if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
                 {
@@ -337,22 +329,24 @@ namespace gfoidl.Base64
                 str                   = Sse2.Add(str, roll);
 
                 Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(Sse.StaticCast<sbyte, byte>(str), shuffleConstant0);
-#if NETCOREAPP2_1
-                Vector128<int> @out = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
-#elif NETCOREAPP3_0
+#if NETCOREAPP3_0
                 Vector128<int> @out = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
+#elif NETCOREAPP2_1
+                Vector128<int> @out = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
 #endif
                 str = Ssse3.Shuffle(Sse.StaticCast<int, sbyte>(@out), shuffleVec);
 
-                Unsafe.WriteUnaligned(ref destBytes, str);
+                // As has better CQ than WriteUnaligned
+                // https://github.com/dotnet/coreclr/issues/21132
+                Unsafe.As<byte, Vector128<sbyte>>(ref destBytes) = str;
 
                 src       = ref Unsafe.Add(ref src,  16);
                 destBytes = ref Unsafe.Add(ref destBytes, 12);
             }
 
-            // Cast to long to avoid the overflow-check
-            sourceIndex = ((int)(long)Unsafe.ByteOffset(ref srcStart, ref src)) / Unsafe.SizeOf<T>();
-            destIndex   = (int)(long)Unsafe.ByteOffset(ref destStart, ref destBytes);
+            // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src) / (uint)Unsafe.SizeOf<T>();
+            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref destBytes);
 
             src       = ref srcStart;
             destBytes = ref destStart;
@@ -364,33 +358,33 @@ namespace gfoidl.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int Decode<T>(ref T encoded, ref sbyte decodingMap)
         {
-            int i0, i1, i2, i3;
+            uint t0, t1, t2, t3;
 
             if (typeof(T) == typeof(byte))
             {
                 ref byte tmp = ref Unsafe.As<T, byte>(ref encoded);
-                i0 = Unsafe.Add(ref tmp, 0);
-                i1 = Unsafe.Add(ref tmp, 1);
-                i2 = Unsafe.Add(ref tmp, 2);
-                i3 = Unsafe.Add(ref tmp, 3);
+                t0 = Unsafe.Add(ref tmp, 0);
+                t1 = Unsafe.Add(ref tmp, 1);
+                t2 = Unsafe.Add(ref tmp, 2);
+                t3 = Unsafe.Add(ref tmp, 3);
             }
             else if (typeof(T) == typeof(char))
             {
                 ref char tmp = ref Unsafe.As<T, char>(ref encoded);
-                i0 = Unsafe.Add(ref tmp, 0);
-                i1 = Unsafe.Add(ref tmp, 1);
-                i2 = Unsafe.Add(ref tmp, 2);
-                i3 = Unsafe.Add(ref tmp, 3);
+                t0 = Unsafe.Add(ref tmp, 0);
+                t1 = Unsafe.Add(ref tmp, 1);
+                t2 = Unsafe.Add(ref tmp, 2);
+                t3 = Unsafe.Add(ref tmp, 3);
             }
             else
             {
                 throw new NotSupportedException();  // just in case new types are introduced in the future
             }
 
-            i0 = Unsafe.Add(ref decodingMap, i0);
-            i1 = Unsafe.Add(ref decodingMap, i1);
-            i2 = Unsafe.Add(ref decodingMap, i2);
-            i3 = Unsafe.Add(ref decodingMap, i3);
+            int i0 = Unsafe.Add(ref decodingMap, (IntPtr)t0);
+            int i1 = Unsafe.Add(ref decodingMap, (IntPtr)t1);
+            int i2 = Unsafe.Add(ref decodingMap, (IntPtr)t2);
+            int i3 = Unsafe.Add(ref decodingMap, (IntPtr)t3);
 
             i0 <<= 18;
             i1 <<= 12;

@@ -19,13 +19,9 @@ namespace gfoidl.Base64
 #if NETCOREAPP2_0 || NETSTANDARD2_0
         private const int MaxStackallocBytes = 256;
 #endif
-        public const int MaximumEncodeLength = (int.MaxValue / 4) * 3; // 1610612733
+        public const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0
-        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-#else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
         public int GetEncodedLength(int sourceLength)
         {
             if ((uint)sourceLength > MaximumEncodeLength)
@@ -90,9 +86,9 @@ namespace gfoidl.Base64
 #endif
         private OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written)
         {
-            int destLength  = encoded.Length;
-            int sourceIndex = 0;
-            int destIndex   = 0;
+            int destLength   = encoded.Length;
+            uint sourceIndex = 0;
+            uint destIndex   = 0;
 
             ref T dest = ref MemoryMarshal.GetReference(encoded);
 
@@ -120,7 +116,7 @@ namespace gfoidl.Base64
 
             while (sourceIndex < maxSrcLength)
             {
-                EncodeThreeBytes(ref Unsafe.Add(ref srcBytes, sourceIndex), ref Unsafe.Add(ref dest, destIndex), ref encodingMap);
+                EncodeThreeBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
                 destIndex   += 4;
                 sourceIndex += 3;
             }
@@ -130,36 +126,36 @@ namespace gfoidl.Base64
 
             if (sourceIndex == srcLength - 1)
             {
-                EncodeOneByte(ref Unsafe.Add(ref srcBytes, sourceIndex), ref Unsafe.Add(ref dest, destIndex), ref encodingMap);
+                EncodeOneByte(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
                 destIndex   += 4;
                 sourceIndex += 1;
             }
             else if (sourceIndex == srcLength - 2)
             {
-                EncodeTwoBytes(ref Unsafe.Add(ref srcBytes, sourceIndex), ref Unsafe.Add(ref dest, destIndex), ref encodingMap);
+                EncodeTwoBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
                 destIndex   += 4;
                 sourceIndex += 2;
             }
 #if NETCOREAPP2_1 || NETCOREAPP3_0
         DoneExit:
 #endif
-            consumed = sourceIndex;
-            written  = destIndex;
+            consumed = (int)sourceIndex;
+            written  = (int)destIndex;
             return OperationStatus.Done;
 
         DestinationSmallExit:
-            consumed = sourceIndex;
-            written  = destIndex;
+            consumed = (int)sourceIndex;
+            written  = (int)destIndex;
             return OperationStatus.DestinationTooSmall;
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP2_1 || NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref int sourceIndex, ref int destIndex)
+        private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, sourceLength - 16 + 1);
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 16 + 1));
 
             // The JIT won't hoist these "constants", so help him
             Vector128<sbyte>  shuffleVec          = s_encodeShuffleVec;
@@ -192,22 +188,25 @@ namespace gfoidl.Base64
 
                 if (typeof(T) == typeof(byte))
                 {
-                    ref byte destination = ref Unsafe.As<T, byte>(ref dest);
-                    Unsafe.WriteUnaligned(ref destination, str);
+                    // As has better CQ than WriteUnaligned
+                    Unsafe.As<T, Vector128<sbyte>>(ref dest) = str;
                 }
                 else if (typeof(T) == typeof(char))
                 {
-#if NETCOREAPP2_1
+#if NETCOREAPP3_0
+                    // https://github.com/dotnet/coreclr/issues/21130
+                    //Vector128<sbyte> zero = Vector128<sbyte>.Zero;
                     Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
-#elif NETCOREAPP3_0
-                    Vector128<sbyte> zero = Vector128<sbyte>.Zero;
+#elif NETCOREAPP2_1
+                    Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 #endif
                     Vector128<sbyte> c0   = Sse2.UnpackLow(str, zero);
                     Vector128<sbyte> c1   = Sse2.UnpackHigh(str, zero);
 
-                    ref byte destination = ref Unsafe.As<T, byte>(ref dest);
-                    Unsafe.WriteUnaligned(ref destination, c0);
-                    Unsafe.WriteUnaligned(ref Unsafe.Add(ref destination, 16), c1);
+                    // As has better CQ than WriteUnaligned
+                    // https://github.com/dotnet/coreclr/issues/21132
+                    Unsafe.As<T, Vector128<sbyte>>(ref dest)                    = c0;
+                    Unsafe.As<T, Vector128<sbyte>>(ref Unsafe.Add(ref dest, 8)) = c1;
                 }
                 else
                 {
@@ -218,9 +217,9 @@ namespace gfoidl.Base64
                 dest = ref Unsafe.Add(ref dest, 16);
             }
 
-            // Cast to long to avoid the overflow-check
-            sourceIndex = (int)(long)Unsafe.ByteOffset(ref srcStart, ref src);
-            destIndex   = ((int)(long)Unsafe.ByteOffset(ref destStart, ref dest)) / Unsafe.SizeOf<T>();
+            // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src);
+            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest) / (uint)Unsafe.SizeOf<T>();
 
             src  = ref srcStart;
             dest = ref destStart;
@@ -230,12 +229,14 @@ namespace gfoidl.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeThreeBytes<T>(ref byte threeBytes, ref T encoded, ref byte encodingMap)
         {
-            int i = (threeBytes << 16) | (Unsafe.Add(ref threeBytes, 1) << 8) | Unsafe.Add(ref threeBytes, 2);
+            uint i = (uint)threeBytes << 16
+                | (uint)Unsafe.Add(ref threeBytes, 1) << 8
+                | Unsafe.Add(ref threeBytes, 2);
 
-            byte i0 = Unsafe.Add(ref encodingMap, i >> 18);
-            byte i1 = Unsafe.Add(ref encodingMap, (i >> 12) & 0x3F);
-            byte i2 = Unsafe.Add(ref encodingMap, (i >> 6) & 0x3F);
-            byte i3 = Unsafe.Add(ref encodingMap, i & 0x3F);
+            uint i0 = Unsafe.Add(ref encodingMap, (IntPtr)(i >> 18));
+            uint i1 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 12) & 0x3F));
+            uint i2 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 6) & 0x3F));
+            uint i3 = Unsafe.Add(ref encodingMap, (IntPtr)(i & 0x3F));
 
             if (typeof(T) == typeof(byte))
             {
@@ -259,11 +260,12 @@ namespace gfoidl.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeTwoBytes<T>(ref byte twoBytes, ref T encoded, ref byte encodingMap)
         {
-            int i = (twoBytes << 16) | (Unsafe.Add(ref twoBytes, 1) << 8);
+            uint i = (uint)twoBytes << 16
+                | (uint)Unsafe.Add(ref twoBytes, 1) << 8;
 
-            byte i0 = Unsafe.Add(ref encodingMap, i >> 18);
-            byte i1 = Unsafe.Add(ref encodingMap, (i >> 12) & 0x3F);
-            byte i2 = Unsafe.Add(ref encodingMap, (i >> 6) & 0x3F);
+            uint i0 = Unsafe.Add(ref encodingMap, (IntPtr)(i >> 18));
+            uint i1 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 12) & 0x3F));
+            uint i2 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 6) & 0x3F));
 
             if (typeof(T) == typeof(byte))
             {
@@ -287,10 +289,10 @@ namespace gfoidl.Base64
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeOneByte<T>(ref byte oneByte, ref T encoded, ref byte encodingMap)
         {
-            int i = (oneByte << 8);
+            uint i = (uint)oneByte << 8;
 
-            byte i0 = Unsafe.Add(ref encodingMap, i >> 10);
-            byte i1 = Unsafe.Add(ref encodingMap, (i >> 4) & 0x3F);
+            uint i0 = Unsafe.Add(ref encodingMap, (IntPtr)(i >> 10));
+            uint i1 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 4) & 0x3F));
 
             if (typeof(T) == typeof(byte))
             {
