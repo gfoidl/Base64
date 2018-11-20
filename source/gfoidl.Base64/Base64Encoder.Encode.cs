@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
@@ -16,12 +16,16 @@ namespace gfoidl.Base64
 {
     partial class Base64Encoder
     {
-#if !NETCOREAPP2_1
+#if NETCOREAPP2_0 || NETSTANDARD2_0
         private const int MaxStackallocBytes = 256;
 #endif
         public const int MaximumEncodeLength = (int.MaxValue / 4) * 3; // 1610612733
         //---------------------------------------------------------------------
+#if NETCOREAPP3_0
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+#else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         public int GetEncodedLength(int sourceLength)
         {
             if ((uint)sourceLength > MaximumEncodeLength)
@@ -38,7 +42,7 @@ namespace gfoidl.Base64
             if (data.IsEmpty) return string.Empty;
 
             int encodedLength = this.GetEncodedLength(data.Length);
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
             fixed (byte* ptr = data)
             {
                 return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
@@ -102,6 +106,9 @@ namespace gfoidl.Base64
             return this.EncodeCore(ref srcBytes, srcLength, encoded, out consumed, out written);
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP3_0
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+#endif
         private OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written)
         {
             int destLength  = encoded.Length;
@@ -109,8 +116,13 @@ namespace gfoidl.Base64
             int destIndex   = 0;
 
             ref T dest = ref MemoryMarshal.GetReference(encoded);
-#if NETCOREAPP2_1
+
+#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP3_0
+            if (Ssse3.IsSupported && srcLength >= 16)
+#else
             if (Sse2.IsSupported && Ssse3.IsSupported && srcLength >= 16)
+#endif
             {
                 Sse2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
 
@@ -149,7 +161,7 @@ namespace gfoidl.Base64
                 destIndex   += 4;
                 sourceIndex += 2;
             }
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
         DoneExit:
 #endif
             consumed = sourceIndex;
@@ -162,7 +174,7 @@ namespace gfoidl.Base64
             return OperationStatus.DestinationTooSmall;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref int sourceIndex, ref int destIndex)
         {
@@ -206,7 +218,11 @@ namespace gfoidl.Base64
                 }
                 else if (typeof(T) == typeof(char))
                 {
+#if NETCOREAPP2_1
                     Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
+#elif NETCOREAPP3_0
+                    Vector128<sbyte> zero = Vector128<sbyte>.Zero;
+#endif
                     Vector128<sbyte> c0   = Sse2.UnpackLow(str, zero);
                     Vector128<sbyte> c1   = Sse2.UnpackHigh(str, zero);
 
@@ -316,7 +332,7 @@ namespace gfoidl.Base64
             }
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
         private static readonly Vector128<sbyte> s_encodeShuffleVec;
         private static readonly Vector128<sbyte> s_encodeLut;
 #endif

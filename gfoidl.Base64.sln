@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4259BCE
 	ProjectSection(SolutionItems) = preProject
 		build.sh = build.sh
 		Directory.Build.props = Directory.Build.props
+		global.json = global.json
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject

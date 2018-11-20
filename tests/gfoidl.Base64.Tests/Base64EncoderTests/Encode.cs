@@ -60,7 +60,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 if (typeof(T) == typeof(byte))
                 {
                     Span<byte> encodedBytes = MemoryMarshal.AsBytes(encoded);
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
                     encodedText = Encoding.ASCII.GetString(encodedBytes).AsSpan();
 #else
                     encodedText = Encoding.ASCII.GetString(encodedBytes.ToArray()).AsSpan();
@@ -74,7 +74,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 {
                     throw new NotSupportedException(); // just in case new types are introduced in the future
                 }
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
                 string expectedText = Convert.ToBase64String(source);
 #else
                 string expectedText = Convert.ToBase64String(source.ToArray());
@@ -96,7 +96,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
             {
                 Span<byte> source = bytes.AsSpan(0, value + 1);
                 string actual     = sut.Encode(source);
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
                 string expected = Convert.ToBase64String(source);
 #else
                 string expected = Convert.ToBase64String(source.ToArray());

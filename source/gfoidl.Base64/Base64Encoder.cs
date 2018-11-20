@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_1
+﻿#if NETCOREAPP2_1 || NETCOREAPP3_0
 using System.Runtime.Intrinsics.X86;
 #endif
 
@@ -8,8 +8,12 @@ namespace gfoidl.Base64
     {
         static Base64Encoder()
         {
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP3_0
+            if (Ssse3.IsSupported)
+#else
             if (Sse2.IsSupported && Ssse3.IsSupported)
+#endif
             {
                 s_encodeShuffleVec = Sse2.SetVector128(
                     10, 11, 9, 10,

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
@@ -46,7 +46,11 @@ namespace gfoidl.Base64
             return maxLen - padding;
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP3_0
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+#else
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
         internal int GetDecodedLength(int encodedLength)
         {
             if (encodedLength < 0)
@@ -94,6 +98,9 @@ namespace gfoidl.Base64
             return this.DecodeCore(ref src, srcLength, data, out consumed, out written);
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP3_0
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+#endif
         private OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written)
         {
             int sourceIndex = 0;
@@ -101,8 +108,12 @@ namespace gfoidl.Base64
             int srcLength   = inputLength & ~0x3;   // only decode input up to the closest multiple of 4.
 
             ref byte destBytes  = ref MemoryMarshal.GetReference(data);
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP3_0
+            if (Ssse3.IsSupported && srcLength >= 24)
+#else
             if (Sse2.IsSupported && Ssse3.IsSupported && srcLength >= 24)
+#endif
             {
                 if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
                     goto Sequential;
@@ -243,7 +254,7 @@ namespace gfoidl.Base64
 
             if (srcLength != inputLength)
                 goto InvalidExit;
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
         DoneExit:
 #endif
             consumed = sourceIndex;
@@ -264,7 +275,7 @@ namespace gfoidl.Base64
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref int sourceIndex, ref int destIndex)
         {
@@ -310,8 +321,12 @@ namespace gfoidl.Base64
                 Vector128<sbyte> loNibbles = Sse2.And(str, mask2F);
                 Vector128<sbyte> hi        = Ssse3.Shuffle(lutHi, hiNibbles);
                 Vector128<sbyte> lo        = Ssse3.Shuffle(lutLo, loNibbles);
-
-                if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), Sse2.SetZeroVector128<sbyte>())) != 0)
+#if NETCOREAPP2_1
+                Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
+#elif NETCOREAPP3_0
+                Vector128<sbyte> zero = Vector128<sbyte>.Zero;
+#endif
+                if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
                 {
                     success = false;
                     break;
@@ -322,8 +337,12 @@ namespace gfoidl.Base64
                 str                   = Sse2.Add(str, roll);
 
                 Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(Sse.StaticCast<sbyte, byte>(str), shuffleConstant0);
-                Vector128<int> @out              = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
-                str                              = Ssse3.Shuffle(Sse.StaticCast<int, sbyte>(@out), shuffleVec);
+#if NETCOREAPP2_1
+                Vector128<int> @out = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
+#elif NETCOREAPP3_0
+                Vector128<int> @out = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
+#endif
+                str = Ssse3.Shuffle(Sse.StaticCast<int, sbyte>(@out), shuffleVec);
 
                 Unsafe.WriteUnaligned(ref destBytes, str);
 
@@ -392,7 +411,7 @@ namespace gfoidl.Base64
             Unsafe.Add(ref destination, 2) = (byte)value;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1
+#if NETCOREAPP2_1 || NETCOREAPP3_0
         private static readonly Vector128<sbyte> s_decodeShuffleVec;
         private static readonly Vector128<sbyte> s_decodeLutLo;
         private static readonly Vector128<sbyte> s_decodeLutHi;
