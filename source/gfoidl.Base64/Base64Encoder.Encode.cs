@@ -55,27 +55,6 @@ namespace gfoidl.Base64
                     Debug.Assert(encoded.Length == written);
                 });
             }
-#elif NETCOREAPP2_0
-            char[] arrayToReturnToPool = null;
-            try
-            {
-                Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
-                    ? stackalloc char[encodedLength]
-                    : arrayToReturnToPool = ArrayPool<char>.Shared.Rent(encodedLength);
-
-                OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written);
-                Debug.Assert(status        == OperationStatus.Done);
-                Debug.Assert(data.Length   == consumed);
-                Debug.Assert(encodedLength == written);
-
-                fixed (char* ptr = encoded)
-                    return new string(ptr, 0, written);
-            }
-            finally
-            {
-                if (arrayToReturnToPool != null)
-                    ArrayPool<char>.Shared.Return(arrayToReturnToPool);
-            }
 #else
             Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
                 ? stackalloc char[encodedLength]
