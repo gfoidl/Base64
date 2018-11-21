@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
@@ -16,7 +16,7 @@ namespace gfoidl.Base64
 {
     partial class Base64Encoder
     {
-#if NETCOREAPP2_0 || NETSTANDARD2_0
+#if NETSTANDARD2_0
         private const int MaxStackallocBytes = 256;
 #endif
         public const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
@@ -38,7 +38,7 @@ namespace gfoidl.Base64
             if (data.IsEmpty) return string.Empty;
 
             int encodedLength = this.GetEncodedLength(data.Length);
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
             fixed (byte* ptr = data)
             {
                 return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
@@ -102,7 +102,7 @@ namespace gfoidl.Base64
             }
 #endif
 
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
 #if NETCOREAPP3_0
             if (Ssse3.IsSupported && srcLength >= 16)
 #else
@@ -146,7 +146,7 @@ namespace gfoidl.Base64
                 destIndex   += 4;
                 sourceIndex += 2;
             }
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
         DoneExit:
 #endif
             consumed = (int)sourceIndex;
@@ -233,7 +233,7 @@ namespace gfoidl.Base64
         }
 #endif
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
         {
@@ -401,7 +401,7 @@ namespace gfoidl.Base64
             }
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
         private static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
         private static readonly Vector128<sbyte> s_sse_encodeLut;
 

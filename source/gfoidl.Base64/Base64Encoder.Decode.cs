@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
@@ -113,7 +113,7 @@ namespace gfoidl.Base64
             }
 #endif
 
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
 #if NETCOREAPP3_0
             if (Ssse3.IsSupported && srcLength >= 24)
 #else
@@ -259,7 +259,7 @@ namespace gfoidl.Base64
 
             if (srcLength != (uint)inputLength)
                 goto InvalidExit;
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
         DoneExit:
 #endif
             consumed = (int)sourceIndex;
@@ -354,7 +354,7 @@ namespace gfoidl.Base64
         }
 #endif
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
         {
@@ -491,7 +491,7 @@ namespace gfoidl.Base64
             Unsafe.Add(ref destination, 2) = (byte)value;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
         private static readonly Vector128<sbyte> s_sse_decodeShuffleVec;
         private static readonly Vector128<sbyte> s_sse_decodeLutLo;
         private static readonly Vector128<sbyte> s_sse_decodeLutHi;

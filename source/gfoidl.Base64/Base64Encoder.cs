@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_1 || NETCOREAPP3_0
+﻿#if NETCOREAPP
 using System.Runtime.Intrinsics.X86;
 #endif
 
@@ -8,7 +8,7 @@ namespace gfoidl.Base64
     {
         static Base64Encoder()
         {
-#if NETCOREAPP2_1 || NETCOREAPP3_0
+#if NETCOREAPP
 #if NETCOREAPP3_0
             if (Ssse3.IsSupported)
 #else
