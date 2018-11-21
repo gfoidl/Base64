@@ -92,6 +92,16 @@ namespace gfoidl.Base64
 
             ref T dest = ref MemoryMarshal.GetReference(encoded);
 
+#if NETCOREAPP3_0
+            if (Avx2.IsSupported && srcLength >= 32)
+            {
+                Avx2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
+
+                if (sourceIndex == srcLength)
+                    goto DoneExit;
+            }
+#endif
+
 #if NETCOREAPP2_1 || NETCOREAPP3_0
 #if NETCOREAPP3_0
             if (Ssse3.IsSupported && srcLength >= 16)
@@ -149,6 +159,80 @@ namespace gfoidl.Base64
             return OperationStatus.DestinationTooSmall;
         }
         //---------------------------------------------------------------------
+#if NETCOREAPP3_0
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        {
+            ref byte srcStart   = ref src;
+            ref T destStart     = ref dest;
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 28 + 1));
+
+            // The JIT won't hoist these "constants", so help him
+            Vector256<sbyte> shuffleVec          = s_avx_encodeShuffleVec;
+            Vector256<sbyte> shuffleConstant0    = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x0fc0fc00));
+            Vector256<sbyte> shuffleConstant2    = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x003f03f0));
+            Vector256<ushort> shuffleConstant1   = Avx.StaticCast<int, ushort>(Avx.SetAllVector256(0x04000040));
+            Vector256<short> shuffleConstant3    = Avx.StaticCast<int, short>(Avx.SetAllVector256(0x01000010));
+            Vector256<byte> translationContant0  = Avx.SetAllVector256((byte)51);
+            Vector256<sbyte> translationContant1 = Avx.SetAllVector256((sbyte)25);
+            Vector256<sbyte> lut                 = s_avx_encodeLut;
+
+            // first load is done at c-0 not to get a segfault
+            Vector256<sbyte> str = Unsafe.ReadUnaligned<Vector256<sbyte>>(ref src);
+
+            // shift by 4 bytes, as required by enc_reshuffle
+            str = Avx.StaticCast<int, sbyte>(Avx2.PermuteVar8x32(
+                Avx.StaticCast<sbyte, int>(str),
+                s_avx_encodePermuteVec));
+
+            while (true)
+            {
+                // Reshuffle
+                str                  = Avx2.Shuffle(str, shuffleVec);
+                Vector256<sbyte>  t0 = Avx2.And(str, shuffleConstant0);
+                Vector256<sbyte>  t2 = Avx2.And(str, shuffleConstant2);
+                Vector256<ushort> t1 = Avx2.MultiplyHigh(Avx.StaticCast<sbyte, ushort>(t0), shuffleConstant1);
+                Vector256<short>  t3 = Avx2.MultiplyLow(Avx.StaticCast<sbyte, short>(t2), shuffleConstant3);
+                str                  = Avx2.Or(Avx.StaticCast<ushort, sbyte>(t1), Avx.StaticCast<short, sbyte>(t3));
+
+                // Translation
+                Vector256<byte>  indices = Avx2.SubtractSaturate(Avx.StaticCast<sbyte, byte>(str), translationContant0);
+                Vector256<sbyte> mask    = Avx2.CompareGreaterThan(str, translationContant1);
+                Vector256<sbyte> tmp     = Avx2.Subtract(Avx.StaticCast<byte, sbyte>(indices), mask);
+                str                      = Avx2.Add(str, Avx2.Shuffle(lut, tmp));
+
+                if (typeof(T) == typeof(byte))
+                {
+                    Unsafe.As<T, Vector256<sbyte>>(ref dest) = str;
+                }
+                else if (typeof(T) == typeof(char))
+                {
+                    Avx2Helper.Write(str, ref Unsafe.As<T, char>(ref dest));
+                }
+                else
+                {
+                    throw new NotSupportedException(); // just in case new types are introduced in the future
+                }
+
+                src  = ref Unsafe.Add(ref src,  24);
+                dest = ref Unsafe.Add(ref dest, 32);
+
+                if (Unsafe.IsAddressGreaterThan(ref src, ref simdSrcEnd))
+                    break;
+
+                // Load at c-4, as required by enc_reshuffle
+                str = Unsafe.ReadUnaligned<Vector256<sbyte>>(ref Unsafe.Subtract(ref src, 4));
+            }
+
+            // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart,  ref src);
+            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest) / (uint)Unsafe.SizeOf<T>();
+
+            src  = ref srcStart;
+            dest = ref destStart;
+        }
+#endif
+        //---------------------------------------------------------------------
 #if NETCOREAPP2_1 || NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
@@ -157,15 +241,19 @@ namespace gfoidl.Base64
             ref T destStart     = ref dest;
             ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 16 + 1));
 
+            // Shift to workspace
+            src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
+            dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
+
             // The JIT won't hoist these "constants", so help him
-            Vector128<sbyte>  shuffleVec          = s_encodeShuffleVec;
+            Vector128<sbyte>  shuffleVec          = s_sse_encodeShuffleVec;
             Vector128<sbyte>  shuffleConstant0    = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x0fc0fc00));
             Vector128<sbyte>  shuffleConstant2    = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x003f03f0));
             Vector128<ushort> shuffleConstant1    = Sse.StaticCast<int, ushort>(Sse2.SetAllVector128(0x04000040));
             Vector128<short>  shuffleConstant3    = Sse.StaticCast<int, short>(Sse2.SetAllVector128(0x01000010));
             Vector128<byte>   translationContant0 = Sse2.SetAllVector128((byte)51);
             Vector128<sbyte>  translationContant1 = Sse2.SetAllVector128((sbyte)25);
-            Vector128<sbyte>  lut                 = s_encodeLut;
+            Vector128<sbyte>  lut                 = s_sse_encodeLut;
 
             //while (remaining >= 16)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
@@ -197,7 +285,7 @@ namespace gfoidl.Base64
                     // https://github.com/dotnet/coreclr/issues/21130
                     //Vector128<sbyte> zero = Vector128<sbyte>.Zero;
                     Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
-#elif NETCOREAPP2_1
+#else
                     Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 #endif
                     Vector128<sbyte> c0   = Sse2.UnpackLow(str, zero);
@@ -314,8 +402,12 @@ namespace gfoidl.Base64
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP2_1 || NETCOREAPP3_0
-        private static readonly Vector128<sbyte> s_encodeShuffleVec;
-        private static readonly Vector128<sbyte> s_encodeLut;
+        private static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
+        private static readonly Vector128<sbyte> s_sse_encodeLut;
+
+        private static readonly Vector256<int>   s_avx_encodePermuteVec;
+        private static readonly Vector256<sbyte> s_avx_encodeShuffleVec;
+        private static readonly Vector256<sbyte> s_avx_encodeLut;
 #endif
         // internal because tests use this map too
         internal static readonly byte[] s_encodingMap = {

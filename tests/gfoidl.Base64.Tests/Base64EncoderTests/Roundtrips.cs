@@ -29,23 +29,27 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 Assert.AreEqual(source.Length, consumed);
                 Assert.AreEqual(encoded.Length, written);
 
-                ReadOnlySpan<char> encodedText;
+                string encodedText;
                 int decodedLength;
 
                 if (typeof(T) == typeof(byte))
                 {
                     Span<byte> encodedBytes = MemoryMarshal.AsBytes(encoded);
 #if NETCOREAPP2_1 || NETCOREAPP3_0
-                    encodedText = Encoding.ASCII.GetString(encodedBytes).AsSpan();
+                    encodedText = Encoding.ASCII.GetString(encodedBytes);
 #else
-                    encodedText = Encoding.ASCII.GetString(encodedBytes.ToArray()).AsSpan();
+                    encodedText = Encoding.ASCII.GetString(encodedBytes.ToArray());
 #endif
                     decodedLength = sut.GetDecodedLength(encodedBytes);
                 }
                 else if (typeof(T) == typeof(char))
                 {
-                    encodedText = MemoryMarshal.Cast<T, char>(encoded);
-                    decodedLength = sut.GetDecodedLength(encodedText);
+#if NETCOREAPP
+                    encodedText = new string(MemoryMarshal.Cast<T, char>(encoded));
+#else
+                    encodedText = new string(MemoryMarshal.Cast<T, char>(encoded).ToArray());
+#endif
+                    decodedLength = sut.GetDecodedLength(encodedText.AsSpan());
                 }
                 else
                 {
@@ -56,7 +60,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
 #else
                 string expectedText = Convert.ToBase64String(source.ToArray());
 #endif
-                Assert.True(encodedText.SequenceEqual(expectedText.AsSpan()));
+                Assert.AreEqual(expectedText, encodedText);
 
                 Span<byte> decoded = new byte[decodedLength];
                 status = sut.DecodeCore<T>(encoded, decoded, out consumed, out written);
@@ -65,7 +69,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 Assert.AreEqual(encoded.Length, consumed);
                 Assert.AreEqual(decodedLength, written);
 
-                Assert.True(source.SequenceEqual(decoded));
+                CollectionAssert.AreEqual(source.ToArray(), decoded.ToArray());
             }
         }
         //---------------------------------------------------------------------
@@ -91,7 +95,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
 
                 Span<byte> decoded = sut.Decode(encoded.AsSpan());
 
-                Assert.IsTrue(source.SequenceEqual(decoded));
+                CollectionAssert.AreEqual(source.ToArray(), decoded.ToArray());
             }
         }
     }

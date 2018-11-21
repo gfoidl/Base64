@@ -4,6 +4,10 @@
         <TargetFrameworks>$(StandardTestTfms)</TargetFrameworks>
     </PropertyGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
+        <Compile Remove="Avx2HelperTests\*.cs" />
+    </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\..\source\gfoidl.Base64\gfoidl.Base64.csproj" />
     </ItemGroup>

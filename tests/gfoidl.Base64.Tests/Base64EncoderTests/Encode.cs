@@ -55,31 +55,35 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
                 Assert.AreEqual(source.Length, consumed);
                 Assert.AreEqual(encoded.Length, written);
 
-                ReadOnlySpan<char> encodedText;
+                string encodedText;
 
                 if (typeof(T) == typeof(byte))
                 {
                     Span<byte> encodedBytes = MemoryMarshal.AsBytes(encoded);
 #if NETCOREAPP2_1 || NETCOREAPP3_0
-                    encodedText = Encoding.ASCII.GetString(encodedBytes).AsSpan();
+                    encodedText = Encoding.ASCII.GetString(encodedBytes);
 #else
-                    encodedText = Encoding.ASCII.GetString(encodedBytes.ToArray()).AsSpan();
+                    encodedText = Encoding.ASCII.GetString(encodedBytes.ToArray());
 #endif
                 }
                 else if (typeof(T) == typeof(char))
                 {
-                    encodedText = MemoryMarshal.Cast<T, char>(encoded);
+#if NETCOREAPP
+                    encodedText = new string(MemoryMarshal.Cast<T, char>(encoded));
+#else
+                    encodedText = new string(MemoryMarshal.Cast<T, char>(encoded).ToArray());
+#endif
                 }
                 else
                 {
                     throw new NotSupportedException(); // just in case new types are introduced in the future
                 }
 #if NETCOREAPP2_1 || NETCOREAPP3_0
-                string expectedText = Convert.ToBase64String(source);
+                string expected = Convert.ToBase64String(source);
 #else
-                string expectedText = Convert.ToBase64String(source.ToArray());
+                string expected = Convert.ToBase64String(source.ToArray());
 #endif
-                Assert.True(encodedText.SequenceEqual(expectedText.AsSpan()));
+                Assert.AreEqual(expected, encodedText);
             }
         }
         //---------------------------------------------------------------------
