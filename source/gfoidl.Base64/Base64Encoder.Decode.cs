@@ -115,9 +115,9 @@ namespace gfoidl.Base64
 
 #if NETCOREAPP
 #if NETCOREAPP3_0
-            if (Ssse3.IsSupported && srcLength >= 24)
+            if (Ssse3.IsSupported && (srcLength - sourceIndex >= 24))
 #else
-            if (Sse2.IsSupported && Ssse3.IsSupported && srcLength >= 24)
+            if (Sse2.IsSupported && Ssse3.IsSupported && (srcLength - sourceIndex >= 24))
 #endif
             {
                 if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
