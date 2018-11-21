@@ -25,9 +25,13 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
         <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="4.6.0-preview1-26724-02" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' OR '$(TargetFramework)' == 'netstandard2.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
         <PackageReference Include="System.Memory" Version="4.5.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
+        <Compile Remove="Avx2Helper.cs" />
     </ItemGroup>
 
     <ItemGroup>
