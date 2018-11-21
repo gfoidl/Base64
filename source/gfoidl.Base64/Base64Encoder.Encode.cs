@@ -93,7 +93,7 @@ namespace gfoidl.Base64
             ref T dest = ref MemoryMarshal.GetReference(encoded);
 
 #if NETCOREAPP3_0
-            if (Avx2.IsSupported && srcLength >= 32)
+            if (Avx2.IsSupported && srcLength >= 32 && !s_isMac)
             {
                 Avx2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
 

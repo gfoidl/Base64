@@ -103,7 +103,7 @@ namespace gfoidl.Base64
             ref byte destBytes  = ref MemoryMarshal.GetReference(data);
 
 #if NETCOREAPP3_0
-            if (Avx2.IsSupported && srcLength >= 45)
+            if (Avx2.IsSupported && srcLength >= 45 && !s_isMac)
             {
                 if (!Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
                     goto Sequential;
