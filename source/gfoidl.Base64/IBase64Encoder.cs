@@ -12,8 +12,8 @@ namespace gfoidl.Base64
         OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true);
         OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true);
 
-        OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written);
-        OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written);
+        OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true);
+        OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true);
 
         string Encode(ReadOnlySpan<byte> data);
         byte[] Decode(ReadOnlySpan<char> encoded);
