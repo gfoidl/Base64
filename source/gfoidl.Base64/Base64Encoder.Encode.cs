@@ -30,8 +30,8 @@ namespace gfoidl.Base64
             return (sourceLength + 2) / 3 * 4;
         }
         //---------------------------------------------------------------------
-        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written) => this.EncodeCore(data, encoded, out consumed, out written);
-        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written) => this.EncodeCore(data, encoded, out consumed, out written);
+        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
+        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
         //---------------------------------------------------------------------
         public unsafe string Encode(ReadOnlySpan<byte> data)
         {
@@ -66,7 +66,7 @@ namespace gfoidl.Base64
 #endif
         }
         //---------------------------------------------------------------------
-        internal OperationStatus EncodeCore<T>(ReadOnlySpan<byte> data, Span<T> encoded, out int consumed, out int written)
+        internal OperationStatus EncodeCore<T>(ReadOnlySpan<byte> data, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
         {
             if (data.IsEmpty)
             {
@@ -78,13 +78,13 @@ namespace gfoidl.Base64
             ref byte srcBytes = ref MemoryMarshal.GetReference(data);
             int srcLength     = data.Length;
 
-            return this.EncodeCore(ref srcBytes, srcLength, encoded, out consumed, out written);
+            return this.EncodeCore(ref srcBytes, srcLength, encoded, out consumed, out written, isFinalBlock);
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        private OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written)
+        private OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
         {
             int destLength   = encoded.Length;
             uint sourceIndex = 0;
@@ -134,6 +134,9 @@ namespace gfoidl.Base64
             if (maxSrcLength != srcLength - 2)
                 goto DestinationSmallExit;
 
+            if (!isFinalBlock)
+                goto NeedMoreDataExit;
+
             if (sourceIndex == srcLength - 1)
             {
                 EncodeOneByte(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
@@ -152,6 +155,11 @@ namespace gfoidl.Base64
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.Done;
+
+        NeedMoreDataExit:
+            consumed = (int)sourceIndex;
+            written  = (int)destIndex;
+            return OperationStatus.NeedMoreData;
 
         DestinationSmallExit:
             consumed = (int)sourceIndex;

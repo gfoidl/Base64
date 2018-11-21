@@ -54,8 +54,8 @@ namespace gfoidl.Base64
             return (encodedLength >> 2) * 3;
         }
         //---------------------------------------------------------------------
-        public OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written) => this.DecodeCore(encoded, data, out consumed, out written);
-        public OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written) => this.DecodeCore(encoded, data, out consumed, out written);
+        public OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
+        public OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
         //---------------------------------------------------------------------
         public byte[] Decode(ReadOnlySpan<char> encoded)
         {
@@ -76,7 +76,7 @@ namespace gfoidl.Base64
             return data;
         }
         //---------------------------------------------------------------------
-        internal OperationStatus DecodeCore<T>(ReadOnlySpan<T> encoded, Span<byte> data, out int consumed, out int written)
+        internal OperationStatus DecodeCore<T>(ReadOnlySpan<T> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
         {
             if (encoded.IsEmpty)
             {
@@ -88,13 +88,13 @@ namespace gfoidl.Base64
             ref T src     = ref MemoryMarshal.GetReference(encoded);
             int srcLength = encoded.Length;
 
-            return this.DecodeCore(ref src, srcLength, data, out consumed, out written);
+            return this.DecodeCore(ref src, srcLength, data, out consumed, out written, isFinalBlock);
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        private OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written)
+        private OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
@@ -132,7 +132,6 @@ namespace gfoidl.Base64
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
             // if isFinalBlock is false, padding characters are considered invalid
-            const bool isFinalBlock = true;
             int skipLastChunk = isFinalBlock ? 4 : 0;
 
             int maxSrcLength = 0;
@@ -170,6 +169,8 @@ namespace gfoidl.Base64
             {
                 if (isFinalBlock)
                     goto InvalidExit;
+
+                goto NeedMoreDataExit;
             }
 
             // if isFinalBlock is false, we will never reach this point
@@ -257,7 +258,7 @@ namespace gfoidl.Base64
 
             sourceIndex += 4;
 
-            if (srcLength != (uint)inputLength)
+            if (srcLength != inputLength)
                 goto InvalidExit;
 #if NETCOREAPP
         DoneExit:
@@ -267,12 +268,17 @@ namespace gfoidl.Base64
             return OperationStatus.Done;
 
         DestinationSmallExit:
-            if (srcLength != (uint)inputLength && isFinalBlock)
+            if (srcLength != inputLength && isFinalBlock)
                 goto InvalidExit; // if input is not a multiple of 4, and there is no more data, return invalid data instead
 
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.DestinationTooSmall;
+
+        NeedMoreDataExit:
+            consumed = (int)sourceIndex;
+            written = (int)destIndex;
+            return OperationStatus.NeedMoreData;
 
         InvalidExit:
             consumed = (int)sourceIndex;
