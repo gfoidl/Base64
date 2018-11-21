@@ -1,4 +1,5 @@
 ﻿#if NETCOREAPP
+using System;
 using System.Runtime.Intrinsics.X86;
 #endif
 
@@ -10,6 +11,11 @@ namespace gfoidl.Base64
         {
 #if NETCOREAPP
 #if NETCOREAPP3_0
+            // Force initialization of Avx2Helper to move the 'CORINFO_HELP_GETSHARED_NONGCSTATIC_BASE'
+            // out of the loop
+            // https://github.com/dotnet/coreclr/issues/21105
+            if (Avx2Helper.DummyToInitType(3, 4) != 7) throw new InvalidOperationException("https://github.com/gfoidl/Base64/pull/1#issuecomment-440736179");
+
             if (Ssse3.IsSupported)
 #else
             if (Sse2.IsSupported && Ssse3.IsSupported)
