@@ -161,5 +161,55 @@ namespace gfoidl.Base64
                 throw new NotSupportedException();  // just in case new types are introduced in the future
             }
         }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static int DecodeFour<T>(ref T encoded, ref sbyte decodingMap)
+        {
+            uint t0, t1, t2, t3;
+
+            if (typeof(T) == typeof(byte))
+            {
+                ref byte tmp = ref Unsafe.As<T, byte>(ref encoded);
+                t0 = Unsafe.Add(ref tmp, 0);
+                t1 = Unsafe.Add(ref tmp, 1);
+                t2 = Unsafe.Add(ref tmp, 2);
+                t3 = Unsafe.Add(ref tmp, 3);
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                ref char tmp = ref Unsafe.As<T, char>(ref encoded);
+                t0 = Unsafe.Add(ref tmp, 0);
+                t1 = Unsafe.Add(ref tmp, 1);
+                t2 = Unsafe.Add(ref tmp, 2);
+                t3 = Unsafe.Add(ref tmp, 3);
+            }
+            else
+            {
+                throw new NotSupportedException();  // just in case new types are introduced in the future
+            }
+
+            int i0 = Unsafe.Add(ref decodingMap, (IntPtr)t0);
+            int i1 = Unsafe.Add(ref decodingMap, (IntPtr)t1);
+            int i2 = Unsafe.Add(ref decodingMap, (IntPtr)t2);
+            int i3 = Unsafe.Add(ref decodingMap, (IntPtr)t3);
+
+            i0 <<= 18;
+            i1 <<= 12;
+            i2 <<= 6;
+
+            i0 |= i3;
+            i1 |= i2;
+
+            i0 |= i1;
+            return i0;
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static void WriteThreeLowOrderBytes(ref byte destination, uint destIndex, int value)
+        {
+            Unsafe.Add(ref destination, (IntPtr)(destIndex + 0)) = (byte)(value >> 16);
+            Unsafe.Add(ref destination, (IntPtr)(destIndex + 1)) = (byte)(value >> 8);
+            Unsafe.Add(ref destination, (IntPtr)(destIndex + 2)) = (byte)value;
+        }
     }
 }

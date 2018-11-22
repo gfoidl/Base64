@@ -91,13 +91,13 @@ namespace gfoidl.Base64
             if (sourceIndex == srcLength - 1)
             {
                 EncodeOneByte(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
-                destIndex   += 4;
+                destIndex   += 2;
                 sourceIndex += 1;
             }
             else if (sourceIndex == srcLength - 2)
             {
                 EncodeTwoBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
-                destIndex   += 4;
+                destIndex   += 3;
                 sourceIndex += 2;
             }
 #if NETCOREAPP

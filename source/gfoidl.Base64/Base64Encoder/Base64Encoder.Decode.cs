@@ -112,12 +112,12 @@ namespace gfoidl.Base64
 
             while (sourceIndex < maxSrcLength)
             {
-                int result = Decode(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
+                int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
                 if (result < 0)
                     goto InvalidExit;
 
-                WriteThreeLowOrderBytes(ref Unsafe.Add(ref destBytes, (IntPtr)destIndex), result);
+                WriteThreeLowOrderBytes(ref destBytes, destIndex, result);
                 destIndex   += 3;
                 sourceIndex += 4;
             }
@@ -185,7 +185,7 @@ namespace gfoidl.Base64
                 if (destIndex > destLength - 3)
                     goto DestinationSmallExit;
 
-                WriteThreeLowOrderBytes(ref Unsafe.Add(ref destBytes, (IntPtr)destIndex), i0);
+                WriteThreeLowOrderBytes(ref destBytes, destIndex, i0);
                 destIndex += 3;
             }
             else if (t2 != EncodingPad)
@@ -408,56 +408,6 @@ namespace gfoidl.Base64
             return success;
         }
 #endif
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int Decode<T>(ref T encoded, ref sbyte decodingMap)
-        {
-            uint t0, t1, t2, t3;
-
-            if (typeof(T) == typeof(byte))
-            {
-                ref byte tmp = ref Unsafe.As<T, byte>(ref encoded);
-                t0 = Unsafe.Add(ref tmp, 0);
-                t1 = Unsafe.Add(ref tmp, 1);
-                t2 = Unsafe.Add(ref tmp, 2);
-                t3 = Unsafe.Add(ref tmp, 3);
-            }
-            else if (typeof(T) == typeof(char))
-            {
-                ref char tmp = ref Unsafe.As<T, char>(ref encoded);
-                t0 = Unsafe.Add(ref tmp, 0);
-                t1 = Unsafe.Add(ref tmp, 1);
-                t2 = Unsafe.Add(ref tmp, 2);
-                t3 = Unsafe.Add(ref tmp, 3);
-            }
-            else
-            {
-                throw new NotSupportedException();  // just in case new types are introduced in the future
-            }
-
-            int i0 = Unsafe.Add(ref decodingMap, (IntPtr)t0);
-            int i1 = Unsafe.Add(ref decodingMap, (IntPtr)t1);
-            int i2 = Unsafe.Add(ref decodingMap, (IntPtr)t2);
-            int i3 = Unsafe.Add(ref decodingMap, (IntPtr)t3);
-
-            i0 <<= 18;
-            i1 <<= 12;
-            i2 <<= 6;
-
-            i0 |= i3;
-            i1 |= i2;
-
-            i0 |= i1;
-            return i0;
-        }
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void WriteThreeLowOrderBytes(ref byte destination, int value)
-        {
-            Unsafe.Add(ref destination, 0) = (byte)(value >> 16);
-            Unsafe.Add(ref destination, 1) = (byte)(value >> 8);
-            Unsafe.Add(ref destination, 2) = (byte)value;
-        }
         //---------------------------------------------------------------------
 #if NETCOREAPP
         private static readonly Vector128<sbyte> s_sse_decodeShuffleVec;

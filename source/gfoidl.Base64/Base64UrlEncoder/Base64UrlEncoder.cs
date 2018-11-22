@@ -68,7 +68,7 @@ namespace gfoidl.Base64
                 s_sse_decodeLutHi   = Reverse(s_sse_decodeLutHi);
                 s_sse_decodeLutRoll = Reverse(s_sse_decodeLutRoll);
 
-                s_sse_decodeMask2F = Sse2.SetAllVector128((sbyte)0x2F); // ASCII: /
+                s_sse_decodeMask5F = Sse2.SetAllVector128((sbyte)0x5F); // ASCII: _
             }
 #endif
         }
