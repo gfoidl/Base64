@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 
-namespace gfoidl.Base64.Tests.Base64EncoderTests
+namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
 {
     [TestFixture(typeof(byte))]
     [TestFixture(typeof(char))]
@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Empty_input()
         {
-            var sut                 = new Base64Encoder();
+            var sut                 = new Base64UrlEncoder();
             ReadOnlySpan<T> encoded = ReadOnlySpan<T>.Empty;
 
             Span<byte> data        = new byte[sut.GetDecodedLength(encoded.Length)];
@@ -28,7 +28,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Empty_input_decode_from_string___empty_array()
         {
-            var sut        = new Base64Encoder();
+            var sut        = new Base64UrlEncoder();
             string encoded = string.Empty;
 
             byte[] actual = sut.Decode(encoded.AsSpan());
@@ -39,7 +39,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test, TestCaseSource(nameof(Malformed_input___throws_FormatException_TestCases))]
         public void Malformed_input___throws_FormatException(string input)
         {
-            var sut = new Base64Encoder();
+            var sut = new Base64UrlEncoder();
 
             Assert.Throws<FormatException>(() => sut.Decode(input.AsSpan()));
         }
@@ -48,17 +48,17 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         {
             yield return new TestCaseData(" ");
             yield return new TestCaseData("a");
-            yield return new TestCaseData("ab");
-            yield return new TestCaseData("abc");
+            yield return new TestCaseData("a=");
             yield return new TestCaseData("abc?");
             yield return new TestCaseData("ab?c");
             yield return new TestCaseData("ab=c");
+            yield return new TestCaseData("abc=");
         }
         //---------------------------------------------------------------------
         [Test]
         public void Buffer_chain_basic_decode()
         {
-            var sut  = new Base64Encoder();
+            var sut  = new Base64UrlEncoder();
             var data = new byte[200];
             var rnd  = new Random(0);
             rnd.NextBytes(data);
@@ -102,7 +102,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Buffer_chain_various_length_decode()
         {
-            var sut = new Base64Encoder();
+            var sut = new Base64UrlEncoder();
             var rnd = new Random(0);
 
             for (int i = 2; i < 200; ++i)
