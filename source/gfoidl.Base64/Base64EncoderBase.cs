@@ -8,6 +8,15 @@ namespace gfoidl.Base64
 {
     public abstract class Base64EncoderBase : IBase64Encoder
     {
+#if NETCOREAPP3_0
+        protected static readonly bool s_isMac = false;
+        //---------------------------------------------------------------------
+        static Base64EncoderBase()
+        {
+            s_isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        }
+#endif
+        //---------------------------------------------------------------------
 #if NETSTANDARD2_0
         private const int MaxStackallocBytes = 256;
 #endif

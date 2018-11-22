@@ -1,5 +1,4 @@
 ﻿#if NETCOREAPP
-using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 #endif
 
@@ -7,13 +6,9 @@ namespace gfoidl.Base64
 {
     public sealed partial class Base64Encoder : Base64EncoderBase
     {
-        private static readonly bool s_isMac = false;
-        //---------------------------------------------------------------------
         static Base64Encoder()
         {
 #if NETCOREAPP
-            s_isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-
 #if NETCOREAPP3_0
             if (Ssse3.IsSupported)
 #else

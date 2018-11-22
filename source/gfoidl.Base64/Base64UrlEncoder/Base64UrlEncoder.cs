@@ -70,6 +70,37 @@ namespace gfoidl.Base64
 
                 s_sse_decodeMask5F = Sse2.SetAllVector128((sbyte)0x5F); // ASCII: _
             }
+
+#if NETCOREAPP3_0
+            if (Avx2.IsSupported)
+#else
+            if (Avx.IsSupported && Avx2.IsSupported)
+#endif
+            {
+                s_avx_encodePermuteVec = Avx.SetVector256(6, 5, 4, 3, 2, 1, 0, 0);
+
+                s_avx_encodeShuffleVec = Avx.SetVector256(
+                    10, 11,  9, 10,
+                     7,  8,  6,  7,
+                     4,  5,  3,  4,
+                     1,  2,  0,  1,
+                    14, 15, 13, 14,
+                    11, 12, 10, 11,
+                     8,  9,  7,  8,
+                     5,  6,  4,  5
+                );
+
+                s_avx_encodeLut = Avx.SetVector256(
+                     0,  0,  32, -17,
+                    -4, -4,  -4,  -4,
+                    -4, -4,  -4,  -4,
+                    -4, -4,  71,  65,
+                     0,  0,  32, -17,
+                    -4, -4,  -4,  -4,
+                    -4, -4,  -4,  -4,
+                    -4, -4,  71, 65
+                );
+            }
 #endif
         }
         //---------------------------------------------------------------------
