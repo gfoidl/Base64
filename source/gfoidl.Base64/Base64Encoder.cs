@@ -5,7 +5,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64
 {
-    public partial class Base64Encoder : IBase64Encoder
+    public sealed partial class Base64Encoder : Base64EncoderBase
     {
         private static readonly bool s_isMac = false;
         //---------------------------------------------------------------------

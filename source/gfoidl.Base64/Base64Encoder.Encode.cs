@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -16,75 +15,12 @@ namespace gfoidl.Base64
 {
     partial class Base64Encoder
     {
-#if NETSTANDARD2_0
-        private const int MaxStackallocBytes = 256;
-#endif
-        public const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetEncodedLength(int sourceLength)
-        {
-            if ((uint)sourceLength > MaximumEncodeLength)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
-
-            return (sourceLength + 2) / 3 * 4;
-        }
-        //---------------------------------------------------------------------
-        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
-        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
-        //---------------------------------------------------------------------
-        public unsafe string Encode(ReadOnlySpan<byte> data)
-        {
-            if (data.IsEmpty) return string.Empty;
-
-            int encodedLength = this.GetEncodedLength(data.Length);
-#if NETCOREAPP
-            fixed (byte* ptr = data)
-            {
-                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
-                {
-                    ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
-                    OperationStatus status = this.EncodeCore(ref srcBytes, state.Length, encoded, out int consumed, out int written);
-
-                    Debug.Assert(status         == OperationStatus.Done);
-                    Debug.Assert(state.Length   == consumed);
-                    Debug.Assert(encoded.Length == written);
-                });
-            }
-#else
-            Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
-                ? stackalloc char[encodedLength]
-                : new char[encodedLength];
-
-            OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written);
-            Debug.Assert(status         == OperationStatus.Done);
-            Debug.Assert(data.Length    == consumed);
-            Debug.Assert(encoded.Length == written);
-
-            fixed (char* ptr = encoded)
-                return new string(ptr, 0, written);
-#endif
-        }
-        //---------------------------------------------------------------------
-        internal OperationStatus EncodeCore<T>(ReadOnlySpan<byte> data, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
-        {
-            if (data.IsEmpty)
-            {
-                consumed = 0;
-                written = 0;
-                return OperationStatus.Done;
-            }
-
-            ref byte srcBytes = ref MemoryMarshal.GetReference(data);
-            int srcLength     = data.Length;
-
-            return this.EncodeCore(ref srcBytes, srcLength, encoded, out consumed, out written, isFinalBlock);
-        }
+        public override int GetEncodedLength(int sourceLength) => GetBase64EncodedLength(sourceLength);
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        private OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
+        protected override OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
         {
             int destLength   = encoded.Length;
             uint sourceIndex = 0;
@@ -115,12 +51,12 @@ namespace gfoidl.Base64
                     goto DoneExit;
             }
 #endif
-            int maxSrcLength = 0;
+            int maxSrcLength = -2;
 
             if (srcLength <= MaximumEncodeLength && destLength >= this.GetEncodedLength(srcLength))
-                maxSrcLength = srcLength - 2;
+                maxSrcLength += srcLength;
             else
-                maxSrcLength = (destLength >> 2) * 3 - 2;
+                maxSrcLength += (destLength >> 2) * 3;
 
             ref byte encodingMap = ref s_encodingMap[0];
 
@@ -321,37 +257,6 @@ namespace gfoidl.Base64
             dest = ref destStart;
         }
 #endif
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void EncodeThreeBytes<T>(ref byte threeBytes, ref T encoded, ref byte encodingMap)
-        {
-            uint i = (uint)threeBytes << 16
-                | (uint)Unsafe.Add(ref threeBytes, 1) << 8
-                | Unsafe.Add(ref threeBytes, 2);
-
-            uint i0 = Unsafe.Add(ref encodingMap, (IntPtr)(i >> 18));
-            uint i1 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 12) & 0x3F));
-            uint i2 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 6) & 0x3F));
-            uint i3 = Unsafe.Add(ref encodingMap, (IntPtr)(i & 0x3F));
-
-            if (typeof(T) == typeof(byte))
-            {
-                i = i0 | (i1 << 8) | (i2 << 16) | (i3 << 24);
-                Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref encoded), i);
-            }
-            else if (typeof(T) == typeof(char))
-            {
-                ref char enc = ref Unsafe.As<T, char>(ref encoded);
-                Unsafe.Add(ref enc, 0) = (char)i0;
-                Unsafe.Add(ref enc, 1) = (char)i1;
-                Unsafe.Add(ref enc, 2) = (char)i2;
-                Unsafe.Add(ref enc, 3) = (char)i3;
-            }
-            else
-            {
-                throw new NotSupportedException();  // just in case new types are introduced in the future
-            }
-        }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EncodeTwoBytes<T>(ref byte twoBytes, ref T encoded, ref byte encodingMap)

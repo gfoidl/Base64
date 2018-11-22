@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -16,7 +15,7 @@ namespace gfoidl.Base64
 {
     partial class Base64Encoder
     {
-        public int GetDecodedLength(ReadOnlySpan<byte> encoded)
+        public override int GetDecodedLength(ReadOnlySpan<byte> encoded)
         {
             int maxLen = this.GetDecodedLength(encoded.Length);
 
@@ -31,7 +30,7 @@ namespace gfoidl.Base64
             return maxLen - padding;
         }
         //---------------------------------------------------------------------
-        public int GetDecodedLength(ReadOnlySpan<char> encoded)
+        public override int GetDecodedLength(ReadOnlySpan<char> encoded)
         {
             int maxLen = this.GetDecodedLength(encoded.Length);
 
@@ -54,47 +53,10 @@ namespace gfoidl.Base64
             return (encodedLength >> 2) * 3;
         }
         //---------------------------------------------------------------------
-        public OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
-        public OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
-        //---------------------------------------------------------------------
-        public byte[] Decode(ReadOnlySpan<char> encoded)
-        {
-            if (encoded.IsEmpty) return Array.Empty<byte>();
-
-            int dataLength         = this.GetDecodedLength(encoded);
-            byte[] data            = new byte[dataLength];
-            ref char src           = ref MemoryMarshal.GetReference(encoded);
-            OperationStatus status = this.DecodeCore(ref src, encoded.Length, data, out int consumed, out int written);
-
-            if (status == OperationStatus.InvalidData)
-                ThrowHelper.ThrowForOperationNotDone(status);
-
-            Debug.Assert(status         == OperationStatus.Done);
-            Debug.Assert(encoded.Length == consumed);
-            Debug.Assert(data.Length    == written);
-
-            return data;
-        }
-        //---------------------------------------------------------------------
-        internal OperationStatus DecodeCore<T>(ReadOnlySpan<T> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
-        {
-            if (encoded.IsEmpty)
-            {
-                consumed = 0;
-                written  = 0;
-                return OperationStatus.Done;
-            }
-
-            ref T src     = ref MemoryMarshal.GetReference(encoded);
-            int srcLength = encoded.Length;
-
-            return this.DecodeCore(ref src, srcLength, data, out consumed, out written, isFinalBlock);
-        }
-        //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        private OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
+        protected override OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
