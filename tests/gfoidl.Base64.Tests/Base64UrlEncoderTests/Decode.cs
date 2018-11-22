@@ -56,10 +56,60 @@ namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
         }
         //---------------------------------------------------------------------
         [Test]
-        public void Buffer_chain_basic_decode()
+        public void Invalid_data_various_length___status_InvalidData()
+        {
+            var sut = new Base64UrlEncoder();
+            var rnd = new Random(0);
+
+            for (int i = 2; i < 200; ++i)
+            {
+                var data = new byte[i];
+                rnd.NextBytes(data);
+
+                int encodedLength      = sut.GetEncodedLength(data.Length);
+                Span<T> encoded        = new T[encodedLength];
+                OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+                Assume.That(status, Is.EqualTo(OperationStatus.Done));
+                Assume.That(consumed, Is.EqualTo(data.Length));
+                Assume.That(written, Is.EqualTo(encodedLength));
+
+                int decodedLength;
+
+                if (typeof(T) == typeof(byte))
+                {
+                    Span<byte> tmp = MemoryMarshal.AsBytes(encoded);
+                    decodedLength  = sut.GetDecodedLength(tmp);
+
+                    // Insert invalid data
+                    tmp[0] = (byte)'~';
+                }
+                else if (typeof(T) == typeof(char))
+                {
+                    Span<char> tmp = MemoryMarshal.Cast<T, char>(encoded);
+                    decodedLength  = sut.GetDecodedLength(tmp);
+
+                    // Insert invalid data
+                    tmp[0] = '~';
+                }
+                else
+                {
+                    throw new NotSupportedException(); // just in case new types are introduced in the future
+                }
+
+                Span<byte> decoded = new byte[decodedLength];
+
+                status = sut.DecodeCore<T>(encoded, decoded, out int _, out int _);
+
+                Assert.AreEqual(OperationStatus.InvalidData, status);
+            }
+        }
+        //---------------------------------------------------------------------
+#if NETCOREAPP3_0 && DEBUG
+        [Test]
+        public void Large_data___avx2_event_fired()
         {
             var sut  = new Base64UrlEncoder();
-            var data = new byte[200];
+            var data = new byte[50];
             var rnd  = new Random(0);
             rnd.NextBytes(data);
 
@@ -70,7 +120,129 @@ namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
             Assume.That(consumed, Is.EqualTo(data.Length));
             Assume.That(written , Is.EqualTo(encodedLength));
 
-            //int decodedLength  = sut.GetDecodedLength(encodedLength);
+            int decodedLength;
+
+            if (typeof(T) == typeof(byte))
+            {
+                decodedLength = sut.GetDecodedLength(MemoryMarshal.AsBytes(encoded));
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                decodedLength = sut.GetDecodedLength(MemoryMarshal.Cast<T, char>(encoded));
+            }
+            else
+            {
+                throw new NotSupportedException(); // just in case new types are introduced in the future
+            }
+
+            Span<byte> decoded = new byte[decodedLength];
+
+            bool avxExecuted = false;
+            Base64UrlEncoder.Avx2Decoded += (s, e) => avxExecuted = true;
+
+            status = sut.DecodeCore<T>(encoded, decoded, out int _, out int _);
+            Assume.That(status, Is.EqualTo(OperationStatus.Done));
+
+            Assert.IsTrue(avxExecuted);
+        }
+#endif
+        //---------------------------------------------------------------------
+#if NETCOREAPP && DEBUG
+        [Test]
+        public void Large_data_but_to_small_for_avx2___sse2_event_fired()
+        {
+            var sut  = new Base64UrlEncoder();
+            var data = new byte[20];
+            var rnd  = new Random(0);
+            rnd.NextBytes(data);
+
+            int encodedLength      = sut.GetEncodedLength(data.Length);
+            Span<T> encoded        = new T[encodedLength];
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+            Assume.That(status  , Is.EqualTo(OperationStatus.Done));
+            Assume.That(consumed, Is.EqualTo(data.Length));
+            Assume.That(written , Is.EqualTo(encodedLength));
+
+            int decodedLength;
+
+            if (typeof(T) == typeof(byte))
+            {
+                decodedLength = sut.GetDecodedLength(MemoryMarshal.AsBytes(encoded));
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                decodedLength = sut.GetDecodedLength(MemoryMarshal.Cast<T, char>(encoded));
+            }
+            else
+            {
+                throw new NotSupportedException(); // just in case new types are introduced in the future
+            }
+
+            Span<byte> decoded = new byte[decodedLength];
+
+            bool sse2Executed = false;
+            Base64UrlEncoder.Sse2Decoded += (s, e) => sse2Executed = true;
+
+            status = sut.DecodeCore<T>(encoded, decoded, out int _, out int _);
+            Assume.That(status, Is.EqualTo(OperationStatus.Done));
+
+            Assert.IsTrue(sse2Executed);
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Guid___sse2_event_fired()
+        {
+            var sut  = new Base64UrlEncoder();
+            var data = Guid.NewGuid().ToByteArray();
+
+            int encodedLength      = sut.GetEncodedLength(data.Length);
+            Span<T> encoded        = new T[encodedLength];
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+            Assume.That(status, Is.EqualTo(OperationStatus.Done));
+            Assume.That(consumed, Is.EqualTo(data.Length));
+            Assume.That(written, Is.EqualTo(encodedLength));
+
+            int decodedLength;
+
+            if (typeof(T) == typeof(byte))
+            {
+                decodedLength = sut.GetDecodedLength(MemoryMarshal.AsBytes(encoded));
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                decodedLength = sut.GetDecodedLength(MemoryMarshal.Cast<T, char>(encoded));
+            }
+            else
+            {
+                throw new NotSupportedException(); // just in case new types are introduced in the future
+            }
+
+            Span<byte> decoded = new byte[decodedLength];
+
+            bool sse2Executed = false;
+            Base64UrlEncoder.Sse2Decoded += (s, e) => sse2Executed = true;
+
+            status = sut.DecodeCore<T>(encoded, decoded, out int _, out int _);
+            Assume.That(status, Is.EqualTo(OperationStatus.Done));
+
+            Assert.IsTrue(sse2Executed);
+        }
+#endif
+        //---------------------------------------------------------------------
+        [Test]
+        public void Buffer_chain_basic_decode()
+        {
+            var sut  = new Base64UrlEncoder();
+            var data = new byte[500];
+            var rnd  = new Random(0);
+            rnd.NextBytes(data);
+
+            int encodedLength      = sut.GetEncodedLength(data.Length);
+            Span<T> encoded        = new T[encodedLength];
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+            Assume.That(status  , Is.EqualTo(OperationStatus.Done));
+            Assume.That(consumed, Is.EqualTo(data.Length));
+            Assume.That(written , Is.EqualTo(encodedLength));
 
             int decodedLength;
 

@@ -17,7 +17,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
-                bytes[i] = (byte)i;
+                bytes[i] = (byte)(255 - i);
 
             for (int i = 0; i < 256; ++i)
             {
@@ -80,7 +80,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
-                bytes[i] = (byte)i;
+                bytes[i] = (byte)(255 - i);
 
             for (int i = 0; i < 256; ++i)
             {

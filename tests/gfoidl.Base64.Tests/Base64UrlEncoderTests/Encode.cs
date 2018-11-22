@@ -43,7 +43,7 @@ namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
-                bytes[i] = (byte)i;
+                bytes[i] = (byte)(255 - i);
 
             for (int i = 0; i < 256; ++i)
             {
@@ -94,7 +94,7 @@ namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
-                bytes[i] = (byte)i;
+                bytes[i] = (byte)(255 - i);
 
             for (int value = 0; value < 256; ++value)
             {
@@ -108,6 +108,25 @@ namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
                 Assert.AreEqual(expected.ToBase64Url(), actual);
             }
         }
+        //---------------------------------------------------------------------
+#if NETCOREAPP && DEBUG
+        [Test]
+        public void Guid___sse2_event_fired()
+        {
+            var sut = new Base64UrlEncoder();
+            var data = Guid.NewGuid().ToByteArray();
+
+            int encodedLength = sut.GetEncodedLength(data.Length);
+            Span<T> encoded = new T[encodedLength];
+
+            bool sse2Executed = false;
+            Base64UrlEncoder.Sse2Encoded += (s, e) => sse2Executed = true;
+
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+
+            Assert.IsTrue(sse2Executed);
+        }
+#endif
         //---------------------------------------------------------------------
         [Test]
         public void Buffer_chain_basic_encode()

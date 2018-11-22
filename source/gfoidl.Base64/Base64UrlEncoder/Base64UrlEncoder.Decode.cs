@@ -191,6 +191,9 @@ namespace gfoidl.Base64
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
+#if DEBUG
+        public static event EventHandler<EventArgs> Avx2Decoded;
+#endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
@@ -260,12 +263,18 @@ namespace gfoidl.Base64
 
             src       = ref srcStart;
             destBytes = ref destStart;
-
+#if DEBUG
+            if (success)
+                Avx2Decoded?.Invoke(null, EventArgs.Empty);
+#endif
             return success;
         }
 #endif
         //---------------------------------------------------------------------
 #if NETCOREAPP
+#if DEBUG
+        public static event EventHandler<EventArgs> Sse2Decoded;
+#endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
@@ -344,7 +353,10 @@ namespace gfoidl.Base64
 
             src       = ref srcStart;
             destBytes = ref destStart;
-
+#if DEBUG
+            if (success)
+                Sse2Decoded?.Invoke(null, EventArgs.Empty);
+#endif
             return success;
         }
 #endif
