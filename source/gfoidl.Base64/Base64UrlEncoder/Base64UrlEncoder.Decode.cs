@@ -75,16 +75,21 @@ namespace gfoidl.Base64
                 maxSrcLength = (destLength / 3) * 4;
             }
 
-            while (sourceIndex < maxSrcLength)
+            // In order to elide the movsxd in the loop
+            if (sourceIndex < maxSrcLength)
             {
-                int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
+                do
+                {
+                    int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
-                if (result < 0)
-                    goto InvalidExit;
+                    if (result < 0)
+                        goto InvalidExit;
 
-                WriteThreeLowOrderBytes(ref destBytes, destIndex, result);
-                destIndex   += 3;
-                sourceIndex += 4;
+                    WriteThreeLowOrderBytes(ref destBytes, destIndex, result);
+                    destIndex   += 3;
+                    sourceIndex += 4;
+                }
+                while (sourceIndex < (uint)maxSrcLength);
             }
 
             if (maxSrcLength != srcLength - skipLastChunk)
@@ -329,6 +334,7 @@ namespace gfoidl.Base64
             Unsafe.Add(ref destination, (IntPtr)destIndex) = (byte)(value >> 16);
         }
         //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetDataLen(int urlEncodedLen, out int base64Len, bool isFinalBlock = true)
         {
             if (isFinalBlock)

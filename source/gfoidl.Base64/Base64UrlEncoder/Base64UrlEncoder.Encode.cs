@@ -75,11 +75,16 @@ namespace gfoidl.Base64
 
             ref byte encodingMap = ref s_encodingMap[0];
 
-            while (sourceIndex < maxSrcLength)
+            // In order to elide the movsxd in the loop
+            if (sourceIndex < maxSrcLength)
             {
-                EncodeThreeBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
-                destIndex   += 4;
-                sourceIndex += 3;
+                do
+                {
+                    EncodeThreeBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
+                    destIndex   += 4;
+                    sourceIndex += 3;
+                }
+                while (sourceIndex < (uint)maxSrcLength);
             }
 
             if (maxSrcLength != srcLength - 2)
