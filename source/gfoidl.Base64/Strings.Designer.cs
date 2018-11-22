@@ -77,5 +77,14 @@ namespace gfoidl.Base64 {
                 return ResourceManager.GetString("InvalidInput", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed input: {0} is an invalid input length..
+        /// </summary>
+        internal static string MalformedInput {
+            get {
+                return ResourceManager.GetString("MalformedInput", resourceCulture);
+            }
+        }
     }
 }
