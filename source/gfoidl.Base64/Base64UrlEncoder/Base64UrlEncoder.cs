@@ -100,6 +100,54 @@ namespace gfoidl.Base64
                     -4, -4,  -4,  -4,
                     -4, -4,  71, 65
                 );
+
+                s_avx_decodeShuffleVec = Avx.SetVector256(
+                    -1, -1, -1, -1,
+                    12, 13, 14,  8,
+                     9, 10,  4,  5,
+                     6,  0,  1,  2,
+                    -1, -1, -1, -1,
+                    12, 13, 14,  8,
+                     9, 10,  4,  5,
+                     6,  0,  1,  2
+                );
+
+                s_avx_decodeLutLo = Avx.SetVector256(
+                    0x1A, 0x1B, 0x1B, 0x1B,
+                    0x1A, 0x13, 0x11, 0x11,
+                    0x11, 0x11, 0x11, 0x11,
+                    0x11, 0x11, 0x11, 0x15,
+                    0x1A, 0x1B, 0x1B, 0x1B,
+                    0x1A, 0x13, 0x11, 0x11,
+                    0x11, 0x11, 0x11, 0x11,
+                    0x11, 0x11, 0x11, 0x15
+                );
+
+                s_avx_decodeLutHi = Avx.SetVector256(
+                    0x10, 0x10, 0x10, 0x10,
+                    0x10, 0x10, 0x10, 0x10,
+                    0x08, 0x04, 0x08, 0x04,
+                    0x02, 0x01, 0x10, 0x10,
+                    0x10, 0x10, 0x10, 0x10,
+                    0x10, 0x10, 0x10, 0x10,
+                    0x08, 0x04, 0x08, 0x04,
+                    0x02, 0x01, 0x10, 0x10
+                );
+
+                s_avx_decodeLutRoll = Avx.SetVector256(
+                      0,   0,   0,   0,
+                      0,   0,   0,   0,
+                    -71, -71, -65, -65,
+                      4,  19,  16,   0,
+                      0,   0,   0,   0,
+                      0,   0,   0,   0,
+                    -71, -71, -65, -65,
+                      4,  19,  16,   0
+                );
+
+                s_avx_decodeMask5F = Avx.SetAllVector256((sbyte)0x5F);     // ASCII: _
+
+                s_avx_decodePermuteVec = Avx.SetVector256(-1, -1, 6, 5, 4, 2, 1, 0);
             }
 #endif
         }
