@@ -5,7 +5,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64
 {
-    public sealed partial class Base64UrlEncoder : Base64EncoderBase
+    internal sealed partial class Base64UrlEncoder : Base64EncoderBase
     {
         static Base64UrlEncoder()
         {

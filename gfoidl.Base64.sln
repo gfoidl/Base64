@@ -41,7 +41,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3522-4A1F-87F7-1D88280529C5}"
 	ProjectSection(SolutionItems) = preProject
 		.azure\pipelines\jobs\build_and_test.yml = .azure\pipelines\jobs\build_and_test.yml
+		.azure\pipelines\jobs\demo.yml = .azure\pipelines\jobs\demo.yml
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{A52BCD9C-4216-42E5-AB37-FD5F6C46A9E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Base64.Demo", "demo\gfoidl.Base64.Demo\gfoidl.Base64.Demo.csproj", "{C642C23E-7465-4E63-B059-CD67B8C89555}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +62,10 @@ Global
 		{3385B383-37A8-4D67-9C84-4B1F32EF15F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3385B383-37A8-4D67-9C84-4B1F32EF15F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3385B383-37A8-4D67-9C84-4B1F32EF15F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C642C23E-7465-4E63-B059-CD67B8C89555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C642C23E-7465-4E63-B059-CD67B8C89555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C642C23E-7465-4E63-B059-CD67B8C89555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C642C23E-7465-4E63-B059-CD67B8C89555}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +76,7 @@ Global
 		{14D978E3-737F-46B0-A37C-84A580417498} = {E4259BCE-EA4C-434C-8896-CEBBEC38222D}
 		{42D5558B-424A-4A6F-BFD7-F82D344CD4F5} = {14D978E3-737F-46B0-A37C-84A580417498}
 		{BBE8166F-3522-4A1F-87F7-1D88280529C5} = {42D5558B-424A-4A6F-BFD7-F82D344CD4F5}
+		{C642C23E-7465-4E63-B059-CD67B8C89555} = {A52BCD9C-4216-42E5-AB37-FD5F6C46A9E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A902DC31-2F3E-4397-93D1-5004F325B71C}
