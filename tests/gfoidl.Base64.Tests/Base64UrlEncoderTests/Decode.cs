@@ -104,7 +104,7 @@ namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
             }
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0 && DEBUG
+#if NETCOREAPP3_0 && DEBUG && !OSX
         [Test]
         public void Large_data___avx2_event_fired()
         {
