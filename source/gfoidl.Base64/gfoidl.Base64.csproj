@@ -18,8 +18,6 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <DocumentationFile>bin\Release\$(TargetFramework)\gfoidl.Base64.xml</DocumentationFile>
-        <!-- suppress warning for missing XML-comments -->
-        <NoWarn>$(NoWarn);CS1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
