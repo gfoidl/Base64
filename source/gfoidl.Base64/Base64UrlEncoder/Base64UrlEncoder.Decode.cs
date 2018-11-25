@@ -206,8 +206,9 @@ namespace gfoidl.Base64
             // The JIT won't hoist these "constants", so help him
             Vector256<sbyte> lutHi            = s_avx_decodeLutHi;
             Vector256<sbyte> lutLo            = s_avx_decodeLutLo;
-            Vector256<sbyte> lutRoll          = s_avx_decodeLutRoll;
+            Vector256<sbyte> lutShift         = s_avx_decodeLutShift;
             Vector256<sbyte> mask5F           = s_avx_decodeMask5F;
+            Vector256<sbyte> shift5F          = Avx.SetAllVector256((sbyte)33);  // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
             Vector256<sbyte> shuffleConstant0 = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x01400140));
             Vector256<short> shuffleConstant1 = Avx.StaticCast<int, short>(Avx.SetAllVector256(0x00011000));
             Vector256<sbyte> shuffleVec       = s_avx_decodeShuffleVec;
@@ -232,25 +233,31 @@ namespace gfoidl.Base64
                 }
 
                 Vector256<sbyte> hiNibbles = Avx2.And(Avx.StaticCast<int, sbyte>(Avx2.ShiftRightLogical(Avx.StaticCast<sbyte, int>(str), 4)), mask5F);
-                Vector256<sbyte> loNibbles = Avx2.And(str, mask5F);
-                Vector256<sbyte> hi        = Avx2.Shuffle(lutHi, hiNibbles);
-                Vector256<sbyte> lo        = Avx2.Shuffle(lutLo, loNibbles);
+                Vector256<sbyte> lowerBound = Avx2.Shuffle(lutLo, hiNibbles);
+                Vector256<sbyte> upperBound = Avx2.Shuffle(lutHi, hiNibbles);
 
-                if (!Avx.TestZ(lo, hi))
+                Vector256<sbyte> below   = Avx2Helper.LessThan(str, lowerBound);
+                Vector256<sbyte> above   = Avx2.CompareGreaterThan(str, upperBound);
+                Vector256<sbyte> eq5F    = Avx2.CompareEqual(str, mask5F);
+                Vector256<sbyte> outside = Avx2.AndNot(eq5F, Avx2.Or(below, above));
+
+                if (Avx2.MoveMask(outside) != 0)
                 {
                     success = false;
                     break;
                 }
 
-                Vector256<sbyte> eq2F = Avx2.CompareEqual(str, mask5F);
-                Vector256<sbyte> roll = Avx2.Shuffle(lutRoll, Avx2.Add(eq2F, hiNibbles));
-                str                   = Avx2.Add(str, roll);
+                Vector256<sbyte> shift = Avx2.Shuffle(lutShift, hiNibbles);
+                str                    = Avx2.Add(str, shift);
+                str                    = Avx2.Add(str, Avx2.And(eq5F, shift5F));
 
                 Vector256<short> merge_ab_and_bc = Avx2.MultiplyAddAdjacent(Avx.StaticCast<sbyte, byte>(str), shuffleConstant0);
                 Vector256<int> @out              = Avx2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
                 @out                             = Avx.StaticCast<sbyte, int>(Avx2.Shuffle(Avx.StaticCast<int, sbyte>(@out), shuffleVec));
                 str                              = Avx.StaticCast<int, sbyte>(Avx2.PermuteVar8x32(@out, permuteVec));
 
+                // As has better CQ than WriteUnaligned
+                // https://github.com/dotnet/coreclr/issues/21132
                 Unsafe.As<byte, Vector256<sbyte>>(ref destBytes) = str;
 
                 src       = ref Unsafe.Add(ref src, 32);
@@ -287,9 +294,9 @@ namespace gfoidl.Base64
             // The JIT won't hoist these "constants", so help him
             Vector128<sbyte> lutHi            = s_sse_decodeLutHi;
             Vector128<sbyte> lutLo            = s_sse_decodeLutLo;
-            Vector128<sbyte> lutRoll          = s_sse_decodeLutRoll;
+            Vector128<sbyte> lutShift         = s_sse_decodeLutShift;
             Vector128<sbyte> mask5F           = s_sse_decodeMask5F;
-            Vector128<sbyte> shift5F          = Sse2.SetAllVector128((sbyte)33);     // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+'
+            Vector128<sbyte> shift5F          = Sse2.SetAllVector128((sbyte)33); // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
             Vector128<sbyte> shuffleConstant0 = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x01400140));
             Vector128<short> shuffleConstant1 = Sse.StaticCast<int, short>(Sse2.SetAllVector128(0x00011000));
             Vector128<sbyte> shuffleVec       = s_sse_decodeShuffleVec;
@@ -325,11 +332,14 @@ namespace gfoidl.Base64
                 Vector128<sbyte> outside = Sse2.AndNot(eq5F, Sse2.Or(below, above));
 
                 if (Sse2.MoveMask(outside) != 0)
+                {
+                    success = false;
                     break;
+                }
 
-                Vector128<sbyte> roll = Ssse3.Shuffle(lutRoll, hiNibbles);
-                str                   = Sse2.Add(str, roll);
-                str                   = Sse2.Add(str, Sse2.And(eq5F, shift5F));
+                Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, hiNibbles);
+                str                    = Sse2.Add(str, shift);
+                str                    = Sse2.Add(str, Sse2.And(eq5F, shift5F));
 
                 Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(Sse.StaticCast<sbyte, byte>(str), shuffleConstant0);
 #if NETCOREAPP3_0
@@ -479,18 +489,17 @@ namespace gfoidl.Base64
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP
-        private static readonly Vector128<sbyte> s_sse_decodeShuffleVec;
         private static readonly Vector128<sbyte> s_sse_decodeLutLo;
         private static readonly Vector128<sbyte> s_sse_decodeLutHi;
-        private static readonly Vector128<sbyte> s_sse_decodeLutRoll;
+        private static readonly Vector128<sbyte> s_sse_decodeLutShift;
         private static readonly Vector128<sbyte> s_sse_decodeMask5F;
 
-        private static readonly Vector256<sbyte> s_avx_decodeShuffleVec;
+#if NETCOREAPP3_0
         private static readonly Vector256<sbyte> s_avx_decodeLutLo;
         private static readonly Vector256<sbyte> s_avx_decodeLutHi;
-        private static readonly Vector256<sbyte> s_avx_decodeLutRoll;
+        private static readonly Vector256<sbyte> s_avx_decodeLutShift;
         private static readonly Vector256<sbyte> s_avx_decodeMask5F;
-        private static readonly Vector256<int>   s_avx_decodePermuteVec;
+#endif
 #endif
         // internal because tests use this map too
         internal static readonly sbyte[] s_decodingMap = {

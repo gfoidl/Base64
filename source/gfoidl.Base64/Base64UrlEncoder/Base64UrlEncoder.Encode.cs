@@ -180,6 +180,8 @@ namespace gfoidl.Base64
 
                 if (typeof(T) == typeof(byte))
                 {
+                    // As has better CQ than WriteUnaligned
+                    // https://github.com/dotnet/coreclr/issues/21132
                     Unsafe.As<T, Vector256<sbyte>>(ref dest) = str;
                 }
                 else if (typeof(T) == typeof(char))
@@ -370,12 +372,10 @@ namespace gfoidl.Base64
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP
-        private static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
         private static readonly Vector128<sbyte> s_sse_encodeLut;
-
-        private static readonly Vector256<int>   s_avx_encodePermuteVec;
-        private static readonly Vector256<sbyte> s_avx_encodeShuffleVec;
+#if NETCOREAPP3_0
         private static readonly Vector256<sbyte> s_avx_encodeLut;
+#endif
 #endif
         // internal because tests use this map too
         internal static readonly byte[] s_encodingMap = {

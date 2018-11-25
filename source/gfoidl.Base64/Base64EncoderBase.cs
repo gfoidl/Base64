@@ -4,18 +4,91 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+#if NETCOREAPP
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+#endif
+
 namespace gfoidl.Base64
 {
     public abstract class Base64EncoderBase : IBase64Encoder
     {
+#if NETCOREAPP
+        protected static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
+        protected static readonly Vector128<sbyte> s_sse_decodeShuffleVec;
+
+        protected static readonly Vector256<int>   s_avx_encodePermuteVec;
+        protected static readonly Vector256<sbyte> s_avx_encodeShuffleVec;
+        protected static readonly Vector256<sbyte> s_avx_decodeShuffleVec;
+        protected static readonly Vector256<int>   s_avx_decodePermuteVec;
+#endif
+        //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         protected static readonly bool s_isMac = false;
+#endif
         //---------------------------------------------------------------------
         static Base64EncoderBase()
         {
+#if NETCOREAPP3_0
             s_isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-        }
 #endif
+
+#if NETCOREAPP
+#if NETCOREAPP3_0
+            if (Ssse3.IsSupported)
+#else
+            if (Sse2.IsSupported && Ssse3.IsSupported)
+#endif
+            {
+                s_sse_encodeShuffleVec = Sse2.SetVector128(
+                    10, 11, 9, 10,
+                     7,  8, 6,  7,
+                     4,  5, 3,  4,
+                     1,  2, 0,  1
+                );
+
+                s_sse_decodeShuffleVec = Sse2.SetVector128(
+                    -1, -1, -1, -1,
+                    12, 13, 14,  8,
+                     9, 10,  4,  5,
+                     6,  0,  1,  2
+                );
+            }
+
+#if NETCOREAPP3_0
+            if (Avx2.IsSupported)
+#else
+            if (Avx.IsSupported && Avx2.IsSupported)
+#endif
+            {
+                s_avx_encodePermuteVec = Avx.SetVector256(6, 5, 4, 3, 2, 1, 0, 0);
+
+                s_avx_encodeShuffleVec = Avx.SetVector256(
+                    10, 11,  9, 10,
+                     7,  8,  6,  7,
+                     4,  5,  3,  4,
+                     1,  2,  0,  1,
+                    14, 15, 13, 14,
+                    11, 12, 10, 11,
+                     8,  9,  7,  8,
+                     5,  6,  4,  5
+                );
+
+                s_avx_decodeShuffleVec = Avx.SetVector256(
+                    -1, -1, -1, -1,
+                    12, 13, 14,  8,
+                     9, 10,  4,  5,
+                     6,  0,  1,  2,
+                    -1, -1, -1, -1,
+                    12, 13, 14,  8,
+                     9, 10,  4,  5,
+                     6,  0,  1,  2
+                );
+
+                s_avx_decodePermuteVec = Avx.SetVector256(-1, -1, 6, 5, 4, 2, 1, 0);
+            }
+#endif
+        }
         //---------------------------------------------------------------------
 #if NETSTANDARD2_0
         private const int MaxStackallocBytes = 256;
