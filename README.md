@@ -106,6 +106,50 @@ decoded = decoded.Slice(0, written + written1);
 
 See [demo](./demo/gfoidl.Base64.Demo/Program.cs) for further examples.
 
+## (Functional) Comparison to classes in .NET
+
+### General
+
+.NET provides the classes [System.Convert](https://docs.microsoft.com/en-us/dotnet/api/system.convert) and [System.Buffers.Text.Base64](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64)
+for base64 operations.
+
+base64Url isn't supported, so hacky solutions like
+```c#
+string base64 = Convert.ToBase64String(data);
+string base64Url = base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
+```
+are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string.
+
+_gfoidl.Base64_ supports encoding / decoding to / from base64Url in a direct way.  
+Encoding `byte[] -> byte[]` for UTF-8 is supported, as well as `byte[] -> char[]`.  
+Decoding `byte[] -> byte[]` for UTF-8 is supported, as well as `char[] -> byte[]`.
+
+Further SIMD isn't utilized in the .NET classes.
+(Note: I've opened an [issue](https://github.com/dotnet/corefx/issues/32365) to add SIMD-support to these classes).
+
+### Convert.ToBase64XYZ / Convert.FromBase64XYZ
+
+These methods only support `byte[] -> char[]` as types for encoding, 
+and `char[] -> byte[]` as types for decoding, where `char[]` can also be `string` or `(ReadOnly)Span<char>`.
+
+To support UTF-8 another method call like
+```c#
+byte[] utf8Encoded = Encoding.ASCII.GetBytes(base64String);
+```
+is needed.
+
+An potential advantage of this class is that it allows the insertion of line-breaks (cf. [Base64FormattingOptions.InsertLineBreaks](https://docs.microsoft.com/en-us/dotnet/api/system.base64formattingoptions)).
+
+### System.Buffers.Text.Base64
+
+This class only supports `byte[] -> byte[]` for encoding / decoding. So in order to get a `string`
+`Encoding` has to be used.
+
+An potential advantage of this class is the support for in-place encoding / decoding (cf. 
+[Base64.EncodeToUtf8InPlace](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.encodetoutf8inplace), 
+[Base64.DecodeFromUtf8InPlace](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.decodefromutf8inplace)
+)
+
 ## Acknowledgements
 
 The scalar version of the base64 encoding / decoding is based on [System.Buffers.Tesxt.Base64](https://github.com/dotnet/corefx/tree/9c68db7fb016c6c9ae4d0f6152798d7ab1e38a37/src/System.Memory/src/System/Buffers/Text).
