@@ -204,11 +204,12 @@ namespace gfoidl.Base64
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 45 + 1));
 
             // The JIT won't hoist these "constants", so help him
+            Vector256<sbyte> allOnes          = Avx.SetAllVector256<sbyte>(-1);     // -1 = 0xFF = true in simd
             Vector256<sbyte> lutHi            = s_avx_decodeLutHi;
             Vector256<sbyte> lutLo            = s_avx_decodeLutLo;
             Vector256<sbyte> lutShift         = s_avx_decodeLutShift;
             Vector256<sbyte> mask5F           = s_avx_decodeMask5F;
-            Vector256<sbyte> shift5F          = Avx.SetAllVector256((sbyte)33);  // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
+            Vector256<sbyte> shift5F          = Avx.SetAllVector256<sbyte>(33);     // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
             Vector256<sbyte> shuffleConstant0 = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x01400140));
             Vector256<short> shuffleConstant1 = Avx.StaticCast<int, short>(Avx.SetAllVector256(0x00011000));
             Vector256<sbyte> shuffleVec       = s_avx_decodeShuffleVec;
@@ -236,7 +237,7 @@ namespace gfoidl.Base64
                 Vector256<sbyte> lowerBound = Avx2.Shuffle(lutLo, hiNibbles);
                 Vector256<sbyte> upperBound = Avx2.Shuffle(lutHi, hiNibbles);
 
-                Vector256<sbyte> below   = Avx2Helper.LessThan(str, lowerBound);
+                Vector256<sbyte> below   = Avx2Helper.LessThan(str, lowerBound, allOnes);
                 Vector256<sbyte> above   = Avx2.CompareGreaterThan(str, upperBound);
                 Vector256<sbyte> eq5F    = Avx2.CompareEqual(str, mask5F);
                 Vector256<sbyte> outside = Avx2.AndNot(eq5F, Avx2.Or(below, above));
