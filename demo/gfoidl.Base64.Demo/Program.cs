@@ -8,9 +8,14 @@ namespace gfoidl.Base64.Demo
     {
         static void Main()
         {
-            RunGuidEncoding();
-            RunGuidDecoding();
-            RunBufferChainEncode();
+            Action[] demos = { RunGuidEncoding, RunGuidDecoding, RunBufferChainEncode };
+
+            foreach (Action demo in demos)
+            {
+                Console.Write($"{demo.Method.Name}...");
+                demo();
+                Console.WriteLine("done");
+            }
         }
         //---------------------------------------------------------------------
         private static void RunGuidEncoding()
