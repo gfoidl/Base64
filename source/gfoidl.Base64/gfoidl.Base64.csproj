@@ -16,6 +16,10 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DocumentationFile>bin\Release\$(TargetFramework)\gfoidl.Base64.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     </ItemGroup>
