@@ -11,6 +11,8 @@ using System.Runtime.Intrinsics.X86;
 
 // Sequential based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
+// AVX2 based on https://github.com/aklomp/base64/tree/master/lib/arch/avx2
+// Lookup and validation for SSE2 and AVX2 based on http://0x80.pl/notesen/2016-01-17-sse-base64-decoding.html#vector-lookup-pshufb
 
 namespace gfoidl.Base64
 {
@@ -181,7 +183,7 @@ namespace gfoidl.Base64
 
         NeedMoreDataExit:
             consumed = (int)sourceIndex;
-            written = (int)destIndex;
+            written  = (int)destIndex;
             return OperationStatus.NeedMoreData;
 
         InvalidExit:

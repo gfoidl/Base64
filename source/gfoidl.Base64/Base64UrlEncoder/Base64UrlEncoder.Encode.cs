@@ -10,6 +10,7 @@ using System.Runtime.Intrinsics.X86;
 
 // Sequential based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
+// AVX2 based on https://github.com/aklomp/base64/tree/master/lib/arch/avx2
 
 namespace gfoidl.Base64
 {
