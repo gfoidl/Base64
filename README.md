@@ -20,4 +20,4 @@ The scalar version of the base64Url encoding / decoding is based on https://gith
 Vectorized versions (SSE, AVX) for base64 encoding / decoding is based on https://github.com/aklomp/base64 (see also _Acknowledgements_ in that repository).
 
 Vectorized versions (SSE, AVX) for base64Url encoding / decoding is based on https://github.com/aklomp/base64 (see _Acknowledgements_ in that repository).  
-Especially for decoding (SSE, AVX) code is based on [Vector lookup (pshufb)](http://0x80.pl/notesen/2016-01-17-sse-base64-decoding.html#vector-lookup-pshufb) by Wojciech Mula.
+For decoding (SSE, AVX) code is based on [Vector lookup (pshufb)](http://0x80.pl/notesen/2016-01-17-sse-base64-decoding.html#vector-lookup-pshufb) by Wojciech Mula.
