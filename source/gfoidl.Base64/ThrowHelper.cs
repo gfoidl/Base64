@@ -7,13 +7,18 @@ namespace gfoidl.Base64
     internal static class ThrowHelper
     {
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) => throw GetArgumentOutOfRangeException(argument);
+        public static void ThrowMalformedInputException(int urlEncodedLen)              => throw GetMalformdedInputException(urlEncodedLen);
+        public static void ThrowForOperationNotDone(OperationStatus status)             => throw GetExceptionForOperationNotDone(status);
         //---------------------------------------------------------------------
         private static Exception GetArgumentOutOfRangeException(ExceptionArgument argument)
         {
             return new ArgumentOutOfRangeException(GetArgumentName(argument));
         }
         //---------------------------------------------------------------------
-        public static void ThrowForOperationNotDone(OperationStatus status) => throw GetExceptionForOperationNotDone(status);
+        private static FormatException GetMalformdedInputException(int urlEncodedLen)
+        {
+            return new FormatException(string.Format(Strings.MalformedInput, urlEncodedLen));
+        }
         //---------------------------------------------------------------------
         private static Exception GetExceptionForOperationNotDone(OperationStatus status)
         {

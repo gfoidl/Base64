@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NUnit.Framework;
 
-namespace gfoidl.Base64.Tests.Base64EncoderTests
+namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
 {
     [TestFixture(typeof(byte))]
     [TestFixture(typeof(char))]
@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Data_of_various_length___roundtrips_correclty()
         {
-            var sut   = new Base64Encoder();
+            var sut   = new Base64UrlEncoder();
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
@@ -60,7 +60,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
 #else
                 string expectedText = Convert.ToBase64String(source.ToArray());
 #endif
-                Assert.AreEqual(expectedText, encodedText);
+                Assert.AreEqual(expectedText.ToBase64Url(), encodedText);
 
                 Span<byte> decoded = new byte[decodedLength];
                 status             = sut.DecodeCore<T>(encoded, decoded, out consumed, out written);
@@ -76,7 +76,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Data_of_various_length___roundtrips_correclty_as_string()
         {
-            var sut   = new Base64Encoder();
+            var sut   = new Base64UrlEncoder();
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
@@ -91,7 +91,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
 #else
                 string encodedExpected = Convert.ToBase64String(source.ToArray());
 #endif
-                Assert.AreEqual(encodedExpected, encoded);
+                Assert.AreEqual(encodedExpected.ToBase64Url(), encoded);
 
                 Span<byte> decoded = sut.Decode(encoded.AsSpan());
 

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using NUnit.Framework;
 
-namespace gfoidl.Base64.Tests.Base64EncoderTests
+namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
 {
     [TestFixture(typeof(byte))]
     [TestFixture(typeof(char))]
@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Empty_input()
         {
-            var sut                   = new Base64Encoder();
+            var sut                   = new Base64UrlEncoder();
             ReadOnlySpan<byte> source = ReadOnlySpan<byte>.Empty;
 
             Span<T> encoded        = new T[sut.GetEncodedLength(source.Length)];
@@ -28,7 +28,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Empty_input_encode_to_string___empty_string()
         {
-            var sut                   = new Base64Encoder();
+            var sut                   = new Base64UrlEncoder();
             ReadOnlySpan<byte> source = ReadOnlySpan<byte>.Empty;
 
             string actual = sut.Encode(source);
@@ -39,7 +39,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Data_of_various_length()
         {
-            var sut   = new Base64Encoder();
+            var sut   = new Base64UrlEncoder();
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
@@ -83,14 +83,14 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
 #else
                 string expected = Convert.ToBase64String(source.ToArray());
 #endif
-                Assert.AreEqual(expected, encodedText);
+                Assert.AreEqual(expected.ToBase64Url(), encodedText);
             }
         }
         //---------------------------------------------------------------------
         [Test]
         public void Data_of_various_length_encoded_to_string()
         {
-            var sut   = new Base64Encoder();
+            var sut   = new Base64UrlEncoder();
             var bytes = new byte[byte.MaxValue + 1];
 
             for (int i = 0; i < bytes.Length; ++i)
@@ -105,7 +105,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
 #else
                 string expected = Convert.ToBase64String(source.ToArray());
 #endif
-                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expected.ToBase64Url(), actual);
             }
         }
         //---------------------------------------------------------------------
@@ -113,14 +113,14 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Guid___sse2_event_fired()
         {
-            var sut  = new Base64Encoder();
+            var sut = new Base64UrlEncoder();
             var data = Guid.NewGuid().ToByteArray();
 
             int encodedLength = sut.GetEncodedLength(data.Length);
-            Span<T> encoded   = new T[encodedLength];
+            Span<T> encoded = new T[encodedLength];
 
             bool sse2Executed = false;
-            Base64Encoder.Sse2Encoded += (s, e) => sse2Executed = true;
+            Base64UrlEncoder.Sse2Encoded += (s, e) => sse2Executed = true;
 
             OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
 
@@ -131,7 +131,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Buffer_chain_basic_encode()
         {
-            var sut  = new Base64Encoder();
+            var sut  = new Base64UrlEncoder();
             var data = new byte[200];
             var rnd  = new Random(0);
             rnd.NextBytes(data);
@@ -185,7 +185,7 @@ namespace gfoidl.Base64.Tests.Base64EncoderTests
         [Test]
         public void Buffer_chain_various_length_encode()
         {
-            var sut = new Base64Encoder();
+            var sut = new Base64UrlEncoder();
             var rnd = new Random(0);
 
             for (int i = 2; i < 200; ++i)
