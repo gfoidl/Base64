@@ -50,5 +50,19 @@ namespace gfoidl.Base64
 
             return Avx.StaticCast<long, sbyte>(t1);
         }
+        //---------------------------------------------------------------------
+        // There is no intrinsics for that
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector256<sbyte> LessThan(Vector256<sbyte> left, Vector256<sbyte> right)
+        {
+            // (a < b) = ~(a > b) & ~(a = b) = ~((a > b) | (a = b))
+
+            Vector256<sbyte> eq  = Avx2.CompareEqual(left, right);
+            Vector256<sbyte> gt  = Avx2.CompareGreaterThan(left, right);
+            Vector256<sbyte> or  = Avx2.Or(eq, gt);
+
+            // -1 = 0xFF = true in simd
+            return Avx2.AndNot(or, Avx.SetAllVector256<sbyte>(-1));
+        }
     }
 }
