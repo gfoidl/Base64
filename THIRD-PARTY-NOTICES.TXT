@@ -6,7 +6,7 @@ please bring it to attention. Post an issue at
 
             https://github.com/gfoidl/Base64/issues
 
-License notice for sequential encoding / decoding code
+License notice for scalar encoding / decoding code
 
 The MIT License (MIT)
 

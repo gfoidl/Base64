@@ -9,7 +9,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
 
-// Sequential based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
+// Scalar based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
 
 namespace gfoidl.Base64
@@ -44,7 +44,7 @@ namespace gfoidl.Base64
             if (Avx2.IsSupported && srcLength >= 45 && !s_isMac)
             {
                 if (!Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
-                    goto Sequential;
+                    goto Scalar;
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
@@ -59,12 +59,13 @@ namespace gfoidl.Base64
 #endif
             {
                 if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
-                    goto Sequential;
+                    goto Scalar;
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
-        Sequential:
+
+        Scalar:
 #endif
             ref sbyte decodingMap = ref s_decodingMap[0];
 
