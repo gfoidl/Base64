@@ -8,7 +8,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
 
-// Sequential based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
+// Scalar based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
 
 namespace gfoidl.Base64
