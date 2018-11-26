@@ -29,16 +29,16 @@ namespace gfoidl.Base64.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public string Base64UrlEncode_Data() => _encoder.Encode(_data);
+        public string Encode_Data() => _encoder.Encode(_data);
         //---------------------------------------------------------------------
         [Benchmark]
-        public string Base64UrlEncode_Guid() => _encoder.Encode(_guid);
+        public string Encode_Guid() => _encoder.Encode(_guid);
         //---------------------------------------------------------------------
         [Benchmark]
-        public byte[] Base64UrlDecode_Data() => _encoder.Decode(_dataEncoded);
+        public byte[] Decode_Data() => _encoder.Decode(_dataEncoded);
         //---------------------------------------------------------------------
         [Benchmark]
-        public byte[] Base64UrlDecode_Guid() => _encoder.Decode(_guidEncoded);
+        public byte[] Decode_Guid() => _encoder.Decode(_guidEncoded);
         //---------------------------------------------------------------------
         [Benchmark]
         public int GetArraySizeRequiredToEncode() => _encoder.GetEncodedLength(ByteArraySize);
