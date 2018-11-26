@@ -156,6 +156,52 @@ namespace gfoidl.Base64
             return data;
         }
         //---------------------------------------------------------------------
+        // For testing
+        internal OperationStatus EncodeCore<T>(
+            ReadOnlySpan<byte> data,
+            Span<T> encoded,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
+            where T : struct
+        {
+            if (typeof(T) == typeof(byte))
+            {
+                return this.EncodeCore(data, MemoryMarshal.AsBytes(encoded), out consumed, out written, isFinalBlock);
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                return this.EncodeCore(data, MemoryMarshal.Cast<T, char>(encoded), out consumed, out written, isFinalBlock);
+            }
+            else
+            {
+                throw new NotSupportedException(); // just in case new types are introduced in the future
+            }
+        }
+        //---------------------------------------------------------------------
+        // For testing
+        internal OperationStatus DecodeCore<T>(
+            ReadOnlySpan<T> encoded,
+            Span<byte> data,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
+            where T : struct
+        {
+            if (typeof(T) == typeof(byte))
+            {
+                return this.DecodeCore(MemoryMarshal.AsBytes(encoded), data, out consumed, out written, isFinalBlock);
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                return this.DecodeCore(MemoryMarshal.Cast<T, char>(encoded), data, out consumed, out written, isFinalBlock);
+            }
+            else
+            {
+                throw new NotSupportedException(); // just in case new types are introduced in the future
+            }
+        }
+        //---------------------------------------------------------------------
         // PERF: can't be generic for inlining (generic virtual)
         protected abstract OperationStatus EncodeCore(
             ReadOnlySpan<byte> data,
