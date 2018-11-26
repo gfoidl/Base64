@@ -5,6 +5,7 @@ namespace gfoidl.Base64.Benchmarks
 {
     public class DecodeStringBenchmark
     {
+        private static readonly Base64Encoder s_encoder = new Base64Encoder();
         private char[] _base64;
         //---------------------------------------------------------------------
         [Params(5, 16, 1_000)]
@@ -32,6 +33,12 @@ namespace gfoidl.Base64.Benchmarks
         public byte[] gfoidlBase64()
         {
             return Base64.Default.Decode(_base64);
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public byte[] gfoidlBase64Static()
+        {
+            return s_encoder.Decode(_base64);
         }
     }
 }

@@ -6,6 +6,7 @@ namespace gfoidl.Base64.Benchmarks
 {
     public class EncodeUtf8Benchmark
     {
+        private static readonly Base64Encoder s_encoder = new Base64Encoder();
         private byte[] _data;
         private byte[] _base64;
         //---------------------------------------------------------------------
@@ -32,6 +33,12 @@ namespace gfoidl.Base64.Benchmarks
         public OperationStatus gfoidlBase64()
         {
             return Base64.Default.Encode(_data, _base64, out int _, out int _);
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public OperationStatus gfoidlBase64Static()
+        {
+            return s_encoder.Encode(_data, _base64, out int _, out int _);
         }
     }
 }
