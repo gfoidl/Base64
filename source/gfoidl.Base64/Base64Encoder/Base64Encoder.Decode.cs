@@ -65,6 +65,11 @@ namespace gfoidl.Base64
 
             ref byte destBytes  = ref MemoryMarshal.GetReference(data);
 
+#if NETCOREAPP
+            if (srcLength < 24)
+                goto Scalar;
+#endif
+
 #if NETCOREAPP3_0
             if (Avx2.IsSupported && srcLength >= 45 && !s_isMac)
             {
@@ -78,9 +83,9 @@ namespace gfoidl.Base64
 
 #if NETCOREAPP
 #if NETCOREAPP3_0
-            if (Ssse3.IsSupported && (srcLength - sourceIndex >= 24))
+            if (Ssse3.IsSupported && ((uint)srcLength - 24 >= sourceIndex))
 #else
-            if (Sse2.IsSupported && Ssse3.IsSupported && (srcLength - sourceIndex >= 24))
+            if (Sse2.IsSupported && Ssse3.IsSupported && ((uint)srcLength - 24 >= sourceIndex))
 #endif
             {
                 if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
@@ -266,7 +271,7 @@ namespace gfoidl.Base64
             bool success       = true;
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 45 + 1));
+            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));
 
             // The JIT won't hoist these "constants", so help him
             Vector256<sbyte> lutHi            = s_avx_decodeLutHi;
@@ -349,7 +354,7 @@ namespace gfoidl.Base64
             bool success       = true;
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 24 + 1));
+            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));
 
             // The JIT won't hoist these "constants", so help him
             Vector128<sbyte> lutHi            = s_sse_decodeLutHi;

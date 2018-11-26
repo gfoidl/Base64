@@ -29,6 +29,11 @@ namespace gfoidl.Base64
 
             ref T dest = ref MemoryMarshal.GetReference(encoded);
 
+#if NETCOREAPP
+            if (srcLength < 16)
+                goto Scalar;
+#endif
+
 #if NETCOREAPP3_0
             if (Avx2.IsSupported && srcLength >= 32 && !s_isMac)
             {
@@ -41,9 +46,9 @@ namespace gfoidl.Base64
 
 #if NETCOREAPP
 #if NETCOREAPP3_0
-            if (Ssse3.IsSupported && (srcLength - 16 >= sourceIndex))
+            if (Ssse3.IsSupported && ((uint)srcLength - 16 >= sourceIndex))
 #else
-            if (Sse2.IsSupported && Ssse3.IsSupported && (srcLength - 16 >= sourceIndex))
+            if (Sse2.IsSupported && Ssse3.IsSupported && ((uint)srcLength - 16 >= sourceIndex))
 #endif
             {
                 Sse2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
@@ -51,6 +56,8 @@ namespace gfoidl.Base64
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
+
+        Scalar:
 #endif
             int maxSrcLength = -2;
 
@@ -119,7 +126,7 @@ namespace gfoidl.Base64
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 28 + 1));
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 28 + 1));
 
             // The JIT won't hoist these "constants", so help him
             Vector256<sbyte> shuffleVec          = s_avx_encodeShuffleVec;
@@ -202,7 +209,7 @@ namespace gfoidl.Base64
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)(sourceLength - 16 + 1));
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 16 + 1));
 
             // Shift to workspace
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
