@@ -11,7 +11,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64
 {
-    internal abstract class Base64EncoderBase : IBase64Encoder
+    internal abstract class Base64EncoderImpl : IBase64Encoder
     {
 #if NETCOREAPP
         protected static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
@@ -27,7 +27,7 @@ namespace gfoidl.Base64
         protected static readonly bool s_isMac = false;
 #endif
         //---------------------------------------------------------------------
-        static Base64EncoderBase()
+        static Base64EncoderImpl()
         {
 #if NETCOREAPP3_0
             s_isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
