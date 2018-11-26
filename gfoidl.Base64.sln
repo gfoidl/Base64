@@ -40,6 +40,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3522-4A1F-87F7-1D88280529C5}"
 	ProjectSection(SolutionItems) = preProject
+		.azure\pipelines\jobs\benchmarks.yml = .azure\pipelines\jobs\benchmarks.yml
 		.azure\pipelines\jobs\build_and_test.yml = .azure\pipelines\jobs\build_and_test.yml
 		.azure\pipelines\jobs\demo.yml = .azure\pipelines\jobs\demo.yml
 	EndProjectSection
