@@ -29,10 +29,43 @@ namespace gfoidl.Base64
             return GetDataLen(encodedLength, out int _);
         }
         //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
+        protected override OperationStatus DecodeCore(
+            ReadOnlySpan<byte> encoded,
+            Span<byte> data,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
+            => this.DecodeImpl(encoded, data, out consumed, out written, isFinalBlock);
+        //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
+        protected override OperationStatus DecodeCore(
+            ReadOnlySpan<char> encoded,
+            Span<byte> data,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
+            => this.DecodeImpl(encoded, data, out consumed, out written, isFinalBlock);
+        //---------------------------------------------------------------------
+        private OperationStatus DecodeImpl<T>(ReadOnlySpan<T> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
+        {
+            if (encoded.IsEmpty)
+            {
+                consumed = 0;
+                written  = 0;
+                return OperationStatus.Done;
+            }
+
+            ref T src     = ref MemoryMarshal.GetReference(encoded);
+            int srcLength = encoded.Length;
+
+            return this.DecodeImpl(ref src, srcLength, data, out consumed, out written, isFinalBlock);
+        }
+        //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        protected override OperationStatus DecodeCore<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
+        private OperationStatus DecodeImpl<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;

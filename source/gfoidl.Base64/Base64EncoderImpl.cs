@@ -115,8 +115,8 @@ namespace gfoidl.Base64
             {
                 return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
                 {
-                    ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
-                    OperationStatus status = this.EncodeCore(ref srcBytes, state.Length, encoded, out int consumed, out int written);
+                    var srcBytes           = new Span<byte>(state.Ptr.ToPointer(), state.Length);
+                    OperationStatus status = this.EncodeCore(srcBytes, encoded, out int consumed, out int written);
 
                     Debug.Assert(status         == OperationStatus.Done);
                     Debug.Assert(state.Length   == consumed);
@@ -144,8 +144,7 @@ namespace gfoidl.Base64
 
             int dataLength         = this.GetDecodedLength(encoded);
             byte[] data            = new byte[dataLength];
-            ref char src           = ref MemoryMarshal.GetReference(encoded);
-            OperationStatus status = this.DecodeCore(ref src, encoded.Length, data, out int consumed, out int written);
+            OperationStatus status = this.DecodeCore(encoded, data, out int consumed, out int written);
 
             if (status == OperationStatus.InvalidData)
                 ThrowHelper.ThrowForOperationNotDone(status);
@@ -157,47 +156,33 @@ namespace gfoidl.Base64
             return data;
         }
         //---------------------------------------------------------------------
-        internal OperationStatus EncodeCore<T>(ReadOnlySpan<byte> data, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
-        {
-            if (data.IsEmpty)
-            {
-                consumed = 0;
-                written  = 0;
-                return OperationStatus.Done;
-            }
-
-            ref byte srcBytes = ref MemoryMarshal.GetReference(data);
-            int srcLength     = data.Length;
-
-            return this.EncodeCore(ref srcBytes, srcLength, encoded, out consumed, out written, isFinalBlock);
-        }
-        //---------------------------------------------------------------------
-        internal OperationStatus DecodeCore<T>(ReadOnlySpan<T> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
-        {
-            if (encoded.IsEmpty)
-            {
-                consumed = 0;
-                written  = 0;
-                return OperationStatus.Done;
-            }
-
-            ref T src     = ref MemoryMarshal.GetReference(encoded);
-            int srcLength = encoded.Length;
-
-            return this.DecodeCore(ref src, srcLength, data, out consumed, out written, isFinalBlock);
-        }
-        //---------------------------------------------------------------------
-        protected abstract OperationStatus EncodeCore<T>(
-            ref byte srcBytes,
-            int srcLength,
-            Span<T> encoded,
+        // PERF: can't be generic for inlining (generic virtual)
+        protected abstract OperationStatus EncodeCore(
+            ReadOnlySpan<byte> data,
+            Span<byte> encoded,
             out int consumed,
             out int written,
             bool isFinalBlock = true);
         //---------------------------------------------------------------------
-        protected abstract OperationStatus DecodeCore<T>(
-            ref T src,
-            int inputLength,
+        // PERF: can't be generic for inlining (generic virtual)
+        protected abstract OperationStatus EncodeCore(
+            ReadOnlySpan<byte> data,
+            Span<char> encoded,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true);
+        //---------------------------------------------------------------------
+        // PERF: can't be generic for inlining (generic virtual)
+        protected abstract OperationStatus DecodeCore(
+            ReadOnlySpan<byte> encoded,
+            Span<byte> data,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true);
+        //---------------------------------------------------------------------
+        // PERF: can't be generic for inlining (generic virtual)
+        protected abstract OperationStatus DecodeCore(
+            ReadOnlySpan<char> encoded,
             Span<byte> data,
             out int consumed,
             out int written,

@@ -43,10 +43,43 @@ namespace gfoidl.Base64
             return GetBase64EncodedLength(sourceLength);
         }
         //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
+        protected override OperationStatus EncodeCore(
+            ReadOnlySpan<byte> data,
+            Span<byte> encoded,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
+            => this.EncodeImpl(data, encoded, out consumed, out written, isFinalBlock);
+        //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
+        protected override OperationStatus EncodeCore(
+            ReadOnlySpan<byte> data,
+            Span<char> encoded,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
+            => this.EncodeImpl(data, encoded, out consumed, out written, isFinalBlock);
+        //---------------------------------------------------------------------
+        private OperationStatus EncodeImpl<T>(ReadOnlySpan<byte> data, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
+        {
+            if (data.IsEmpty)
+            {
+                consumed = 0;
+                written = 0;
+                return OperationStatus.Done;
+            }
+
+            ref byte srcBytes = ref MemoryMarshal.GetReference(data);
+            int srcLength = data.Length;
+
+            return this.EncodeImpl(ref srcBytes, srcLength, encoded, out consumed, out written, isFinalBlock);
+        }
+        //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        protected override OperationStatus EncodeCore<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
+        private OperationStatus EncodeImpl<T>(ref byte srcBytes, int srcLength, Span<T> encoded, out int consumed, out int written, bool isFinalBlock = true)
         {
             int destLength   = encoded.Length;
             uint sourceIndex = 0;
