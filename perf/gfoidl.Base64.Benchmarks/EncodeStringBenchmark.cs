@@ -4,6 +4,7 @@ using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64.Benchmarks
 {
+    [Config(typeof(HardwareIntrinsicsCustomConfig))]
     public class EncodeStringBenchmark
     {
         private static readonly Base64Encoder s_encoder = new Base64Encoder();

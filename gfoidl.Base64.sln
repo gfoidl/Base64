@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4259BCE
 		Directory.Build.props = Directory.Build.props
 		global.json = global.json
 		nuget.config = nuget.config
+		run-benchmarks.sh = run-benchmarks.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{8B042DF3-9060-43DB-8A38-776A636C5469}"
@@ -47,11 +48,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{A52BCD9C-4216-42E5-AB37-FD5F6C46A9E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Base64.Demo", "demo\gfoidl.Base64.Demo\gfoidl.Base64.Demo.csproj", "{C642C23E-7465-4E63-B059-CD67B8C89555}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Base64.Demo", "demo\gfoidl.Base64.Demo\gfoidl.Base64.Demo.csproj", "{C642C23E-7465-4E63-B059-CD67B8C89555}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "perf", "perf", "{35F8F60F-BAC0-487A-83EB-8588797F3B1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Base64.Benchmarks", "perf\gfoidl.Base64.Benchmarks\gfoidl.Base64.Benchmarks.csproj", "{41097931-26CD-4203-B69C-A14CA5FBB69D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Base64.Benchmarks", "perf\gfoidl.Base64.Benchmarks\gfoidl.Base64.Benchmarks.csproj", "{41097931-26CD-4203-B69C-A14CA5FBB69D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

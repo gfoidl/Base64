@@ -1,11 +1,9 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
 
 namespace gfoidl.Base64.Benchmarks
 {
-    [Config(typeof(HardwarConfigCustomConfig))]
+    [Config(typeof(HardwareIntrinsicsCustomConfig))]
     public abstract class BaseBenchmarks
     {
         private const int ByteArraySize = 500;
@@ -45,24 +43,5 @@ namespace gfoidl.Base64.Benchmarks
         //---------------------------------------------------------------------
         [Benchmark]
         public int GetArraySizeRequiredToDecode() => _encoder.GetDecodedLength(_dataEncoded);
-        //---------------------------------------------------------------------
-        private class HardwarConfigCustomConfig : ManualConfig
-        {
-            private const string EnableAVX2  = "COMPlus_EnableAVX2";
-            private const string EnableSSSE3 = "COMPlus_EnableSSSE3";
-
-            public HardwarConfigCustomConfig()
-            {
-                this.Add(Job.Core.WithId("AVX2"));
-
-                this.Add(Job.Core
-                    .With(new[] { new EnvironmentVariable(EnableAVX2, "0") })
-                    .WithId("SSSE3"));
-
-                this.Add(Job.Core
-                    .With(new[] { new EnvironmentVariable(EnableAVX2, "0"), new EnvironmentVariable(EnableSSSE3, "0") })
-                    .WithId("Scalar"));
-            }
-        }
     }
 }
