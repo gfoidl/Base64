@@ -11,7 +11,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64
 {
-    internal abstract class Base64EncoderImpl : Base64
+    public abstract class Base64EncoderImpl : Base64
     {
 #if NETCOREAPP
         protected static readonly Vector128<sbyte> s_sse_encodeShuffleVec;

@@ -15,12 +15,12 @@ namespace gfoidl.Base64
         /// <summary>
         /// The base64 encoder / decoder.
         /// </summary>
-        public static Base64 Default => s_default;
+        public static Base64Encoder Default => s_default;
 
         /// <summary>
         /// The base64Url encoder / decoder.
         /// </summary>
-        public static Base64 Url => s_url;
+        public static Base64UrlEncoder Url => s_url;
         //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the encoded data.
