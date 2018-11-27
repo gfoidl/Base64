@@ -9,7 +9,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 #endif
 
-namespace gfoidl.Base64
+namespace gfoidl.Base64.Internal
 {
     public abstract class Base64EncoderImpl : Base64
     {

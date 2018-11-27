@@ -12,36 +12,11 @@ using System.Runtime.Intrinsics.X86;
 // SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
 // AVX2 based on https://github.com/aklomp/base64/tree/master/lib/arch/avx2
 
-namespace gfoidl.Base64
+namespace gfoidl.Base64.Internal
 {
-    partial class Base64UrlEncoder
+    partial class Base64Encoder
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetEncodedLength(int sourceLength)
-        {
-            // Shortcut for Guid and other 16 byte data
-            if (sourceLength == 16)
-                return 22;
-
-            int numPaddingChars  = GetNumBase64PaddingCharsAddedByEncode(sourceLength);
-            int base64EncodedLen = GetBase64EncodedLength(sourceLength);
-
-            return base64EncodedLen - numPaddingChars;
-        }
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int GetBufferSizeRequiredToBase64Encode(int sourceLength, out int numPaddingChars)
-        {
-            // Shortcut for Guid and other 16 byte data
-            if (sourceLength == 16)
-            {
-                numPaddingChars = 2;
-                return 24;
-            }
-
-            numPaddingChars = GetNumBase64PaddingCharsAddedByEncode(sourceLength);
-            return GetBase64EncodedLength(sourceLength);
-        }
+        public override int GetEncodedLength(int sourceLength) => GetBase64EncodedLength(sourceLength);
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
         protected override OperationStatus EncodeCore(
@@ -66,12 +41,12 @@ namespace gfoidl.Base64
             if (data.IsEmpty)
             {
                 consumed = 0;
-                written = 0;
+                written  = 0;
                 return OperationStatus.Done;
             }
 
             ref byte srcBytes = ref MemoryMarshal.GetReference(data);
-            int srcLength = data.Length;
+            int srcLength     = data.Length;
 
             return this.EncodeImpl(ref srcBytes, srcLength, encoded, out consumed, out written, isFinalBlock);
         }
@@ -101,6 +76,7 @@ namespace gfoidl.Base64
                     goto DoneExit;
             }
 #endif
+
 #if NETCOREAPP
 #if NETCOREAPP3_0
             if (Ssse3.IsSupported && ((uint)srcLength - 16 >= sourceIndex))
@@ -146,13 +122,13 @@ namespace gfoidl.Base64
             if (sourceIndex == srcLength - 1)
             {
                 EncodeOneByte(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
-                destIndex   += 2;
+                destIndex   += 4;
                 sourceIndex += 1;
             }
             else if (sourceIndex == srcLength - 2)
             {
                 EncodeTwoBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
-                destIndex   += 3;
+                destIndex   += 4;
                 sourceIndex += 2;
             }
 #if NETCOREAPP
@@ -304,6 +280,7 @@ namespace gfoidl.Base64
                 if (typeof(T) == typeof(byte))
                 {
                     // As has better CQ than WriteUnaligned
+                    // https://github.com/dotnet/coreclr/issues/21132
                     Unsafe.As<T, Vector128<sbyte>>(ref dest) = str;
                 }
                 else if (typeof(T) == typeof(char))
@@ -356,10 +333,8 @@ namespace gfoidl.Base64
 
             if (typeof(T) == typeof(byte))
             {
-                ref byte enc = ref Unsafe.As<T, byte>(ref encoded);
-                Unsafe.Add(ref enc, 0) = (byte)i0;
-                Unsafe.Add(ref enc, 1) = (byte)i1;
-                Unsafe.Add(ref enc, 2) = (byte)i2;
+                i = i0 | (i1 << 8) | (i2 << 16) | (EncodingPad << 24);
+                Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref encoded), i);
             }
             else if (typeof(T) == typeof(char))
             {
@@ -367,6 +342,7 @@ namespace gfoidl.Base64
                 Unsafe.Add(ref enc, 0) = (char)i0;
                 Unsafe.Add(ref enc, 1) = (char)i1;
                 Unsafe.Add(ref enc, 2) = (char)i2;
+                Unsafe.Add(ref enc, 3) = (char)EncodingPad;
             }
             else
             {
@@ -384,32 +360,21 @@ namespace gfoidl.Base64
 
             if (typeof(T) == typeof(byte))
             {
-                ref byte enc = ref Unsafe.As<T, byte>(ref encoded);
-                Unsafe.Add(ref enc, 0) = (byte)i0;
-                Unsafe.Add(ref enc, 1) = (byte)i1;
+                i = i0 | (i1 << 8) | (EncodingPad << 16) | (EncodingPad << 24);
+                Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref encoded), i);
             }
             else if (typeof(T) == typeof(char))
             {
                 ref char enc = ref Unsafe.As<T, char>(ref encoded);
                 Unsafe.Add(ref enc, 0) = (char)i0;
                 Unsafe.Add(ref enc, 1) = (char)i1;
+                Unsafe.Add(ref enc, 2) = (char)EncodingPad;
+                Unsafe.Add(ref enc, 3) = (char)EncodingPad;
             }
             else
             {
                 throw new NotSupportedException();  // just in case new types are introduced in the future
             }
-        }
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetNumBase64PaddingCharsAddedByEncode(int dataLength)
-        {
-            // Calculation is:
-            // switch (dataLength % 3)
-            // 0 -> 0
-            // 1 -> 2
-            // 2 -> 1
-
-            return dataLength % 3 == 0 ? 0 : 3 - dataLength % 3;
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP
@@ -427,7 +392,7 @@ namespace gfoidl.Base64
             103, 104, 105, 106, 107, 108, 109, 110, //g..n
             111, 112, 113, 114, 115, 116, 117, 118, //o..v
             119, 120, 121, 122, 48, 49, 50, 51,     //w..z, 0..3
-            52, 53, 54, 55, 56, 57, 45, 95          //4..9, -, _
+            52, 53, 54, 55, 56, 57, 43, 47          //4..9, +, /
         };
     }
 }

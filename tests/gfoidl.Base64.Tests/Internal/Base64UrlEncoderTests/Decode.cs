@@ -2,9 +2,10 @@
 using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
-namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
+namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
 {
     [TestFixture(typeof(byte))]
     [TestFixture(typeof(char))]

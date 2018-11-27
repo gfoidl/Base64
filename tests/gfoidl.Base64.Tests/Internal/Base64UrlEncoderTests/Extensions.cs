@@ -1,4 +1,4 @@
-﻿namespace gfoidl.Base64.Tests.Base64UrlEncoderTests
+﻿namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
 {
     internal static class Extensions
     {

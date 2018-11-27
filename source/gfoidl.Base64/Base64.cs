@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Buffers;
-using System.Threading;
+using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64
 {
@@ -9,8 +9,8 @@ namespace gfoidl.Base64
     /// </summary>
     public abstract class Base64 : IBase64
     {
-        private static readonly Base64Encoder s_default = new Base64Encoder();
-        private static readonly Base64UrlEncoder s_url  = new Base64UrlEncoder();
+        private static readonly Base64Encoder    s_default = new Base64Encoder();
+        private static readonly Base64UrlEncoder s_url     = new Base64UrlEncoder();
         //---------------------------------------------------------------------
         /// <summary>
         /// The base64 encoder / decoder.

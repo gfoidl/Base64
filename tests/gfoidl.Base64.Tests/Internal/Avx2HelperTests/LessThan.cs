@@ -1,9 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
-namespace gfoidl.Base64.Tests.Avx2HelperTests
+namespace gfoidl.Base64.Tests.Internal.Avx2HelperTests
 {
     public class LessThan
     {
