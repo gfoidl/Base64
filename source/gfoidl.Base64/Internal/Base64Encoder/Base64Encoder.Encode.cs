@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -17,6 +18,40 @@ namespace gfoidl.Base64.Internal
     partial class Base64Encoder
     {
         public override int GetEncodedLength(int sourceLength) => GetBase64EncodedLength(sourceLength);
+        //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
+        public override unsafe string Encode(ReadOnlySpan<byte> data)
+        {
+            if (data.IsEmpty) return string.Empty;
+
+            int encodedLength = this.GetEncodedLength(data.Length);
+#if NETCOREAPP
+            fixed (byte* ptr = data)
+            {
+                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length, encodedLength), (encoded, state) =>
+                {
+                    var srcBytes           = new Span<byte>(state.Ptr.ToPointer(), state.Length);
+                    OperationStatus status = this.EncodeImpl(srcBytes, encoded, out int consumed, out int written, state.encodedLength);
+
+                    Debug.Assert(status         == OperationStatus.Done);
+                    Debug.Assert(state.Length   == consumed);
+                    Debug.Assert(encoded.Length == written);
+                });
+            }
+#else
+            Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
+                ? stackalloc char[encodedLength]
+                : new char[encodedLength];
+
+            OperationStatus status = this.EncodeImpl(data, encoded, out int consumed, out int written, encodedLength);
+            Debug.Assert(status         == OperationStatus.Done);
+            Debug.Assert(data.Length    == consumed);
+            Debug.Assert(encoded.Length == written);
+
+            fixed (char* ptr = encoded)
+                return new string(ptr, 0, written);
+#endif
+        }
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
         protected override OperationStatus EncodeCore(
@@ -38,6 +73,7 @@ namespace gfoidl.Base64.Internal
             bool isFinalBlock = true)
             => this.EncodeImpl(data, encoded, out consumed, out written, encodedLength, isFinalBlock);
         //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private OperationStatus EncodeImpl<T>(
             ReadOnlySpan<byte> data,
             Span<T> encoded,

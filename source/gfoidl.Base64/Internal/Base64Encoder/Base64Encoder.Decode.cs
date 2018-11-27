@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -55,6 +56,25 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
+        public override byte[] Decode(ReadOnlySpan<char> encoded)
+        {
+            if (encoded.IsEmpty) return Array.Empty<byte>();
+
+            int dataLength         = this.GetDecodedLength(encoded);
+            byte[] data            = new byte[dataLength];
+            OperationStatus status = this.DecodeImpl(encoded, data, out int consumed, out int written, dataLength);
+
+            if (status == OperationStatus.InvalidData)
+                ThrowHelper.ThrowForOperationNotDone(status);
+
+            Debug.Assert(status         == OperationStatus.Done);
+            Debug.Assert(encoded.Length == consumed);
+            Debug.Assert(data.Length    == written);
+
+            return data;
+        }
+        //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
         protected override OperationStatus DecodeCore(
             ReadOnlySpan<byte> encoded,
             Span<byte> data,
@@ -74,6 +94,7 @@ namespace gfoidl.Base64.Internal
             bool isFinalBlock = true)
             => this.DecodeImpl(encoded, data, out consumed, out written, decodedLength, isFinalBlock);
         //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private OperationStatus DecodeImpl<T>(
             ReadOnlySpan<T> encoded,
             Span<byte> data,

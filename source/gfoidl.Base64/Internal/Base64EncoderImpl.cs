@@ -90,7 +90,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
 #if NETSTANDARD2_0
-        private const int MaxStackallocBytes = 256;
+        protected const int MaxStackallocBytes = 256;
 #endif
         public const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
         //---------------------------------------------------------------------
@@ -99,57 +99,6 @@ namespace gfoidl.Base64.Internal
 
         public override OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, decodedLength: -1, isFinalBlock);
         public override OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, decodedLength: -1, isFinalBlock);
-        //---------------------------------------------------------------------
-        public override unsafe string Encode(ReadOnlySpan<byte> data)
-        {
-            if (data.IsEmpty) return string.Empty;
-
-            int encodedLength = this.GetEncodedLength(data.Length);
-#if NETCOREAPP
-            fixed (byte* ptr = data)
-            {
-                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length, encodedLength), (encoded, state) =>
-                {
-                    var srcBytes           = new Span<byte>(state.Ptr.ToPointer(), state.Length);
-                    OperationStatus status = this.EncodeCore(srcBytes, encoded, out int consumed, out int written, state.encodedLength);
-
-                    Debug.Assert(status         == OperationStatus.Done);
-                    Debug.Assert(state.Length   == consumed);
-                    Debug.Assert(encoded.Length == written);
-                });
-            }
-#else
-            Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
-                ? stackalloc char[encodedLength]
-                : new char[encodedLength];
-
-            OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written, encodedLength);
-            Debug.Assert(status         == OperationStatus.Done);
-            Debug.Assert(data.Length    == consumed);
-            Debug.Assert(encoded.Length == written);
-
-            fixed (char* ptr = encoded)
-                return new string(ptr, 0, written);
-#endif
-        }
-        //---------------------------------------------------------------------
-        public override byte[] Decode(ReadOnlySpan<char> encoded)
-        {
-            if (encoded.IsEmpty) return Array.Empty<byte>();
-
-            int dataLength         = this.GetDecodedLength(encoded);
-            byte[] data            = new byte[dataLength];
-            OperationStatus status = this.DecodeCore(encoded, data, out int consumed, out int written, dataLength);
-
-            if (status == OperationStatus.InvalidData)
-                ThrowHelper.ThrowForOperationNotDone(status);
-
-            Debug.Assert(status         == OperationStatus.Done);
-            Debug.Assert(encoded.Length == consumed);
-            Debug.Assert(data.Length    == written);
-
-            return data;
-        }
         //---------------------------------------------------------------------
         // For testing
         internal OperationStatus EncodeCore<T>(
