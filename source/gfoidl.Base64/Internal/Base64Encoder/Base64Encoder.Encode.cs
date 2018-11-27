@@ -22,16 +22,36 @@ namespace gfoidl.Base64.Internal
         // PERF: can't be in base class due to inlining (generic virtual)
         public override unsafe string Encode(ReadOnlySpan<byte> data)
         {
-            if (data.IsEmpty) return string.Empty;
-
-            int encodedLength = this.GetEncodedLength(data.Length);
 #if NETCOREAPP
+            // Threshoulds found by testing -- may not be ideal on all targets
+
+            if (data.Length < 26)
+                return Convert.ToBase64String(data);
+
+            // Get the encoded length here, to avoid this compution in the above path
+            int encodedLength = this.GetEncodedLength(data.Length);
+
+            if (data.Length < 82)
+            {
+                char* ptr              = stackalloc char[encodedLength];
+                ref char encoded       = ref Unsafe.AsRef<char>(ptr);
+                ref byte srcBytes      = ref MemoryMarshal.GetReference(data);
+                OperationStatus status = this.EncodeImpl(ref srcBytes, data.Length, ref encoded, encodedLength, encodedLength, out int consumed, out int written);
+
+                Debug.Assert(status        == OperationStatus.Done);
+                Debug.Assert(data.Length   == consumed);
+                Debug.Assert(encodedLength == written);
+
+                return new string(ptr, 0, written);
+            }
+
             fixed (byte* ptr = data)
             {
-                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length, encodedLength), (encoded, state) =>
+                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
                 {
-                    var srcBytes           = new Span<byte>(state.Ptr.ToPointer(), state.Length);
-                    OperationStatus status = this.EncodeImpl(srcBytes, encoded, out int consumed, out int written, state.encodedLength);
+                    ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
+                    ref char dest          = ref MemoryMarshal.GetReference(encoded);
+                    OperationStatus status = this.EncodeImpl(ref srcBytes, state.Length, ref dest, encoded.Length, encoded.Length, out int consumed, out int written);
 
                     Debug.Assert(status         == OperationStatus.Done);
                     Debug.Assert(state.Length   == consumed);
@@ -39,17 +59,31 @@ namespace gfoidl.Base64.Internal
                 });
             }
 #else
+            if (data.IsEmpty)
+                return string.Empty;
+
+            int encodedLength          = this.GetEncodedLength(data.Length);
+            char[] arrayToReturnToPool = null;
+
             Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
                 ? stackalloc char[encodedLength]
-                : new char[encodedLength];
+                : arrayToReturnToPool = ArrayPool<char>.Shared.Rent(encodedLength);
 
-            OperationStatus status = this.EncodeImpl(data, encoded, out int consumed, out int written, encodedLength);
-            Debug.Assert(status         == OperationStatus.Done);
-            Debug.Assert(data.Length    == consumed);
-            Debug.Assert(encoded.Length == written);
+            try
+            {
+                OperationStatus status = this.EncodeImpl(data, encoded, out int consumed, out int written, encodedLength);
+                Debug.Assert(status         == OperationStatus.Done);
+                Debug.Assert(data.Length    == consumed);
+                Debug.Assert(encoded.Length >= written);
 
-            fixed (char* ptr = encoded)
-                return new string(ptr, 0, written);
+                fixed (char* ptr = encoded)
+                    return new string(ptr, 0, written);
+            }
+            finally
+            {
+                if (arrayToReturnToPool != null)
+                    ArrayPool<char>.Shared.Return(arrayToReturnToPool);
+            }
 #endif
         }
         //---------------------------------------------------------------------
@@ -89,13 +123,14 @@ namespace gfoidl.Base64.Internal
                 return OperationStatus.Done;
             }
 
-            ref byte srcBytes = ref MemoryMarshal.GetReference(data);
             int srcLength     = data.Length;
+            ref byte srcBytes = ref MemoryMarshal.GetReference(data);
+            ref T dest        = ref MemoryMarshal.GetReference(encoded);
 
             if (encodedLength == -1)
                 encodedLength = this.GetEncodedLength(srcLength);
 
-            return this.EncodeImpl(ref srcBytes, srcLength, encoded, encodedLength, out consumed, out written, isFinalBlock);
+            return this.EncodeImpl(ref srcBytes, srcLength, ref dest, encoded.Length, encodedLength, out consumed, out written, isFinalBlock);
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
@@ -104,17 +139,15 @@ namespace gfoidl.Base64.Internal
         private OperationStatus EncodeImpl<T>(
             ref byte srcBytes,
             int srcLength,
-            Span<T> encoded,
+            ref T dest,
+            int destLength,
             int encodedLength,
             out int consumed,
             out int written,
             bool isFinalBlock = true)
         {
-            int destLength   = encoded.Length;
             uint sourceIndex = 0;
             uint destIndex   = 0;
-
-            ref T dest = ref MemoryMarshal.GetReference(encoded);
 
 #if NETCOREAPP
             if (srcLength < 16)
