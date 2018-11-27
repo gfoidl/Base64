@@ -11,7 +11,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64
 {
-    internal abstract class Base64EncoderImpl : IBase64
+    internal abstract class Base64EncoderImpl : Base64
     {
 #if NETCOREAPP
         protected static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
@@ -94,17 +94,13 @@ namespace gfoidl.Base64
 #endif
         public const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
         //---------------------------------------------------------------------
-        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
-        public OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
+        public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
+        public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
 
-        public OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
-        public OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
+        public override OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
+        public override OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
         //---------------------------------------------------------------------
-        public abstract int GetEncodedLength(int sourceLength);
-        public abstract int GetDecodedLength(ReadOnlySpan<byte> encoded);
-        public abstract int GetDecodedLength(ReadOnlySpan<char> encoded);
-        //---------------------------------------------------------------------
-        public unsafe string Encode(ReadOnlySpan<byte> data)
+        public override unsafe string Encode(ReadOnlySpan<byte> data)
         {
             if (data.IsEmpty) return string.Empty;
 
@@ -137,7 +133,7 @@ namespace gfoidl.Base64
 #endif
         }
         //---------------------------------------------------------------------
-        public byte[] Decode(ReadOnlySpan<char> encoded)
+        public override byte[] Decode(ReadOnlySpan<char> encoded)
         {
             if (encoded.IsEmpty) return Array.Empty<byte>();
 

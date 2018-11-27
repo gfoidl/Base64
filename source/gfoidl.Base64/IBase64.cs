@@ -14,21 +14,21 @@ namespace gfoidl.Base64
         /// <param name="sourceLength">The length of the data.</param>
         /// <returns>The base64 encoded length of <paramref name="sourceLength" />.</returns>
         int GetEncodedLength(int sourceLength);
-
+        //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the decoded data.
         /// </summary>
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
         int GetDecodedLength(ReadOnlySpan<byte> encoded);
-
+        //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the decoded data.
         /// </summary>
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
         int GetDecodedLength(ReadOnlySpan<char> encoded);
-
+        //---------------------------------------------------------------------
         /// <summary>
         /// Base64 encodes <paramref name="data" />.
         /// </summary>
@@ -61,8 +61,13 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true);
-
+        OperationStatus Encode(
+            ReadOnlySpan<byte> data,
+            Span<byte>         encoded,
+            out                int consumed,
+            out                int written,
+            bool               isFinalBlock = true);
+        //---------------------------------------------------------------------
         /// <summary>
         /// Base64 encodes <paramref name="data" />.
         /// </summary>
@@ -95,8 +100,13 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true);
-
+        OperationStatus Encode(
+            ReadOnlySpan<byte> data,
+            Span<char>         encoded,
+            out                int consumed,
+            out                int written,
+            bool               isFinalBlock = true);
+        //---------------------------------------------------------------------
         /// <summary>
         /// Base64 decodes <paramref name="encoded" />.
         /// </summary>
@@ -129,8 +139,13 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true);
-
+        OperationStatus Decode(
+            ReadOnlySpan<byte> encoded,
+            Span<byte>         data,
+            out                int consumed,
+            out                int written,
+            bool               isFinalBlock = true);
+        //---------------------------------------------------------------------
         /// <summary>
         /// Base64 decodes <paramref name="encoded" />.
         /// </summary>
@@ -163,15 +178,20 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true);
-
+        OperationStatus Decode(
+            ReadOnlySpan<char> encoded,
+            Span<byte>         data,
+            out                int consumed,
+            out                int written,
+            bool               isFinalBlock = true);
+        //---------------------------------------------------------------------
         /// <summary>
         /// Base64 encoded <paramref name="data" /> to a <see cref="string" />.
         /// </summary>
         /// <param name="data">The data to be base64 encoded.</param>
         /// <returns>The base64 encoded <see cref="string" />.</returns>
         string Encode(ReadOnlySpan<byte> data);
-
+        //---------------------------------------------------------------------
         /// <summary>
         /// Base64 decodes <paramref name="encoded" /> into a <see cref="byte" /> array.
         /// </summary>
