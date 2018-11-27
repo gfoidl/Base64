@@ -16,11 +16,12 @@ namespace gfoidl.Base64
 #if NETCOREAPP
         protected static readonly Vector128<sbyte> s_sse_encodeShuffleVec;
         protected static readonly Vector128<sbyte> s_sse_decodeShuffleVec;
-
+#if NETCOREAPP3_0
         protected static readonly Vector256<int>   s_avx_encodePermuteVec;
         protected static readonly Vector256<sbyte> s_avx_encodeShuffleVec;
         protected static readonly Vector256<sbyte> s_avx_decodeShuffleVec;
         protected static readonly Vector256<int>   s_avx_decodePermuteVec;
+#endif
 #endif
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
@@ -57,9 +58,6 @@ namespace gfoidl.Base64
 
 #if NETCOREAPP3_0
             if (Avx2.IsSupported)
-#else
-            if (Avx.IsSupported && Avx2.IsSupported)
-#endif
             {
                 s_avx_encodePermuteVec = Avx.SetVector256(6, 5, 4, 3, 2, 1, 0, 0);
 
@@ -87,6 +85,7 @@ namespace gfoidl.Base64
 
                 s_avx_decodePermuteVec = Avx.SetVector256(-1, -1, 6, 5, 4, 2, 1, 0);
             }
+#endif
 #endif
         }
         //---------------------------------------------------------------------
