@@ -94,11 +94,11 @@ namespace gfoidl.Base64.Internal
 #endif
         public const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
         //---------------------------------------------------------------------
-        public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
-        public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, isFinalBlock);
+        public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, encodedLength: -1, isFinalBlock);
+        public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, encodedLength: -1, isFinalBlock);
 
-        public override OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
-        public override OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, isFinalBlock);
+        public override OperationStatus Decode(ReadOnlySpan<byte> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, decodedLength: -1, isFinalBlock);
+        public override OperationStatus Decode(ReadOnlySpan<char> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true) => this.DecodeCore(encoded, data, out consumed, out written, decodedLength: -1, isFinalBlock);
         //---------------------------------------------------------------------
         public override unsafe string Encode(ReadOnlySpan<byte> data)
         {
@@ -108,10 +108,10 @@ namespace gfoidl.Base64.Internal
 #if NETCOREAPP
             fixed (byte* ptr = data)
             {
-                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
+                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length, encodedLength), (encoded, state) =>
                 {
                     var srcBytes           = new Span<byte>(state.Ptr.ToPointer(), state.Length);
-                    OperationStatus status = this.EncodeCore(srcBytes, encoded, out int consumed, out int written);
+                    OperationStatus status = this.EncodeCore(srcBytes, encoded, out int consumed, out int written, state.encodedLength);
 
                     Debug.Assert(status         == OperationStatus.Done);
                     Debug.Assert(state.Length   == consumed);
@@ -123,7 +123,7 @@ namespace gfoidl.Base64.Internal
                 ? stackalloc char[encodedLength]
                 : new char[encodedLength];
 
-            OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written);
+            OperationStatus status = this.EncodeCore(data, encoded, out int consumed, out int written, encodedLength);
             Debug.Assert(status         == OperationStatus.Done);
             Debug.Assert(data.Length    == consumed);
             Debug.Assert(encoded.Length == written);
@@ -139,7 +139,7 @@ namespace gfoidl.Base64.Internal
 
             int dataLength         = this.GetDecodedLength(encoded);
             byte[] data            = new byte[dataLength];
-            OperationStatus status = this.DecodeCore(encoded, data, out int consumed, out int written);
+            OperationStatus status = this.DecodeCore(encoded, data, out int consumed, out int written, dataLength);
 
             if (status == OperationStatus.InvalidData)
                 ThrowHelper.ThrowForOperationNotDone(status);
@@ -162,11 +162,11 @@ namespace gfoidl.Base64.Internal
         {
             if (typeof(T) == typeof(byte))
             {
-                return this.EncodeCore(data, MemoryMarshal.AsBytes(encoded), out consumed, out written, isFinalBlock);
+                return this.EncodeCore(data, MemoryMarshal.AsBytes(encoded), out consumed, out written, encodedLength: -1, isFinalBlock);
             }
             else if (typeof(T) == typeof(char))
             {
-                return this.EncodeCore(data, MemoryMarshal.Cast<T, char>(encoded), out consumed, out written, isFinalBlock);
+                return this.EncodeCore(data, MemoryMarshal.Cast<T, char>(encoded), out consumed, out written, encodedLength: -1, isFinalBlock);
             }
             else
             {
@@ -185,11 +185,11 @@ namespace gfoidl.Base64.Internal
         {
             if (typeof(T) == typeof(byte))
             {
-                return this.DecodeCore(MemoryMarshal.AsBytes(encoded), data, out consumed, out written, isFinalBlock);
+                return this.DecodeCore(MemoryMarshal.AsBytes(encoded), data, out consumed, out written, decodedLength: -1, isFinalBlock);
             }
             else if (typeof(T) == typeof(char))
             {
-                return this.DecodeCore(MemoryMarshal.Cast<T, char>(encoded), data, out consumed, out written, isFinalBlock);
+                return this.DecodeCore(MemoryMarshal.Cast<T, char>(encoded), data, out consumed, out written, decodedLength: -1, isFinalBlock);
             }
             else
             {
@@ -203,6 +203,7 @@ namespace gfoidl.Base64.Internal
             Span<byte> encoded,
             out int consumed,
             out int written,
+            int encodedLength = -1,
             bool isFinalBlock = true);
         //---------------------------------------------------------------------
         // PERF: can't be generic for inlining (generic virtual)
@@ -211,6 +212,7 @@ namespace gfoidl.Base64.Internal
             Span<char> encoded,
             out int consumed,
             out int written,
+            int encodedLength = -1,
             bool isFinalBlock = true);
         //---------------------------------------------------------------------
         // PERF: can't be generic for inlining (generic virtual)
@@ -219,6 +221,7 @@ namespace gfoidl.Base64.Internal
             Span<byte> data,
             out int consumed,
             out int written,
+            int decodedLength = -1,
             bool isFinalBlock = true);
         //---------------------------------------------------------------------
         // PERF: can't be generic for inlining (generic virtual)
@@ -227,6 +230,7 @@ namespace gfoidl.Base64.Internal
             Span<byte> data,
             out int consumed,
             out int written,
+            int decodedLength = -1,
             bool isFinalBlock = true);
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

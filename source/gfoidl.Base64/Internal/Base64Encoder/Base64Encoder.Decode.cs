@@ -60,8 +60,9 @@ namespace gfoidl.Base64.Internal
             Span<byte> data,
             out int consumed,
             out int written,
+            int decodedLength = -1,
             bool isFinalBlock = true)
-            => this.DecodeImpl(encoded, data, out consumed, out written, isFinalBlock);
+            => this.DecodeImpl(encoded, data, out consumed, out written, decodedLength, isFinalBlock);
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
         protected override OperationStatus DecodeCore(
@@ -69,10 +70,17 @@ namespace gfoidl.Base64.Internal
             Span<byte> data,
             out int consumed,
             out int written,
+            int decodedLength = -1,
             bool isFinalBlock = true)
-            => this.DecodeImpl(encoded, data, out consumed, out written, isFinalBlock);
+            => this.DecodeImpl(encoded, data, out consumed, out written, decodedLength, isFinalBlock);
         //---------------------------------------------------------------------
-        private OperationStatus DecodeImpl<T>(ReadOnlySpan<T> encoded, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
+        private OperationStatus DecodeImpl<T>(
+            ReadOnlySpan<T> encoded,
+            Span<byte> data,
+            out int consumed,
+            out int written,
+            int decodedLength = -1,
+            bool isFinalBlock = true)
         {
             if (encoded.IsEmpty)
             {
@@ -84,13 +92,23 @@ namespace gfoidl.Base64.Internal
             ref T src     = ref MemoryMarshal.GetReference(encoded);
             int srcLength = encoded.Length;
 
-            return this.DecodeImpl(ref src, srcLength, data, out consumed, out written, isFinalBlock);
+            if (decodedLength == -1)
+                decodedLength = this.GetDecodedLength(srcLength);
+
+            return this.DecodeImpl(ref src, srcLength, data, decodedLength, out consumed, out written, isFinalBlock);
         }
         //---------------------------------------------------------------------
 #if NETCOREAPP3_0
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
 #endif
-        private OperationStatus DecodeImpl<T>(ref T src, int inputLength, Span<byte> data, out int consumed, out int written, bool isFinalBlock = true)
+        private OperationStatus DecodeImpl<T>(
+            ref T src,
+            int inputLength,
+            Span<byte> data,
+            int decodedLength,
+            out int consumed,
+            out int written,
+            bool isFinalBlock = true)
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
@@ -139,7 +157,7 @@ namespace gfoidl.Base64.Internal
             int maxSrcLength = 0;
             int destLength   = data.Length;
 
-            if (destLength >= this.GetDecodedLength(srcLength))
+            if (destLength >= decodedLength)
             {
                 maxSrcLength = srcLength - skipLastChunk;
             }
