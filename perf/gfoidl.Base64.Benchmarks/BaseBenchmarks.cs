@@ -9,13 +9,13 @@ namespace gfoidl.Base64.Benchmarks
     public abstract class BaseBenchmarks
     {
         private const int ByteArraySize = 500;
-        private readonly byte[]           _data;
-        private readonly string           _dataEncoded;
-        private readonly byte[]           _guid;
-        private readonly string           _guidEncoded;
-        protected readonly IBase64Encoder _encoder;
+        private readonly byte[]    _data;
+        private readonly string    _dataEncoded;
+        private readonly byte[]    _guid;
+        private readonly string    _guidEncoded;
+        protected readonly IBase64 _encoder;
         //---------------------------------------------------------------------
-        protected BaseBenchmarks(IBase64Encoder encoder)
+        protected BaseBenchmarks(IBase64 encoder)
         {
             _encoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 

@@ -6,7 +6,7 @@ namespace gfoidl.Base64
     /// <summary>
     /// Base64 encoding / decoding.
     /// </summary>
-    public interface IBase64Encoder
+    public interface IBase64
     {
         /// <summary>
         /// Gets the length of the encoded data.
