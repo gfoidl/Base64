@@ -5,18 +5,14 @@ using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64.Benchmarks
 {
-    [ShortRunJob]
+    [Config(typeof(HardwareIntrinsicsCustomConfig))]
     public class DecodeUtf8Benchmark
     {
-        private static readonly Base64Encoder  s_encoder  = new Base64Encoder();
-        private static readonly Base64Encoder1 s_encoder1 = new Base64Encoder1();
-        private static readonly Base64Encoder2 s_encoder2 = new Base64Encoder2();
-        //---------------------------------------------------------------------
         private byte[] _base64;
         private byte[] _decoded;
         //---------------------------------------------------------------------
-        //[Params(5, 16, 1_000)]
-        public int DataLen { get; set; } = 1_000;
+        [Params(5, 16, 1_000)]
+        public int DataLen { get; set; } = 16;
         //---------------------------------------------------------------------
         [GlobalSetup]
         public void GlobalSetup()
@@ -33,21 +29,15 @@ namespace gfoidl.Base64.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark(Baseline = true)]
-        public OperationStatus Base()
+        public OperationStatus BuffersBase64()
         {
-            return s_encoder2.Decode(_base64, _decoded, out int _, out int _);
+            return System.Buffers.Text.Base64.DecodeFromUtf8(_base64, _decoded, out int _, out int _);
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public OperationStatus Dev()
+        public OperationStatus gfoidlBase64()
         {
-            return s_encoder.Decode(_base64, _decoded, out int _, out int _);
-        }
-        //---------------------------------------------------------------------
-        [Benchmark]
-        public OperationStatus PureSSSE3()
-        {
-            return s_encoder1.Decode(_base64, _decoded, out int _, out int _);
+            return Base64.Default.Decode(_base64, _decoded, out int _, out int _);
         }
     }
 }
