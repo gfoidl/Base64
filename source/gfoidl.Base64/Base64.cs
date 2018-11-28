@@ -16,7 +16,7 @@ namespace gfoidl.Base64
         /// The base64 encoder / decoder.
         /// </summary>
         public static Base64Encoder Default => s_default;
-
+        //---------------------------------------------------------------------
         /// <summary>
         /// The base64Url encoder / decoder.
         /// </summary>

@@ -13,21 +13,21 @@ Runtime=Core
 ```
 |                       Method |    Job |                       EnvironmentVariables |          Mean |      Error |     StdDev |        Median |
 |----------------------------- |------- |------------------------------------------- |--------------:|-----------:|-----------:|--------------:|
-|                  Encode_Data |   AVX2 |                                      Empty |   318.8990 ns |  8.4442 ns | 22.6849 ns |   313.8722 ns |
-|                  Encode_Guid |   AVX2 |                                      Empty |    97.8886 ns |  2.0248 ns |  2.4866 ns |    98.6319 ns |
-|                  Decode_Data |   AVX2 |                                      Empty |   399.1581 ns |  7.9936 ns | 10.1093 ns |   397.3372 ns |
-|                  Decode_Guid |   AVX2 |                                      Empty |    70.2316 ns |  1.4042 ns |  1.3135 ns |    70.6731 ns |
-| GetArraySizeRequiredToEncode |   AVX2 |                                      Empty |     0.9382 ns |  0.3441 ns |  0.7480 ns |     0.5322 ns |
-| GetArraySizeRequiredToDecode |   AVX2 |                                      Empty |     9.7242 ns |  0.5175 ns |  1.1029 ns |     9.2419 ns |
-|                  Encode_Data |  SSSE3 |                       COMPlus_EnableAVX2=0 |   356.4452 ns | 10.6504 ns | 29.8648 ns |   352.1573 ns |
-|                  Encode_Guid |  SSSE3 |                       COMPlus_EnableAVX2=0 |    97.7851 ns |  1.4565 ns |  1.2162 ns |    98.1725 ns |
-|                  Decode_Data |  SSSE3 |                       COMPlus_EnableAVX2=0 |   289.5804 ns |  6.5173 ns | 16.1091 ns |   289.7305 ns |
-|                  Decode_Guid |  SSSE3 |                       COMPlus_EnableAVX2=0 |    66.5454 ns |  1.4732 ns |  3.0094 ns |    67.0437 ns |
-| GetArraySizeRequiredToEncode |  SSSE3 |                       COMPlus_EnableAVX2=0 |     1.6149 ns |  0.0244 ns |  0.0229 ns |     1.6181 ns |
-| GetArraySizeRequiredToDecode |  SSSE3 |                       COMPlus_EnableAVX2=0 |    10.9105 ns |  0.0488 ns |  0.0432 ns |    10.9042 ns |
-|                  Encode_Data | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 | 1,081.1050 ns | 23.4213 ns | 69.0584 ns | 1,056.4079 ns |
-|                  Encode_Guid | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    91.7359 ns |  2.0360 ns |  4.3828 ns |    92.0605 ns |
-|                  Decode_Data | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |   862.0597 ns | 17.0732 ns | 22.7922 ns |   869.3793 ns |
-|                  Decode_Guid | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    79.3121 ns |  1.7365 ns |  2.5453 ns |    78.4045 ns |
-| GetArraySizeRequiredToEncode | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |     1.8900 ns |  0.0328 ns |  0.0307 ns |     1.8761 ns |
-| GetArraySizeRequiredToDecode | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    11.2511 ns |  0.1092 ns |  0.1022 ns |    11.2652 ns |
+|                  Encode_Data |   AVX2 |                                      Empty |   394.5091 ns | 13.1254 ns | 38.4944 ns |   384.2983 ns |
+|                  Encode_Guid |   AVX2 |                                      Empty |   100.8085 ns |  1.5477 ns |  1.3720 ns |   100.8078 ns |
+|                  Decode_Data |   AVX2 |                                      Empty |   314.8039 ns |  6.4383 ns | 13.5805 ns |   314.3586 ns |
+|                  Decode_Guid |   AVX2 |                                      Empty |    70.6434 ns |  1.2812 ns |  1.1985 ns |    71.0590 ns |
+| GetArraySizeRequiredToEncode |   AVX2 |                                      Empty |     0.9639 ns |  0.3771 ns |  0.7871 ns |     0.5216 ns |
+| GetArraySizeRequiredToDecode |   AVX2 |                                      Empty |    12.3219 ns |  0.0856 ns |  0.0801 ns |    12.2913 ns |
+|                  Encode_Data |  SSSE3 |                       COMPlus_EnableAVX2=0 |   424.3073 ns |  8.6030 ns | 23.8389 ns |   424.6142 ns |
+|                  Encode_Guid |  SSSE3 |                       COMPlus_EnableAVX2=0 |   103.5616 ns |  2.2008 ns |  2.2601 ns |   104.8407 ns |
+|                  Decode_Data |  SSSE3 |                       COMPlus_EnableAVX2=0 |   324.9873 ns |  5.8966 ns |  5.5156 ns |   325.9970 ns |
+|                  Decode_Guid |  SSSE3 |                       COMPlus_EnableAVX2=0 |    70.3384 ns |  1.0169 ns |  0.9512 ns |    70.5477 ns |
+| GetArraySizeRequiredToEncode |  SSSE3 |                       COMPlus_EnableAVX2=0 |     1.6589 ns |  0.1223 ns |  0.1084 ns |     1.6808 ns |
+| GetArraySizeRequiredToDecode |  SSSE3 |                       COMPlus_EnableAVX2=0 |    11.0733 ns |  0.0861 ns |  0.0805 ns |    11.0406 ns |
+|                  Encode_Data | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 | 1,088.7753 ns | 20.5433 ns | 18.2111 ns | 1,093.6047 ns |
+|                  Encode_Guid | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |   100.1396 ns |  0.4920 ns |  0.4602 ns |   100.2871 ns |
+|                  Decode_Data | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |   870.5556 ns | 12.6404 ns | 10.5553 ns |   869.7844 ns |
+|                  Decode_Guid | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    82.4976 ns |  0.8588 ns |  0.8033 ns |    82.7266 ns |
+| GetArraySizeRequiredToEncode | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |     1.9484 ns |  0.0604 ns |  0.0565 ns |     1.9595 ns |
+| GetArraySizeRequiredToDecode | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    11.2192 ns |  0.0683 ns |  0.0639 ns |    11.2108 ns |
