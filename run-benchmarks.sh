@@ -5,12 +5,16 @@ set -e
 curl -o dotnet-install.sh https://dot.net/v1/dotnet-install.sh
 mkdir dotnet
 chmod u+x ./dotnet-install.sh
-./dotnet-install.sh --install-dir $(pwd)/dotnet -v 3.0.100-preview-009765
+./dotnet-install.sh --install-dir $(pwd)/dotnet -v $SDK_VERSION
 rm $(pwd)/dotnet-install.sh
 export PATH="$(pwd)/dotnet:$PATH"
 
 echo 'installed sdks:'
 dotnet --list-sdks
+echo "-------------------------------------------------"
+
+echo 'cpu info'
+lscpu
 echo "-------------------------------------------------"
 
 cd perf/gfoidl.Base64.Benchmarks
