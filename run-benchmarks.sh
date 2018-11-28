@@ -13,6 +13,10 @@ echo 'installed sdks:'
 dotnet --list-sdks
 echo "-------------------------------------------------"
 
+echo 'cpu info'
+lscpu
+echo "-------------------------------------------------"
+
 cd perf/gfoidl.Base64.Benchmarks
 dotnet build -c Release
 cd bin/Release/netcoreapp3.0
