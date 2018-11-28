@@ -26,7 +26,7 @@ If available AVX will "eat" up as much as possible, then SSE will "eat" up as mu
 finally scalar code processes the rest (including padding).
 
 **Note:** SIMD-support (with HW-intrinsics) is officially supported for .NET Core 3.0 onwards.
-Hence SIMD-support for .NET Core 2.1 is not official, and based on an experimental (but tested) solution. 
+Hence SIMD-support for .NET Core 2.1 is not official, and based on an experimental (but tested) solution.
 Further note that future versions of the JIT may not compile these bits anymore. So use this library with caution in a .NET Core 2.1 project.
 
 ## Usage
@@ -124,8 +124,8 @@ string base64Url = base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
 ```
 are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string.
 
-_gfoidl.Base64_ supports encoding / decoding to / from base64Url in a direct way.  
-Encoding `byte[] -> byte[]` for UTF-8 is supported, as well as `byte[] -> char[]`.  
+_gfoidl.Base64_ supports encoding / decoding to / from base64Url in a direct way.
+Encoding `byte[] -> byte[]` for UTF-8 is supported, as well as `byte[] -> char[]`.
 Decoding `byte[] -> byte[]` for UTF-8 is supported, as well as `char[] -> byte[]`.
 
 Further SIMD isn't utilized in the .NET classes.
@@ -133,7 +133,7 @@ Further SIMD isn't utilized in the .NET classes.
 
 ### Convert.ToBase64XYZ / Convert.FromBase64XYZ
 
-These methods only support `byte[] -> char[]` as types for encoding, 
+These methods only support `byte[] -> char[]` as types for encoding,
 and `char[] -> byte[]` as types for decoding, where `char[]` can also be `string` or `(ReadOnly)Span<char>`.
 
 To support UTF-8 another method call like
@@ -149,10 +149,27 @@ An potential advantage of this class is that it allows the insertion of line-bre
 This class only supports `byte[] -> byte[]` for encoding / decoding. So in order to get a `string`
 `Encoding` has to be used.
 
-An potential advantage of this class is the support for in-place encoding / decoding (cf. 
-[Base64.EncodeToUtf8InPlace](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.encodetoutf8inplace), 
+An potential advantage of this class is the support for in-place encoding / decoding (cf.
+[Base64.EncodeToUtf8InPlace](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.encodetoutf8inplace),
 [Base64.DecodeFromUtf8InPlace](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.decodefromutf8inplace)
 )
+
+## Benchmarks
+
+For all benchmarks see [results](/perf/gfoidl.Base64.Benchmarks/results).
+
+Performance gain depends, among a lot of other things, on the workload size, so here no table will with superior results will be shown.
+
+[Direct encoding to a string](perf/gfoidl.Base64.Benchmarks/results/EncodeStringBenchmark-report.md) is for small inputs slower than `Convert.ToBase64String` (has less overhead, and can write to string-buffer in a direct way).
+But the larger the workload, the better this libraray works. For data-length of 1000 speedup can be ~4x with AVX2 encoding.
+
+[Direct decoding from a string](perf/gfoidl.Base64.Benchmarks/results/DecodeStringBenchmark-report.md) is generally (a lot) faster than `Convert.ConvertFromBase64CharArray`, also depending on workload size, but in the benchmark the speedup is from 1.5 to 10x.
+
+For UTF-8 [encoding](perf/gfoidl.Base64.Benchmarks/results/EncodeUtf8Benchmark-report.md) and [decoding](perf/gfoidl.Base64.Benchmarks/results/DecodeUtf8Benchmark-report.md)
+speedups for input-length 1000 can be in the height of 5 to 12x.
+
+**Note:** please measure / profile in your real usecase, as this are just micro-benchmarks.
+
 
 ## Acknowledgements
 
