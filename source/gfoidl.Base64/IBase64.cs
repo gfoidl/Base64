@@ -1,47 +1,33 @@
 ﻿using System;
 using System.Buffers;
-using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64
 {
     /// <summary>
     /// Base64 encoding / decoding.
     /// </summary>
-    public abstract class Base64 : IBase64
+    public interface IBase64
     {
-        private static readonly Base64Encoder    s_default = new Base64Encoder();
-        private static readonly Base64UrlEncoder s_url     = new Base64UrlEncoder();
-        //---------------------------------------------------------------------
-        /// <summary>
-        /// The base64 encoder / decoder.
-        /// </summary>
-        public static Base64Encoder Default => s_default;
-
-        /// <summary>
-        /// The base64Url encoder / decoder.
-        /// </summary>
-        public static Base64UrlEncoder Url => s_url;
-        //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the encoded data.
         /// </summary>
         /// <param name="sourceLength">The length of the data.</param>
         /// <returns>The base64 encoded length of <paramref name="sourceLength" />.</returns>
-        public abstract int GetEncodedLength(int sourceLength);
+        int GetEncodedLength(int sourceLength);
         //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the decoded data.
         /// </summary>
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
-        public abstract int GetDecodedLength(ReadOnlySpan<byte> encoded);
+        int GetDecodedLength(ReadOnlySpan<byte> encoded);
         //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the decoded data.
         /// </summary>
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
-        public abstract int GetDecodedLength(ReadOnlySpan<char> encoded);
+        int GetDecodedLength(ReadOnlySpan<char> encoded);
         //---------------------------------------------------------------------
         /// <summary>
         /// Base64 encodes <paramref name="data" />.
@@ -75,7 +61,7 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        public abstract OperationStatus Encode(
+        OperationStatus Encode(
             ReadOnlySpan<byte> data,
             Span<byte>         encoded,
             out                int consumed,
@@ -114,7 +100,7 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        public abstract OperationStatus Encode(
+        OperationStatus Encode(
             ReadOnlySpan<byte> data,
             Span<char>         encoded,
             out                int consumed,
@@ -153,7 +139,7 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        public abstract OperationStatus Decode(
+        OperationStatus Decode(
             ReadOnlySpan<byte> encoded,
             Span<byte>         data,
             out                int consumed,
@@ -192,7 +178,7 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
-        public abstract OperationStatus Decode(
+        OperationStatus Decode(
             ReadOnlySpan<char> encoded,
             Span<byte>         data,
             out                int consumed,
@@ -204,13 +190,13 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="data">The data to be base64 encoded.</param>
         /// <returns>The base64 encoded <see cref="string" />.</returns>
-        public abstract string Encode(ReadOnlySpan<byte> data);
+        string Encode(ReadOnlySpan<byte> data);
         //---------------------------------------------------------------------
         /// <summary>
         /// Base64 decodes <paramref name="encoded" /> into a <see cref="byte" /> array.
         /// </summary>
         /// <param name="encoded">The base64 encoded data in string-form.</param>
         /// <returns>The base64 decoded data.</returns>
-        public abstract byte[] Decode(ReadOnlySpan<char> encoded);
+        byte[] Decode(ReadOnlySpan<char> encoded);
     }
 }

@@ -18,6 +18,7 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <DocumentationFile>bin\Release\$(TargetFramework)\gfoidl.Base64.xml</DocumentationFile>
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
@@ -30,12 +31,13 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+        <PackageReference Include="System.Buffers" Version="4.4.0" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
         <PackageReference Include="System.Memory" Version="4.5.1" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0'">
-        <Compile Remove="Avx2Helper.cs" />
+        <Compile Remove="Internal\Avx2Helper.cs" />
     </ItemGroup>
 
     <ItemGroup>

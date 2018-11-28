@@ -1,8 +1,10 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
+using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64.Benchmarks
 {
+    [Config(typeof(HardwareIntrinsicsCustomConfig))]
     public class EncodeStringBenchmark
     {
         private byte[] _data;

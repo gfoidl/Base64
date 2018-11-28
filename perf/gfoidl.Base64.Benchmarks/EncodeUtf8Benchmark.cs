@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Buffers;
 using BenchmarkDotNet.Attributes;
+using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64.Benchmarks
 {
+    [Config(typeof(HardwareIntrinsicsCustomConfig))]
     public class EncodeUtf8Benchmark
     {
         private byte[] _data;

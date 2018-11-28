@@ -6,7 +6,7 @@
 
     <!-- https://github.com/Microsoft/msbuild/issues/2468#issuecomment-324719212 -->
     <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0' OR ( '$(OS)' == 'Unix' AND $([System.IO.File]::Exists('/usr/lib/libc.dylib')) )">
-        <Compile Remove="Avx2HelperTests\*.cs" />
+        <Compile Remove="Internal\Avx2HelperTests\*.cs" />
     </ItemGroup>
 
     <ItemGroup>
