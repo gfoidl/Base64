@@ -142,7 +142,7 @@ namespace gfoidl.Base64.Internal
                 goto Scalar;
 #endif
 
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 && !AVX_DECODE_DISABLE
             if (Avx2.IsSupported && srcLength >= 45 && !s_isMac)
             {
                 if (!Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
@@ -332,7 +332,7 @@ namespace gfoidl.Base64.Internal
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 && !AVX_DECODE_DISABLE
 #if DEBUG
         public static event EventHandler<EventArgs> Avx2Decoded;
 #endif
