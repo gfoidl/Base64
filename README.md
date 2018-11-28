@@ -25,6 +25,10 @@ In .NET Core 2.1+ encoding / decoding is done with SIMD-support:
 If available AVX will "eat" up as much as possible, then SSE will "eat" up as much as possible,
 finally scalar code processes the rest (including padding).
 
+**Note:** SIMD-support (with HW-intrinsics) is officially supported for .NET Core 3.0 onwards.
+Hence SIMD-support for .NET Core 2.1 is not official, and based on an experimental (but tested) solution. 
+Further note that future versions of the JIT may not compile these bits anymore. So use this library with caution in a .NET Core 2.1 project.
+
 ## Usage
 
 Basically the entry to encoder / decoder is `Base64.Default` for _base64_, and `Base64.Url` for _base64Url_.
