@@ -142,7 +142,7 @@ namespace gfoidl.Base64.Internal
                 goto Scalar;
 #endif
 
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 && !AVX_DECODE_DISABLE
             if (Avx2.IsSupported && srcLength >= 45 && !s_isMac)
             {
                 if (!Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
@@ -332,7 +332,7 @@ namespace gfoidl.Base64.Internal
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0
+#if NETCOREAPP3_0 && !AVX_DECODE_DISABLE
 #if DEBUG
         public static event EventHandler<EventArgs> Avx2Decoded;
 #endif
@@ -377,8 +377,9 @@ namespace gfoidl.Base64.Internal
                 Vector256<sbyte> loNibbles = Avx2.And(str, mask2F);
                 Vector256<sbyte> hi        = Avx2.Shuffle(lutHi, hiNibbles);
                 Vector256<sbyte> lo        = Avx2.Shuffle(lutLo, loNibbles);
+                Vector256<sbyte> zero      = Avx.SetZeroVector256<sbyte>();
 
-                if (!Avx.TestZ(lo, hi))
+                if (Avx2.MoveMask(Avx2.CompareGreaterThan(Avx2.And(lo, hi), zero)) != 0)
                 {
                     success = false;
                     break;

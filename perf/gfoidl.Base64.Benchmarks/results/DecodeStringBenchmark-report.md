@@ -13,29 +13,29 @@ Runtime=Core
 ```
 |                     Method |    Job |                       EnvironmentVariables | DataLen |        Mean |       Error |      StdDev | Ratio | RatioSD |
 |--------------------------- |------- |------------------------------------------- |-------- |------------:|------------:|------------:|------:|--------:|
-| **ConvertFromBase64CharArray** |   **AVX2** |                                      **Empty** |       **5** |   **100.45 ns** |   **1.5381 ns** |   **1.4387 ns** |  **1.00** |    **0.00** |
-|               gfoidlBase64 |   AVX2 |                                      Empty |       5 |    60.69 ns |   1.1294 ns |   1.0564 ns |  0.60 |    0.01 |
+| **ConvertFromBase64CharArray** |   **AVX2** |                                      **Empty** |       **5** |    **97.43 ns** |   **2.0407 ns** |   **2.8608 ns** |  **1.00** |    **0.00** |
+|               gfoidlBase64 |   AVX2 |                                      Empty |       5 |    60.92 ns |   0.3572 ns |   0.3341 ns |  0.61 |    0.02 |
 |                            |        |                                            |         |             |             |             |       |         |
-| ConvertFromBase64CharArray |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |   101.78 ns |   1.3445 ns |   1.2576 ns |  1.00 |    0.00 |
-|               gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    60.03 ns |   1.2012 ns |   1.1236 ns |  0.59 |    0.01 |
+| ConvertFromBase64CharArray |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    97.56 ns |   2.5223 ns |   5.4833 ns |  1.00 |    0.00 |
+|               gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    62.13 ns |   1.2070 ns |   1.1290 ns |  0.60 |    0.04 |
 |                            |        |                                            |         |             |             |             |       |         |
-| ConvertFromBase64CharArray | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    97.79 ns |   2.0844 ns |   2.9894 ns |  1.00 |    0.00 |
-|               gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    59.39 ns |   0.4564 ns |   0.4269 ns |  0.60 |    0.02 |
+| ConvertFromBase64CharArray | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |   101.54 ns |   1.9821 ns |   1.8541 ns |  1.00 |    0.00 |
+|               gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    56.26 ns |   1.2815 ns |   2.7311 ns |  0.57 |    0.02 |
 |                            |        |                                            |         |             |             |             |       |         |
-| **ConvertFromBase64CharArray** |   **AVX2** |                                      **Empty** |      **16** |   **156.60 ns** |   **3.1303 ns** |   **3.4793 ns** |  **1.00** |    **0.00** |
-|               gfoidlBase64 |   AVX2 |                                      Empty |      16 |    71.64 ns |   0.5708 ns |   0.5340 ns |  0.46 |    0.01 |
+| **ConvertFromBase64CharArray** |   **AVX2** |                                      **Empty** |      **16** |   **161.94 ns** |   **1.9280 ns** |   **1.8035 ns** |  **1.00** |    **0.00** |
+|               gfoidlBase64 |   AVX2 |                                      Empty |      16 |    68.79 ns |   0.6582 ns |   0.6157 ns |  0.42 |    0.01 |
 |                            |        |                                            |         |             |             |             |       |         |
-| ConvertFromBase64CharArray |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |   158.57 ns |   2.8389 ns |   2.6555 ns |  1.00 |    0.00 |
-|               gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    69.00 ns |   1.3491 ns |   1.2620 ns |  0.44 |    0.01 |
+| ConvertFromBase64CharArray |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |   160.38 ns |   3.0354 ns |   2.8393 ns |  1.00 |    0.00 |
+|               gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    68.57 ns |   1.4879 ns |   1.3918 ns |  0.43 |    0.01 |
 |                            |        |                                            |         |             |             |             |       |         |
-| ConvertFromBase64CharArray | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |   158.52 ns |   2.7691 ns |   2.5902 ns |  1.00 |    0.00 |
-|               gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    78.68 ns |   1.4812 ns |   1.3855 ns |  0.50 |    0.01 |
+| ConvertFromBase64CharArray | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |   162.69 ns |   1.0429 ns |   0.9755 ns |  1.00 |    0.00 |
+|               gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    75.89 ns |   1.6617 ns |   3.2016 ns |  0.47 |    0.02 |
 |                            |        |                                            |         |             |             |             |       |         |
-| **ConvertFromBase64CharArray** |   **AVX2** |                                      **Empty** |    **1000** | **5,367.08 ns** | **106.4836 ns** | **104.5811 ns** |  **1.00** |    **0.00** |
-|               gfoidlBase64 |   AVX2 |                                      Empty |    1000 |   691.29 ns |  11.7365 ns |   9.1631 ns |  0.13 |    0.00 |
+| **ConvertFromBase64CharArray** |   **AVX2** |                                      **Empty** |    **1000** | **5,341.17 ns** | **104.0383 ns** | **138.8881 ns** |  **1.00** |    **0.00** |
+|               gfoidlBase64 |   AVX2 |                                      Empty |    1000 |   527.81 ns |   9.7691 ns |   9.1380 ns |  0.10 |    0.00 |
 |                            |        |                                            |         |             |             |             |       |         |
-| ConvertFromBase64CharArray |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 | 5,379.58 ns |  92.1243 ns |  86.1731 ns |  1.00 |    0.00 |
-|               gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 |   469.94 ns |  10.8277 ns |  31.4131 ns |  0.08 |    0.00 |
+| ConvertFromBase64CharArray |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 | 5,338.39 ns | 106.3279 ns | 194.4265 ns |  1.00 |    0.00 |
+|               gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 |   555.00 ns |  10.8938 ns |  13.3786 ns |  0.11 |    0.01 |
 |                            |        |                                            |         |             |             |             |       |         |
-| ConvertFromBase64CharArray | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 5,375.86 ns |  45.4937 ns |  42.5549 ns |  1.00 |    0.00 |
-|               gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,653.16 ns |  32.1652 ns |  34.4164 ns |  0.31 |    0.01 |
+| ConvertFromBase64CharArray | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 5,404.49 ns |  84.7593 ns |  79.2839 ns |  1.00 |    0.00 |
+|               gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,726.46 ns |  31.1280 ns |  29.1171 ns |  0.32 |    0.01 |
