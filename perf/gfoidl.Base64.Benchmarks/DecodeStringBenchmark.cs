@@ -26,7 +26,7 @@ namespace gfoidl.Base64.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark(Baseline = true)]
-        public byte[] BuffersBase64()
+        public byte[] ConvertFromBase64CharArray()
         {
             return Convert.FromBase64CharArray(_base64, 0, _base64.Length);
         }

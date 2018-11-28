@@ -36,7 +36,7 @@ namespace gfoidl.Base64.Internal
 
             int dataLength         = this.GetDecodedLength(encoded);
             byte[] data            = new byte[dataLength];
-            OperationStatus status = this.DecodeImpl(encoded, data, out int consumed, out int written, dataLength);
+            OperationStatus status = this.DecodeImpl(encoded, data, out int consumed, out int written);
 
             if (status == OperationStatus.InvalidData)
                 ThrowHelper.ThrowForOperationNotDone(status);
