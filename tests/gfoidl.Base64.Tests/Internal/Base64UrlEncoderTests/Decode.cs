@@ -105,7 +105,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
             }
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0 && DEBUG && !OSX && !AVX_DECODE_DISABLE
+#if NETCOREAPP3_0 && DEBUG && !OSX
         [Test]
         public void Large_data___avx2_event_fired()
         {
