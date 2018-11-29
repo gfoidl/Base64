@@ -142,8 +142,7 @@ namespace gfoidl.Base64.Internal
             // s - 45 >= 0 used 'lea' as opposed to s >= 45
             if (Avx2.IsSupported && srcLength - 45 >= 0 && !s_isMac)
             {
-                if (!Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
-                    goto Scalar;
+                Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
@@ -154,15 +153,12 @@ namespace gfoidl.Base64.Internal
             if (Sse2.IsSupported && Ssse3.IsSupported && srcLength - 24 >= 0)
 #endif
             {
-                if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
-                    goto Scalar;
+                Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
 #endif
-
-        Scalar:
             ref sbyte decodingMap = ref s_decodingMap[0];
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
@@ -332,9 +328,8 @@ namespace gfoidl.Base64.Internal
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
         {
-            bool success       = true;
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));
@@ -373,12 +368,12 @@ namespace gfoidl.Base64.Internal
                 Vector256<sbyte> lo        = Avx2.Shuffle(lutLo, loNibbles);
                 Vector256<sbyte> zero      = Avx.SetZeroVector256<sbyte>();
 
+                // https://github.com/dotnet/coreclr/issues/21247
                 if (Avx2.MoveMask(Avx2.CompareGreaterThan(Avx2.And(lo, hi), zero)) != 0)
-                {
-                    success = false;
                     break;
-                }
-
+#if DEBUG
+                Avx2Decoded?.Invoke(null, EventArgs.Empty);
+#endif
                 Vector256<sbyte> eq2F  = Avx2.CompareEqual(str, mask2F);
                 Vector256<sbyte> shift = Avx2.Shuffle(lutShift, Avx2.Add(eq2F, hiNibbles));
                 str                    = Avx2.Add(str, shift);
@@ -402,11 +397,6 @@ namespace gfoidl.Base64.Internal
 
             src       = ref srcStart;
             destBytes = ref destStart;
-#if DEBUG
-            if (success)
-                Avx2Decoded?.Invoke(null, EventArgs.Empty);
-#endif
-            return success;
         }
 #endif
         //---------------------------------------------------------------------
@@ -416,9 +406,8 @@ namespace gfoidl.Base64.Internal
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
         {
-            bool success       = true;
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));
@@ -465,11 +454,10 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 #endif
                 if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
-                {
-                    success = false;
                     break;
-                }
-
+#if DEBUG
+                Sse2Decoded?.Invoke(null, EventArgs.Empty);
+#endif
                 Vector128<sbyte> eq2F  = Sse2.CompareEqual(str, mask2F);
                 Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, Sse2.Add(eq2F, hiNibbles));
                 str                    = Sse2.Add(str, shift);
@@ -496,11 +484,6 @@ namespace gfoidl.Base64.Internal
 
             src       = ref srcStart;
             destBytes = ref destStart;
-#if DEBUG
-            if (success)
-                Sse2Decoded?.Invoke(null, EventArgs.Empty);
-#endif
-            return success;
         }
 #endif
         //---------------------------------------------------------------------
