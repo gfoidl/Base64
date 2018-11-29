@@ -13,29 +13,29 @@ Runtime=Core
 ```
 |        Method |    Job |                       EnvironmentVariables | DataLen |        Mean |      Error |     StdDev |      Median | Ratio | RatioSD |
 |-------------- |------- |------------------------------------------- |-------- |------------:|-----------:|-----------:|------------:|------:|--------:|
-| **BuffersBase64** |   **AVX2** |                                      **Empty** |       **5** |    **34.32 ns** |  **0.7292 ns** |  **1.8953 ns** |    **34.99 ns** |  **1.00** |    **0.00** |
-|  gfoidlBase64 |   AVX2 |                                      Empty |       5 |    32.55 ns |  0.6937 ns |  1.6754 ns |    33.07 ns |  0.95 |    0.07 |
+| **BuffersBase64** |   **AVX2** |                                      **Empty** |       **5** |    **36.00 ns** |  **0.6956 ns** |  **0.6507 ns** |    **36.15 ns** |  **1.00** |    **0.00** |
+|  gfoidlBase64 |   AVX2 |                                      Empty |       5 |    34.18 ns |  0.7233 ns |  1.3406 ns |    34.72 ns |  0.97 |    0.04 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| BuffersBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    32.67 ns |  0.7933 ns |  2.3390 ns |    33.46 ns |  1.00 |    0.00 |
-|  gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    32.26 ns |  0.6873 ns |  1.9045 ns |    33.03 ns |  0.98 |    0.08 |
+| BuffersBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    35.78 ns |  0.4632 ns |  0.4333 ns |    35.89 ns |  1.00 |    0.00 |
+|  gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    34.07 ns |  0.6178 ns |  0.5779 ns |    34.20 ns |  0.95 |    0.02 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| BuffersBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    32.32 ns |  0.7843 ns |  2.3124 ns |    32.64 ns |  1.00 |    0.00 |
-|  gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    33.71 ns |  0.7191 ns |  1.0314 ns |    34.07 ns |  1.00 |    0.08 |
+| BuffersBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    36.00 ns |  0.7350 ns |  0.7864 ns |    36.20 ns |  1.00 |    0.00 |
+|  gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    33.79 ns |  0.7049 ns |  1.0550 ns |    33.88 ns |  0.94 |    0.04 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| **BuffersBase64** |   **AVX2** |                                      **Empty** |      **16** |    **47.39 ns** |  **1.0015 ns** |  **2.1558 ns** |    **48.03 ns** |  **1.00** |    **0.00** |
-|  gfoidlBase64 |   AVX2 |                                      Empty |      16 |    37.61 ns |  0.7966 ns |  2.1672 ns |    38.43 ns |  0.81 |    0.05 |
+| **BuffersBase64** |   **AVX2** |                                      **Empty** |      **16** |    **46.30 ns** |  **0.9739 ns** |  **2.4071 ns** |    **47.36 ns** |  **1.00** |    **0.00** |
+|  gfoidlBase64 |   AVX2 |                                      Empty |      16 |    39.26 ns |  0.8170 ns |  1.4093 ns |    39.79 ns |  0.85 |    0.05 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| BuffersBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    52.04 ns |  0.7414 ns |  0.6935 ns |    52.22 ns |  1.00 |    0.00 |
-|  gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    37.75 ns |  0.8632 ns |  2.5453 ns |    38.02 ns |  0.78 |    0.06 |
+| BuffersBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    49.16 ns |  1.0296 ns |  1.7203 ns |    48.78 ns |  1.00 |    0.00 |
+|  gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    38.40 ns |  0.8045 ns |  1.3661 ns |    38.94 ns |  0.78 |    0.04 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| BuffersBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    46.33 ns |  1.0803 ns |  3.1854 ns |    46.28 ns |  1.00 |    0.00 |
-|  gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    54.86 ns |  1.1461 ns |  3.2699 ns |    55.04 ns |  1.20 |    0.13 |
+| BuffersBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    50.87 ns |  0.5463 ns |  0.5111 ns |    51.07 ns |  1.00 |    0.00 |
+|  gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    48.22 ns |  1.1283 ns |  3.1825 ns |    49.10 ns |  1.02 |    0.07 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| **BuffersBase64** |   **AVX2** |                                      **Empty** |    **1000** | **1,170.23 ns** | **23.4101 ns** | **56.5381 ns** | **1,182.42 ns** |  **1.00** |    **0.00** |
-|  gfoidlBase64 |   AVX2 |                                      Empty |    1000 |   263.57 ns |  4.0891 ns |  3.6249 ns |   264.39 ns |  0.21 |    0.00 |
+| **BuffersBase64** |   **AVX2** |                                      **Empty** |    **1000** | **1,197.79 ns** | **23.2928 ns** | **37.6136 ns** | **1,211.29 ns** |  **1.00** |    **0.00** |
+|  gfoidlBase64 |   AVX2 |                                      Empty |    1000 |   179.10 ns |  3.6289 ns |  6.8159 ns |   182.23 ns |  0.15 |    0.01 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| BuffersBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 | 1,218.84 ns | 18.3513 ns | 17.1658 ns | 1,224.33 ns |  1.00 |    0.00 |
-|  gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 |   250.79 ns |  5.0717 ns | 13.3609 ns |   251.42 ns |  0.22 |    0.01 |
+| BuffersBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 | 1,205.04 ns | 24.0066 ns | 30.3607 ns | 1,215.72 ns |  1.00 |    0.00 |
+|  gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 |   256.70 ns |  5.1126 ns |  8.6815 ns |   260.10 ns |  0.21 |    0.01 |
 |               |        |                                            |         |             |            |            |             |       |         |
-| BuffersBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,196.36 ns | 23.9491 ns | 44.9822 ns | 1,213.07 ns |  1.00 |    0.00 |
-|  gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,315.79 ns | 25.7476 ns | 47.7248 ns | 1,331.36 ns |  1.10 |    0.06 |
+| BuffersBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,223.15 ns | 10.9624 ns | 10.2543 ns | 1,223.58 ns |  1.00 |    0.00 |
+|  gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,334.13 ns | 26.4728 ns | 55.2585 ns | 1,360.19 ns |  1.10 |    0.04 |
