@@ -5,14 +5,17 @@ using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64.Benchmarks
 {
-    [Config(typeof(HardwareIntrinsicsCustomConfig))]
+    [ShortRunJob]
     public class DecodeUtf8Benchmark
     {
+        private static readonly Base64Encoder  s_encoder  = new Base64Encoder();
+        private static readonly Base64Encoder1 s_encoder1 = new Base64Encoder1();
+        //---------------------------------------------------------------------
         private byte[] _base64;
         private byte[] _decoded;
         //---------------------------------------------------------------------
-        [Params(5, 16, 1_000)]
-        public int DataLen { get; set; } = 16;
+        //[Params(5, 16, 1_000)]
+        public int DataLen { get; set; } = 1_000;
         //---------------------------------------------------------------------
         [GlobalSetup]
         public void GlobalSetup()
@@ -35,9 +38,15 @@ namespace gfoidl.Base64.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public OperationStatus gfoidlBase64()
+        public OperationStatus Base()
         {
-            return Base64.Default.Decode(_base64, _decoded, out int _, out int _);
+            return s_encoder1.Decode(_base64, _decoded, out int _, out int _);
+        }
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public OperationStatus Dev()
+        {
+            return s_encoder.Decode(_base64, _decoded, out int _, out int _);
         }
     }
 }
