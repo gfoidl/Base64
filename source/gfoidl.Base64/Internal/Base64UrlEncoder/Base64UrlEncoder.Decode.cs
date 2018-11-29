@@ -112,15 +112,12 @@ namespace gfoidl.Base64.Internal
             decodedLength = GetDataLen(inputLength, out int base64Len, isFinalBlock);
             int srcLength = base64Len & ~0x3;       // only decode input up to the closest multiple of 4.
 
-            ref byte destBytes  = ref MemoryMarshal.GetReference(data);
+            ref byte destBytes = ref MemoryMarshal.GetReference(data);
 
 #if NETCOREAPP
-            if (srcLength < 24)
-                goto Scalar;
-#endif
-
-#if NETCOREAPP3_0 && !AVX_DECODE_DISABLE
-            if (Avx2.IsSupported && srcLength >= 45 && !s_isMac)
+#if NETCOREAPP3_0
+            // s - 45 >= 0 used 'lea' as opposed to s >= 45
+            if (Avx2.IsSupported && srcLength - 45 >= 0 && !s_isMac)
             {
                 if (!Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
                     goto Scalar;
@@ -128,13 +125,10 @@ namespace gfoidl.Base64.Internal
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
+            else if (Ssse3.IsSupported && srcLength - 24 >= 0)
 #endif
-
-#if NETCOREAPP
-#if NETCOREAPP3_0
-            if (Ssse3.IsSupported && ((uint)srcLength - 24 >= sourceIndex))
-#else
-            if (Sse2.IsSupported && Ssse3.IsSupported && ((uint)srcLength - 24 >= sourceIndex))
+#if NETCOREAPP2_1
+            if (Sse2.IsSupported && Ssse3.IsSupported && srcLength - 24 >= 0)
 #endif
             {
                 if (!Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex))
@@ -143,9 +137,9 @@ namespace gfoidl.Base64.Internal
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
+#endif
 
         Scalar:
-#endif
             ref sbyte decodingMap = ref s_decodingMap[0];
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
@@ -270,7 +264,7 @@ namespace gfoidl.Base64.Internal
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0 && !AVX_DECODE_DISABLE
+#if NETCOREAPP3_0
 #if DEBUG
         public static event EventHandler<EventArgs> Avx2Decoded;
 #endif
