@@ -5,13 +5,13 @@
 # Arguments:
 #   build               builds the solution
 #   test                runs all tests under ./tests
+#   coverage            determines code coverage with coverlet and uploads to codecov
 #   pack                creates the NuGet-package
 #   deploy              deploys to $2, which must be either nuget or myget
 #                       * when CI_SKIP_DEPLOY is set, no deploy is done
 #                       * when DEBUG is set, the action is echoed and not done
 #
 # Environment-Variables:
-#   NAME                project-name used for packaging
 #   BUILD_CONFIG        Debug / Release as build configuration, defaults to Release
 #   CI_BUILD_NUMBER     build-number used for version-info
 #   BRANCH_NAME         branch the commit is on
@@ -20,14 +20,17 @@
 #   DEBUG               when set deploy is simulted by echoing the action
 #   TEST_FRAMEWORK      when set only the specified test-framework (dotnet test -f) will be used
 #   TESTS_TO_SKIP       a list of test-projects to skip / ignore, separated by ;
+#   CODECOV_TOKEN       the token for codecov to uploads the opencover-xml
 #
 # Functions (sorted alphabetically):
 #   build               builds the solution
+#   coverage            code coverage
 #   deploy              deploys the solution either to nuget or myget
 #   main                entry-point
 #   pack                creates the NuGet-package
 #   setBuildEnv         sets the environment variables regarding the build-environment
 #   test                runs tests for projects in ./tests
+#   _coverageCore       helper -- used by coverage
 #   _deployCore         helper -- used by deploy
 #   _testCore           helper -- used by test
 #
@@ -39,11 +42,11 @@
 set -e
 #------------------------------------------------------------------------------
 help() {
-    echo "build script"
     echo ""
     echo "Arguments:"
     echo "  build                  builds the solution"
     echo "  test                   runs all tests under ./tests"
+    echo "  coverage               determines code coverage with coverlet and uploads to codecov"
     echo "  pack                   creates the NuGet-package"
     echo "  deploy [nuget|myget]   deploys to the destination"
 }
@@ -146,6 +149,53 @@ test() {
     # done
 }
 #------------------------------------------------------------------------------
+_coverageCore() {
+    local testFullName
+    local testDir
+    local targetFramework
+
+    testFullName="$1"
+    testDir=$(dirname "$testFullName")
+
+    cd "$testDir"
+
+    for test in ./bin/$BUILD_CONFIG/**/*.Tests.dll; do
+        targetFramework=$(basename $(dirname $test))
+        mkdir -p "coverage/$targetFramework"
+        coverlet "$test" --target "dotnet" --targetargs "test --no-build -c $BUILD_CONFIG" --format opencover -o "./coverage/$targetFramework/coverage.opencover.xml"
+    done
+
+    cd "$workingDir"
+}
+#------------------------------------------------------------------------------
+coverage() {
+    local testDir
+    testDir="./tests"
+
+    if [[ ! -d "$testDir" ]]; then
+        echo "test-directory not existing -> no coverage need to run"
+        return
+    fi
+
+    for testProject in "$testDir"/**/*.csproj; do
+        _coverageCore "$testProject"
+    done
+
+    # when $CODECOV_TOKEN is set via env-variable, so it may be omitted as argument
+    if [[ -n "$CODECOV_TOKEN" ]]; then
+        if [[ ! -f codecov.sh ]]; then
+            echo "codecov.sh does not exists -- fetching..."
+            curl -s https://codecov.io/bash > codecov.sh
+            chmod u+x codecov.sh
+        fi
+
+        # a cool script, does quite a lot without any args :-)
+        ./codecov.sh
+    else
+        echo "CODECOV_TOKEN not set -- skipping upload"
+    fi
+}
+#------------------------------------------------------------------------------
 pack() {
     find source -name "*.csproj" -print0 | xargs -0 -n1 dotnet pack -o "$(pwd)/NuGet-Packed" --no-build -c $BUILD_CONFIG
 
@@ -184,23 +234,29 @@ main() {
     setBuildEnv
 
     case "$1" in
-        build)  build
-                ;;
-        test)   test
-                ;;
-        pack)   pack
-                ;;
+        build)      build
+                    ;;
+        test)       test
+                    ;;
+        coverage)   coverage
+                    ;;
+        pack)       pack
+                    ;;
         deploy)
-                shift
-                deploy "$1"
-                ;;
+                    shift
+                    deploy "$1"
+                    ;;
         *)
-                help
-                exit
-                ;;
+                    help
+                    exit
+                    ;;
     esac
 }
 #------------------------------------------------------------------------------
+echo "build script, (c) gfoidl, 2018"
+
+workingDir=$(pwd)
+
 if [[ $# -lt 1 ]]; then
     help
     exit 1002
