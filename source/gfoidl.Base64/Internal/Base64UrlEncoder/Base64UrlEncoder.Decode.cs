@@ -21,6 +21,11 @@ namespace gfoidl.Base64.Internal
         public override int GetDecodedLength(ReadOnlySpan<byte> encoded) => this.GetDecodedLength(encoded.Length);
         public override int GetDecodedLength(ReadOnlySpan<char> encoded) => this.GetDecodedLength(encoded.Length);
         //---------------------------------------------------------------------
+        public override int GetMaxDecodedLength(int encodedLength)
+        {
+            return GetDecodedLength(encodedLength);
+        } 
+        //---------------------------------------------------------------------
         internal int GetDecodedLength(int encodedLength)
         {
             if ((uint)encodedLength >= int.MaxValue)

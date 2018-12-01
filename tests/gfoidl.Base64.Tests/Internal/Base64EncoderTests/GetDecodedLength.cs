@@ -19,6 +19,26 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         }
         //---------------------------------------------------------------------
         [Test]
+        public void MaxEncodedSpan_1_to_50_given___correct_decoded_len()
+        {
+            var sut = new Base64Encoder();
+
+            Assert.Multiple(() =>
+            {
+                for (int i = 1; i < 50; ++i)
+                {
+                    var data = new byte[i];
+                    string base64WoPaddingString = Convert.ToBase64String(data);
+                    byte[] base64WoPadding = Encoding.ASCII.GetBytes(base64WoPaddingString);
+                    int padding = i % 3 == 0 ? 0 : 3 - i % 3;
+                    int actual = sut.GetMaxDecodedLength(base64WoPadding.Length);
+
+                    Assert.AreEqual(i + padding, actual);
+                }
+            });
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void EncodedSpan_1_to_50_byte_given___correct_decoded_len()
         {
             var sut = new Base64Encoder();

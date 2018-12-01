@@ -45,6 +45,11 @@ namespace gfoidl.Base64.Internal
             if (Unsafe.Subtract(ref end, 1) == EncodingPad) padding++;
 
             return maxLen - padding;
+        } 
+        //---------------------------------------------------------------------
+        public override int GetMaxDecodedLength(int encodedLength)
+        {
+            return GetDecodedLength(encodedLength);
         }
         //---------------------------------------------------------------------
         internal int GetDecodedLength(int encodedLength)
