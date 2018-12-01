@@ -25,7 +25,8 @@ namespace gfoidl.Base64
             switch (status)
             {
                 case OperationStatus.DestinationTooSmall:
-                    return new InvalidOperationException(Strings.DestinationTooSmall);
+                    //return new InvalidOperationException(Strings.DestinationTooSmall);
+                    return new InvalidOperationException("should not be here");
                 case OperationStatus.InvalidData:
                     return new FormatException(Strings.InvalidInput);
                 default:

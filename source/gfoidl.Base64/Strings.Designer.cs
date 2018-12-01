@@ -61,15 +61,6 @@ namespace gfoidl.Base64 {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The destination buffer is too small..
-        /// </summary>
-        internal static string DestinationTooSmall {
-            get {
-                return ResourceManager.GetString("DestinationTooSmall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The input is not a valid Base64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters..
         /// </summary>
         internal static string InvalidInput {
