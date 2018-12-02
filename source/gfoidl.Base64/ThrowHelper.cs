@@ -1,11 +1,20 @@
 ﻿using System;
 using System.Buffers;
 using System.Diagnostics;
+using System.Resources;
 
 namespace gfoidl.Base64
 {
     internal static class ThrowHelper
     {
+        private static readonly Lazy<ResourceManager> s_resources;
+        //---------------------------------------------------------------------
+        static ThrowHelper()
+        {
+            string ns = typeof(ThrowHelper).Namespace;
+            s_resources = new Lazy<ResourceManager>(() => new ResourceManager($"{ns}.Strings", typeof(ThrowHelper).Assembly));
+        }
+        //---------------------------------------------------------------------
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) => throw GetArgumentOutOfRangeException(argument);
         public static void ThrowMalformedInputException(int urlEncodedLen)              => throw GetMalformdedInputException(urlEncodedLen);
         public static void ThrowForOperationNotDone(OperationStatus status)             => throw GetExceptionForOperationNotDone(status);
@@ -22,12 +31,12 @@ namespace gfoidl.Base64
         //---------------------------------------------------------------------
         private static Exception GetArgumentOutOfRangeException(ExceptionArgument argument, ExceptionRessource ressource)
         {
-            return new ArgumentOutOfRangeException(GetArgumentName(argument), GetRessource(ressource));
+            return new ArgumentOutOfRangeException(GetArgumentName(argument), GetResource(ressource));
         }
         //---------------------------------------------------------------------
         private static FormatException GetMalformdedInputException(int urlEncodedLen)
         {
-            return new FormatException(string.Format(Strings.MalformedInput, urlEncodedLen));
+            return new FormatException(string.Format(GetResource(ExceptionRessource.MalformedInput), urlEncodedLen));
         }
         //---------------------------------------------------------------------
         private static Exception GetExceptionForOperationNotDone(OperationStatus status)
@@ -38,7 +47,7 @@ namespace gfoidl.Base64
                     //return new InvalidOperationException(Strings.DestinationTooSmall);
                     return new InvalidOperationException("should not be here");
                 case OperationStatus.InvalidData:
-                    return new FormatException(Strings.InvalidInput);
+                    return new FormatException(GetResource(ExceptionRessource.InvalidInput));
                 default:
                     throw new NotSupportedException();
             }
@@ -52,12 +61,12 @@ namespace gfoidl.Base64
             return argument.ToString();
         }
         //---------------------------------------------------------------------
-        private static string GetRessource(ExceptionRessource ressource)
+        private static string GetResource(ExceptionRessource ressource)
         {
             Debug.Assert(Enum.IsDefined(typeof(ExceptionRessource), ressource),
                 $"The enum value is not defined, please check the {nameof(ExceptionRessource)} enum.");
 
-            return Strings.ResourceManager.GetString(ressource.ToString());
+            return s_resources.Value.GetString(ressource.ToString());
         }
     }
     //-------------------------------------------------------------------------
@@ -69,6 +78,8 @@ namespace gfoidl.Base64
     //---------------------------------------------------------------------
     internal enum ExceptionRessource
     {
-        EncodedLengthOutOfRange
+        EncodedLengthOutOfRange,
+        InvalidInput,
+        MalformedInput
     }
 }
