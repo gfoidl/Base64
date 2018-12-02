@@ -26,12 +26,12 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
             {
                 for (int i = 1; i < 50; ++i)
                 {
-                    var data = new byte[i];
-                    string base64WoPadding = Convert.ToBase64String(data).TrimEnd('=');
+                    var data         = new byte[i];
+                    string base64Url = Convert.ToBase64String(data).ToBase64Url();
 
                     int actual = sut.GetEncodedLength(i);
 
-                    Assert.AreEqual(base64WoPadding.Length, actual);
+                    Assert.AreEqual(base64Url.Length, actual);
                 }
             });
         }

@@ -18,11 +18,16 @@ namespace gfoidl.Base64
         /// <summary>
         /// Gets the maximum length of the decoded data. 
         /// The result may not be the exact length due to padding. 
-        /// Use <see cref="GetDecodedLength(ReadOnlySpan{byte})"/> or <see cref="GetDecodedLength(ReadOnlySpan{char})"/> for an accurate length.
+        /// Use <see cref="GetDecodedLength(ReadOnlySpan{byte})" /> or <see cref="GetDecodedLength(ReadOnlySpan{char})" /> 
+        /// for an accurate length.
         /// </summary>     
-        /// <param name="sourceLength">The length of the encoded data.</param>
-        /// <returns>The base64 decoded length of <paramref name="sourceLength" />.</returns>
-        int GetMaxDecodedLength(int sourceLength);
+        /// <param name="encodedLength">The length of the encoded data.</param>
+        /// <returns>The maximum base64 decoded length of <paramref name="encodedLength" />.</returns>
+        /// <remarks>
+        /// This method can be used for buffer-chains, to get the size which is at least
+        /// required for decoding.
+        /// </remarks>
+        int GetMaxDecodedLength(int encodedLength);
         //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the decoded data.

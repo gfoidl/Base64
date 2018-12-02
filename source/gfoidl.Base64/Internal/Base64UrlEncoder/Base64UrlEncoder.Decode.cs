@@ -18,13 +18,9 @@ namespace gfoidl.Base64.Internal
 {
     partial class Base64UrlEncoder
     {
+        public override int GetMaxDecodedLength(int encodedLength)       => this.GetDecodedLength(encodedLength);
         public override int GetDecodedLength(ReadOnlySpan<byte> encoded) => this.GetDecodedLength(encoded.Length);
         public override int GetDecodedLength(ReadOnlySpan<char> encoded) => this.GetDecodedLength(encoded.Length);
-        //---------------------------------------------------------------------
-        public override int GetMaxDecodedLength(int encodedLength)
-        {
-            return GetDecodedLength(encodedLength);
-        } 
         //---------------------------------------------------------------------
         internal int GetDecodedLength(int encodedLength)
         {
