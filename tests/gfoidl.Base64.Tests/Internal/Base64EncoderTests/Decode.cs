@@ -47,10 +47,6 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         //---------------------------------------------------------------------
         private static IEnumerable<TestCaseData> Malformed_input___throws_FormatException_TestCases()
         {
-            yield return new TestCaseData(" ");
-            yield return new TestCaseData("a");
-            yield return new TestCaseData("ab");
-            yield return new TestCaseData("abc");
             yield return new TestCaseData("abc?");
             yield return new TestCaseData("ab?c");
             yield return new TestCaseData("ab=c");

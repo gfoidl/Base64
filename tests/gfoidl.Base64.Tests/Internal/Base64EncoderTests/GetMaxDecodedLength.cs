@@ -8,6 +8,22 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
     public class GetMaxDecodedLength
     {
         [Test]
+        public void EncodedLength_is_negative___throws_ArgumentOutOfRange()
+        {
+            var sut = new Base64Encoder();
+
+            Exception exception = Assert.Catch(() => sut.GetMaxDecodedLength(-1));
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsInstanceOf<ArgumentOutOfRangeException>(exception);
+
+                string msg = $"The 'encodedLength' is outside the allowed range by the base64 standard. It must be >= 4.{Environment.NewLine}Parameter name: encodedLength";
+                Assert.AreEqual(msg, exception.Message);
+            });
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void EncodedLength_1_to_50_given___correct_max_decoded_len()
         {
             var sut = new Base64Encoder();

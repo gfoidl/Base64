@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
 namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
 {
-    [TestFixture]
-    public class GetDecodedLength
+    [TestFixture(typeof(byte))]
+    [TestFixture(typeof(char))]
+    public class GetDecodedLength<T> where T : struct
     {
         [Test]
         public void EncodedLength_is_0___0()
@@ -19,27 +23,18 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         }
         //---------------------------------------------------------------------
         [Test]
-        public void EncodedSpan_1_to_50_byte_given___correct_decoded_len()
+        public void EncodedSpan_is_empty___0()
         {
-            var sut = new Base64Encoder();
+            var sut       = new Base64Encoder();
+            var emptySpan = Array.Empty<T>().AsSpan();
 
-            Assert.Multiple(() =>
-            {
-                for (int i = 1; i < 50; ++i)
-                {
-                    var data           = new byte[i];
-                    string base64      = Convert.ToBase64String(data);
-                    byte[] base64Bytes = Encoding.ASCII.GetBytes(base64);
+            int actual = sut.GetDecodedLengthImpl<T>(emptySpan);
 
-                    int actual = sut.GetDecodedLength(base64Bytes);
-
-                    Assert.AreEqual(i, actual);
-                }
-            });
+            Assert.AreEqual(0, actual);
         }
         //---------------------------------------------------------------------
         [Test]
-        public void EncodedSpan_1_to_50_char_given___correct_decoded_len()
+        public void EncodedSpan_1_to_50_given___correct_decoded_len()
         {
             var sut = new Base64Encoder();
 
@@ -50,7 +45,21 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
                     var data      = new byte[i];
                     string base64 = Convert.ToBase64String(data);
 
-                    int actual = sut.GetDecodedLength(base64.AsSpan());
+                    int actual;
+
+                    if (typeof(T) == typeof(byte))
+                    {
+                        byte[] base64Bytes = Encoding.ASCII.GetBytes(base64);
+                        actual             = sut.GetDecodedLength(base64Bytes);
+                    }
+                    else if (typeof(T) == typeof(char))
+                    {
+                        actual = sut.GetDecodedLength(base64.AsSpan());
+                    }
+                    else
+                    {
+                        throw new NotSupportedException(); // just in case new types are introduced in the future
+                    }
 
                     Assert.AreEqual(i, actual);
                 }
@@ -68,11 +77,25 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         }
         //---------------------------------------------------------------------
         [Test]
-        public void EncodedLength_is_negative___throws_ArgumentOutOfRange()
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
+        public void Issue_32_EncodedLength_is_lt_4___throws_ArgumentOutOfRange(int encodedLength)
         {
+            T a         = Unsafe.As<char, T>(ref Unsafe.AsRef('='));
+            T[] encoded = Enumerable.Repeat(a, encodedLength).ToArray();
+
             var sut = new Base64Encoder();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => sut.GetDecodedLength(-1));
+            Exception exception = Assert.Catch(() => sut.GetDecodedLengthImpl<T>(encoded));
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsInstanceOf<ArgumentOutOfRangeException>(exception);
+
+                string msg = $"The 'encodedLength' is outside the allowed range by the base64 standard. It must be >= 4.{Environment.NewLine}Parameter name: encodedLength";
+                Assert.AreEqual(msg, exception.Message);
+            });
         }
     }
 }

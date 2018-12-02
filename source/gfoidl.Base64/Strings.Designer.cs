@@ -61,6 +61,15 @@ namespace gfoidl.Base64 {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;encodedLength&apos; is outside the allowed range by the base64 standard. It must be &gt;= 4..
+        /// </summary>
+        internal static string EncodedLengthOutOfRange {
+            get {
+                return ResourceManager.GetString("EncodedLengthOutOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The input is not a valid Base64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters..
         /// </summary>
         internal static string InvalidInput {

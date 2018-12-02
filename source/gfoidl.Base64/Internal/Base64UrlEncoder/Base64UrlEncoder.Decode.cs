@@ -25,7 +25,7 @@ namespace gfoidl.Base64.Internal
         internal int GetDecodedLength(int encodedLength)
         {
             if ((uint)encodedLength >= int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
 
             return GetDataLen(encodedLength, out int _);
         }

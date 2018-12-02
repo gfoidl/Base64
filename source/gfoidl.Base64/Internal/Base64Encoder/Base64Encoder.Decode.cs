@@ -17,45 +17,58 @@ namespace gfoidl.Base64.Internal
 {
     partial class Base64Encoder
     {
-        public override int GetMaxDecodedLength(int encodedLength) => this.GetDecodedLength(encodedLength);
-        //---------------------------------------------------------------------
-        public override int GetDecodedLength(ReadOnlySpan<byte> encoded)
-        {
-            int maxLen = this.GetDecodedLength(encoded.Length);
-
-            ref byte tmp = ref MemoryMarshal.GetReference(encoded);
-            ref byte end = ref Unsafe.Add(ref tmp, encoded.Length - 1);
-
-            int padding = 0;
-
-            if (end == EncodingPad) padding++;
-            if (Unsafe.Subtract(ref end, 1) == EncodingPad) padding++;
-
-            return maxLen - padding;
-        }
-        //---------------------------------------------------------------------
-        public override int GetDecodedLength(ReadOnlySpan<char> encoded)
-        {
-            int maxLen = this.GetDecodedLength(encoded.Length);
-
-            ref char tmp = ref MemoryMarshal.GetReference(encoded);
-            ref char end = ref Unsafe.Add(ref tmp, encoded.Length - 1);
-
-            int padding = 0;
-
-            if (end == EncodingPad) padding++;
-            if (Unsafe.Subtract(ref end, 1) == EncodingPad) padding++;
-
-            return maxLen - padding;
-        }
-        //---------------------------------------------------------------------
-        internal int GetDecodedLength(int encodedLength)
+        public override int GetMaxDecodedLength(int encodedLength)
         {
             if (encodedLength < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength, ExceptionRessource.EncodedLengthOutOfRange);
 
-            return (encodedLength >> 2) * 3;
+            return this.GetDecodedLength(encodedLength);
         }
+        //---------------------------------------------------------------------
+        public override int GetDecodedLength(ReadOnlySpan<byte> encoded) => this.GetDecodedLengthImpl(encoded);
+        public override int GetDecodedLength(ReadOnlySpan<char> encoded) => this.GetDecodedLengthImpl(encoded);
+        //---------------------------------------------------------------------
+        internal int GetDecodedLengthImpl<T>(ReadOnlySpan<T> encoded)
+        {
+            if (encoded.IsEmpty) return 0;
+
+            if (encoded.Length < 4)
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength, ExceptionRessource.EncodedLengthOutOfRange);
+
+            int maxLen = this.GetDecodedLength(encoded.Length);
+
+            Debug.Assert(maxLen >= 3, "maxLen >= 3");
+            Debug.Assert(encoded.Length >= 4, "encoded.Length >= 4");
+
+            ref T enc = ref MemoryMarshal.GetReference(encoded);
+            ref T end = ref Unsafe.Add(ref enc, (IntPtr)((uint)encoded.Length - 1));
+
+            int padding = 0;
+
+            if (typeof(T) == typeof(byte))
+            {
+                ref byte e = ref Unsafe.As<T, byte>(ref end);
+
+                if (e == EncodingPad) padding++;
+                if (Unsafe.Subtract(ref e, 1) == EncodingPad) padding++;
+            }
+            else if (typeof(T) == typeof(char))
+            {
+                ref char e = ref Unsafe.As<T, char>(ref end);
+                const char encodingPad = (char)EncodingPad;
+
+                if (e == encodingPad) padding++;
+                if (Unsafe.Subtract(ref e, 1) == encodingPad) padding++;
+            }
+            else
+            {
+                throw new NotSupportedException(); // just in case new types are introduced in the future
+            }
+
+            return maxLen - padding;
+        }
+        //---------------------------------------------------------------------
+        internal int GetDecodedLength(int encodedLength) => (encodedLength >> 2) * 3;
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
         public override byte[] Decode(ReadOnlySpan<char> encoded)
