@@ -8,7 +8,7 @@ namespace gfoidl.Base64.Demo
     {
         static void Main()
         {
-            Action[] demos = { RunGuidEncoding, RunGuidDecoding, RunBufferChainEncode };
+            Action[] demos = { RunGuidEncoding, RunGuidDecoding, RunBufferChainEncode, RunDetectEncoding };
 
             foreach (Action demo in demos)
             {
@@ -94,6 +94,33 @@ namespace gfoidl.Base64.Demo
 
             decoded = decoded.Slice(0, written + written1);
             Debug.Assert(data.SequenceEqual(decoded));
+        }
+        //---------------------------------------------------------------------
+        private static void RunDetectEncoding()
+        {
+            // Let's assume we don't know whether this string is base64 or base64Url
+            string encodedString = "a-_9";
+
+            Span<byte> data = stackalloc byte[Base64.Default.GetMaxDecodedLength(encodedString.Length)];
+
+            EncodingType encodingType = Base64.DetectEncoding(encodedString);
+
+            int written = 0;
+            switch (encodingType)
+            {
+                case EncodingType.Base64:
+                    Base64.Default.Decode(encodedString.AsSpan(), data, out int _, out written);
+                    break;
+                case EncodingType.Base64Url:
+                    Base64.Url.Decode(encodedString.AsSpan(), data, out int _, out written);
+                    break;
+                case EncodingType.Unknown:
+                    throw new InvalidOperationException("should not be here");
+            }
+
+            data = data.Slice(0, written);
+
+            Debug.Assert(data.Length == 3);
         }
     }
 }
