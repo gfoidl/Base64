@@ -3,8 +3,8 @@ using BenchmarkDotNet.Attributes;
 
 namespace gfoidl.Base64.Benchmarks
 {
-    [Config(typeof(HardwareIntrinsicsCustomConfig))]
-    public class EncodeStringBenchmark
+    [MemoryDiagnoser]
+    public class EncodeStringUrlBenchmark
     {
         private byte[] _data;
         //---------------------------------------------------------------------
@@ -23,13 +23,14 @@ namespace gfoidl.Base64.Benchmarks
         [Benchmark(Baseline = true)]
         public string ConvertToBase64()
         {
-            return Convert.ToBase64String(_data);
+            string base64 = Convert.ToBase64String(_data);
+            return base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public string gfoidlBase64()
+        public string gfoidlBase64Url()
         {
-            return Base64.Default.Encode(_data);
+            return Base64.Url.Encode(_data);
         }
     }
 }

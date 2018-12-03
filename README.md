@@ -122,7 +122,7 @@ base64Url isn't supported, so hacky solutions like
 string base64 = Convert.ToBase64String(data);
 string base64Url = base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
 ```
-are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string.
+are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string (see [here](perf/gfoidl.Base64.Benchmarks/results/EncodeStringUrlBenchmark-report.md) and [here](perf/gfoidl.Base64.Benchmarks/results/DecodeStringUrlBenchmark-report.md) for benchmark results).
 
 _gfoidl.Base64_ supports encoding / decoding to / from base64Url in a direct way.
 Encoding `byte[] -> byte[]` for UTF-8 is supported, as well as `byte[] -> char[]`.

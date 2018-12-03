@@ -1,6 +1,5 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
-using gfoidl.Base64.Internal;
 
 namespace gfoidl.Base64.Benchmarks
 {
