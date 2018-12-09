@@ -21,6 +21,11 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
         <NoWarn>$(NoWarn);CS1591</NoWarn>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="gfoidl.Analyzers" Version="0.1.2" />
+        <PackageReference Include="Internal.AspNetCore.Analyzers" Version="2.2.0" PrivateAssets="All" />
+    </ItemGroup>
+
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     </ItemGroup>

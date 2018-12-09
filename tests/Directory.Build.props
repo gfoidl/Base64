@@ -12,6 +12,10 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <NoWarn>$(NoWarn);GF0001</NoWarn>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(OS)' == 'Unix' AND $([System.IO.File]::Exists('/usr/lib/libc.dylib'))">
         <DefineConstants>OSX</DefineConstants>
     </PropertyGroup>
