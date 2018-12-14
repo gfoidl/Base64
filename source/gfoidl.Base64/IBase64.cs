@@ -13,6 +13,9 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="sourceLength">The length of the data.</param>
         /// <returns>The base64 encoded length of <paramref name="sourceLength" />.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when <paramref name="sourceLength" /> is greater than <see cref="Base64.MaximumEncodeLength" />.
+        /// </exception>
         int GetEncodedLength(int sourceLength);
         //---------------------------------------------------------------------
         /// <summary>
@@ -27,6 +30,9 @@ namespace gfoidl.Base64
         /// This method can be used for buffer-chains, to get the size which is at least
         /// required for decoding.
         /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown when <paramref name="encodedLength" /> is negative.
+        /// </exception>
         int GetMaxDecodedLength(int encodedLength);
         //---------------------------------------------------------------------
         /// <summary>
@@ -34,6 +40,10 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// For <see cref="Base64.Default" /> thrown when the length of <paramref name="encoded" /> is 
+        /// less than 4, as it is not a valid length according the base64 standard.
+        /// </exception>
         int GetDecodedLength(ReadOnlySpan<byte> encoded);
         //---------------------------------------------------------------------
         /// <summary>
@@ -41,6 +51,10 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// For <see cref="Base64.Default" /> thrown when the length of <paramref name="encoded" /> is 
+        /// less than 4, as it is not a valid length according the base64 standard.
+        /// </exception>
         int GetDecodedLength(ReadOnlySpan<char> encoded);
         //---------------------------------------------------------------------
         /// <summary>
@@ -153,6 +167,10 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
+        /// <exception cref="FormatException">
+        /// Thrown for <see cref="Base64.Url" /> when the length is not conforming the base64Url standard.
+        /// <paramref name="isFinalBlock" /> set to <c>false</c> won't throw this exception.
+        /// </exception>
         OperationStatus Decode(
             ReadOnlySpan<byte> encoded,
             Span<byte>         data,
@@ -192,6 +210,10 @@ namespace gfoidl.Base64
         /// </description></item>
         /// </list>
         /// </returns>
+        /// <exception cref="FormatException">
+        /// Thrown for <see cref="Base64.Url" /> when the length is not conforming the base64Url standard.
+        /// <paramref name="isFinalBlock" /> set to <c>false</c> won't throw this exception.
+        /// </exception>
         OperationStatus Decode(
             ReadOnlySpan<char> encoded,
             Span<byte>         data,
@@ -211,6 +233,10 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="encoded">The base64 encoded data in string-form.</param>
         /// <returns>The base64 decoded data.</returns>
+        /// <exception cref="FormatException">
+        /// The input is not a valid Base64 string as it contains a non-base 64 character, 
+        /// more than two padding characters, or an illegal character among the padding characters.
+        /// </exception>
         byte[] Decode(ReadOnlySpan<char> encoded);
     }
 }

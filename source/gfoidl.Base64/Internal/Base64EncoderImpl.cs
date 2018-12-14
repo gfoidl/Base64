@@ -89,8 +89,7 @@ namespace gfoidl.Base64.Internal
 #endif
         }
         //---------------------------------------------------------------------
-        protected const int MaxStackallocBytes  = 256;
-        public    const int MaximumEncodeLength = int.MaxValue / 4 * 3; // 1610612733
+        protected const int MaxStackallocBytes = 256;
         //---------------------------------------------------------------------
         public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<byte> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, encodedLength: -1, isFinalBlock);
         public override OperationStatus Encode(ReadOnlySpan<byte> data, Span<char> encoded, out int consumed, out int written, bool isFinalBlock = true) => this.EncodeCore(data, encoded, out consumed, out written, encodedLength: -1, isFinalBlock);
