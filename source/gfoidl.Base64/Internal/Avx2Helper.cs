@@ -11,8 +11,7 @@ namespace gfoidl.Base64.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Write(Vector256<sbyte> vec, ref char dest)
         {
-            // https://github.com/dotnet/coreclr/issues/21130
-            Vector256<sbyte> zero = Avx.SetZeroVector256<sbyte>();
+            Vector256<sbyte> zero = Vector256<sbyte>.Zero;
 
             Vector256<sbyte> c0 = Avx2.UnpackLow(vec, zero);
             Vector256<sbyte> c1 = Avx2.UnpackHigh(vec, zero);
@@ -46,14 +45,14 @@ namespace gfoidl.Base64.Internal
             Vector256<short> c1 = Unsafe.As<char, Vector256<short>>(ref Unsafe.Add(ref src, 16));
 
             Vector256<byte> t0 = Avx2.PackUnsignedSaturate(c0, c1);
-            Vector256<long> t1 = Avx2.Permute4x64(Avx.StaticCast<byte, long>(t0), 0b_11_01_10_00);
+            Vector256<long> t1 = Avx2.Permute4x64(t0.AsInt64(), 0b_11_01_10_00);
 
-            return Avx.StaticCast<long, sbyte>(t1);
+            return t1.AsSByte();
         }
         //---------------------------------------------------------------------
         public static Vector256<sbyte> LessThan(Vector256<sbyte> left, Vector256<sbyte> right)
         {
-            Vector256<sbyte> allOnes = Avx.SetAllVector256<sbyte>(-1);
+            Vector256<sbyte> allOnes = Vector256.Create((sbyte)-1);
             return LessThan(left, right, allOnes);
         }
         //---------------------------------------------------------------------

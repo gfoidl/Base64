@@ -266,22 +266,20 @@ namespace gfoidl.Base64.Internal
             ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 28 + 1));
 
             // The JIT won't hoist these "constants", so help him
-            Vector256<sbyte> shuffleVec          = s_avx_encodeShuffleVec;
-            Vector256<sbyte> shuffleConstant0    = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x0fc0fc00));
-            Vector256<sbyte> shuffleConstant2    = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x003f03f0));
-            Vector256<ushort> shuffleConstant1   = Avx.StaticCast<int, ushort>(Avx.SetAllVector256(0x04000040));
-            Vector256<short> shuffleConstant3    = Avx.StaticCast<int, short>(Avx.SetAllVector256(0x01000010));
-            Vector256<byte> translationContant0  = Avx.SetAllVector256((byte)51);
-            Vector256<sbyte> translationContant1 = Avx.SetAllVector256((sbyte)25);
-            Vector256<sbyte> lut                 = s_avx_encodeLut;
+            Vector256<sbyte>  shuffleVec          = s_avx_encodeShuffleVec;
+            Vector256<sbyte>  shuffleConstant0    = Vector256.Create(0x0fc0fc00).AsSByte();
+            Vector256<sbyte>  shuffleConstant2    = Vector256.Create(0x003f03f0).AsSByte();
+            Vector256<ushort> shuffleConstant1    = Vector256.Create(0x04000040).AsUInt16();
+            Vector256<short>  shuffleConstant3    = Vector256.Create(0x01000010).AsInt16();
+            Vector256<byte>   translationContant0 = Vector256.Create((byte)51);
+            Vector256<sbyte>  translationContant1 = Vector256.Create((sbyte)25);
+            Vector256<sbyte> lut                  = s_avx_encodeLut;
 
             // first load is done at c-0 not to get a segfault
             Vector256<sbyte> str = Unsafe.ReadUnaligned<Vector256<sbyte>>(ref src);
 
             // shift by 4 bytes, as required by enc_reshuffle
-            str = Avx.StaticCast<int, sbyte>(Avx2.PermuteVar8x32(
-                Avx.StaticCast<sbyte, int>(str),
-                s_avx_encodePermuteVec));
+            str = Avx2.PermuteVar8x32(str.AsInt32(), s_avx_encodePermuteVec).AsSByte();
 
             while (true)
             {
@@ -289,14 +287,14 @@ namespace gfoidl.Base64.Internal
                 str                  = Avx2.Shuffle(str, shuffleVec);
                 Vector256<sbyte>  t0 = Avx2.And(str, shuffleConstant0);
                 Vector256<sbyte>  t2 = Avx2.And(str, shuffleConstant2);
-                Vector256<ushort> t1 = Avx2.MultiplyHigh(Avx.StaticCast<sbyte, ushort>(t0), shuffleConstant1);
-                Vector256<short>  t3 = Avx2.MultiplyLow(Avx.StaticCast<sbyte, short>(t2), shuffleConstant3);
-                str                  = Avx2.Or(Avx.StaticCast<ushort, sbyte>(t1), Avx.StaticCast<short, sbyte>(t3));
+                Vector256<ushort> t1 = Avx2.MultiplyHigh(t0.AsUInt16(), shuffleConstant1);
+                Vector256<short>  t3 = Avx2.MultiplyLow(t2.AsInt16(), shuffleConstant3);
+                str                  = Avx2.Or(t1.AsSByte(), t3.AsSByte());
 
                 // Translation
-                Vector256<byte>  indices = Avx2.SubtractSaturate(Avx.StaticCast<sbyte, byte>(str), translationContant0);
+                Vector256<byte>  indices = Avx2.SubtractSaturate(str.AsByte(), translationContant0);
                 Vector256<sbyte> mask    = Avx2.CompareGreaterThan(str, translationContant1);
-                Vector256<sbyte> tmp     = Avx2.Subtract(Avx.StaticCast<byte, sbyte>(indices), mask);
+                Vector256<sbyte> tmp     = Avx2.Subtract(indices.AsSByte(), mask);
                 str                      = Avx2.Add(str, Avx2.Shuffle(lut, tmp));
 
                 if (typeof(T) == typeof(byte))
@@ -354,12 +352,21 @@ namespace gfoidl.Base64.Internal
 
             // The JIT won't hoist these "constants", so help him
             Vector128<sbyte>  shuffleVec          = s_sse_encodeShuffleVec;
-            Vector128<sbyte>  shuffleConstant0    = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x0fc0fc00));
-            Vector128<sbyte>  shuffleConstant2    = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x003f03f0));
+#if NETCOREAPP3_0
+            Vector128<sbyte>  shuffleConstant0    = Vector128.Create(0x0fc0fc00).AsSByte();
+            Vector128<sbyte>  shuffleConstant2    = Vector128.Create(0x003f03f0).AsSByte();
+            Vector128<ushort> shuffleConstant1    = Vector128.Create(0x04000040).AsUInt16();
+            Vector128<short>  shuffleConstant3    = Vector128.Create(0x01000010).AsInt16();
+            Vector128<byte>   translationContant0 = Vector128.Create((byte) 51);
+            Vector128<sbyte>  translationContant1 = Vector128.Create((sbyte)25);
+#else
+            Vector128<sbyte>  shuffleConstant0    = Sse.StaticCast<int, sbyte> (Sse2.SetAllVector128(0x0fc0fc00));
+            Vector128<sbyte>  shuffleConstant2    = Sse.StaticCast<int, sbyte> (Sse2.SetAllVector128(0x003f03f0));
             Vector128<ushort> shuffleConstant1    = Sse.StaticCast<int, ushort>(Sse2.SetAllVector128(0x04000040));
-            Vector128<short>  shuffleConstant3    = Sse.StaticCast<int, short>(Sse2.SetAllVector128(0x01000010));
-            Vector128<byte>   translationContant0 = Sse2.SetAllVector128((byte)51);
+            Vector128<short>  shuffleConstant3    = Sse.StaticCast<int, short> (Sse2.SetAllVector128(0x01000010));
+            Vector128<byte>   translationContant0 = Sse2.SetAllVector128((byte) 51);
             Vector128<sbyte>  translationContant1 = Sse2.SetAllVector128((sbyte)25);
+#endif
             Vector128<sbyte>  lut                 = s_sse_encodeLut;
 
             //while (remaining >= 16)
@@ -371,14 +378,27 @@ namespace gfoidl.Base64.Internal
                 str                  = Ssse3.Shuffle(str, shuffleVec);
                 Vector128<sbyte>  t0 = Sse2.And(str, shuffleConstant0);
                 Vector128<sbyte>  t2 = Sse2.And(str, shuffleConstant2);
+
+#if NETCOREAPP3_0
+                Vector128<ushort> t1 = Sse2.MultiplyHigh(t0.AsUInt16(), shuffleConstant1);
+                Vector128<short>  t3 = Sse2.MultiplyLow(t2.AsInt16(), shuffleConstant3);
+                str                  = Sse2.Or(t1.AsSByte(), t3.AsSByte());
+#else
                 Vector128<ushort> t1 = Sse2.MultiplyHigh(Sse.StaticCast<sbyte, ushort>(t0), shuffleConstant1);
                 Vector128<short>  t3 = Sse2.MultiplyLow(Sse.StaticCast<sbyte, short>(t2), shuffleConstant3);
                 str                  = Sse2.Or(Sse.StaticCast<ushort, sbyte>(t1), Sse.StaticCast<short, sbyte>(t3));
+#endif
 
                 // Translation
+#if NETCOREAPP3_0
+                Vector128<byte>  indices = Sse2.SubtractSaturate(str.AsByte(), translationContant0);
+                Vector128<sbyte> mask    = Sse2.CompareGreaterThan(str, translationContant1);
+                Vector128<sbyte> tmp     = Sse2.Subtract(indices.AsSByte(), mask);
+#else
                 Vector128<byte>  indices = Sse2.SubtractSaturate(Sse.StaticCast<sbyte, byte>(str), translationContant0);
                 Vector128<sbyte> mask    = Sse2.CompareGreaterThan(str, translationContant1);
                 Vector128<sbyte> tmp     = Sse2.Subtract(Sse.StaticCast<byte, sbyte>(indices), mask);
+#endif
                 str                      = Sse2.Add(str, Ssse3.Shuffle(lut, tmp));
 
                 if (typeof(T) == typeof(byte))
@@ -389,9 +409,7 @@ namespace gfoidl.Base64.Internal
                 else if (typeof(T) == typeof(char))
                 {
 #if NETCOREAPP3_0
-                    // https://github.com/dotnet/coreclr/issues/21130
-                    //Vector128<sbyte> zero = Vector128<sbyte>.Zero;
-                    Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
+                    Vector128<sbyte> zero = Vector128<sbyte>.Zero;
 #else
                     Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 #endif

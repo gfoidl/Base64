@@ -92,9 +92,8 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
             Assert.Multiple(() =>
             {
                 Assert.IsInstanceOf<ArgumentOutOfRangeException>(exception);
-
-                string msg = $"The 'encodedLength' is outside the allowed range by the base64 standard. It must be >= 4.{Environment.NewLine}Parameter name: encodedLength";
-                Assert.AreEqual(msg, exception.Message);
+                string msg = $"The 'encodedLength' is outside the allowed range by the base64 standard. It must be >= 4.";
+                StringAssert.StartsWith(msg, exception.Message);
             });
         }
     }

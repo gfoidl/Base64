@@ -34,12 +34,8 @@ namespace gfoidl.Base64.Internal
             s_isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 #endif
 
-#if NETCOREAPP
-#if NETCOREAPP3_0
-            if (Ssse3.IsSupported)
-#else
+#if NETCOREAPP && !NETCOREAPP3_0
             if (Sse2.IsSupported && Ssse3.IsSupported)
-#endif
             {
                 s_sse_encodeShuffleVec = Sse2.SetVector128(
                     10, 11, 9, 10,
@@ -55,37 +51,53 @@ namespace gfoidl.Base64.Internal
                      6,  0,  1,  2
                 );
             }
-
+#endif
 #if NETCOREAPP3_0
+            if (Ssse3.IsSupported)
+            {
+                s_sse_encodeShuffleVec = Vector128.Create(
+                     1,  0,  2,  1,
+                     4,  3,  5,  4,
+                     7,  6,  8,  7,
+                    10,  9, 11, 10
+                );
+
+                s_sse_decodeShuffleVec = Vector128.Create(
+                     2,  1,  0,  6,
+                     5,  4, 10,  9,
+                     8, 14, 13, 12,
+                    -1, -1, -1, -1
+                );
+            }
+
             if (Avx2.IsSupported)
             {
-                s_avx_encodePermuteVec = Avx.SetVector256(6, 5, 4, 3, 2, 1, 0, 0);
+                s_avx_encodePermuteVec = Vector256.Create(0, 0, 1, 2, 3, 4, 5, 6);
 
-                s_avx_encodeShuffleVec = Avx.SetVector256(
-                    10, 11,  9, 10,
-                     7,  8,  6,  7,
-                     4,  5,  3,  4,
-                     1,  2,  0,  1,
-                    14, 15, 13, 14,
-                    11, 12, 10, 11,
-                     8,  9,  7,  8,
-                     5,  6,  4,  5
+                s_avx_encodeShuffleVec = Vector256.Create(
+                     5,  4,  6,  5,
+                     8,  7,  9,  8,
+                    11, 10, 12, 11,
+                    14, 13, 15, 14,
+                     1,  0,  2,  1,
+                     4,  3,  5,  4,
+                     7,  6,  8,  7,
+                    10,  9, 11, 10
                 );
 
-                s_avx_decodeShuffleVec = Avx.SetVector256(
+                s_avx_decodeShuffleVec = Vector256.Create(
+                     2,  1,  0,  6,
+                     5,  4, 10,  9,
+                     8, 14, 13, 12,
                     -1, -1, -1, -1,
-                    12, 13, 14,  8,
-                     9, 10,  4,  5,
-                     6,  0,  1,  2,
-                    -1, -1, -1, -1,
-                    12, 13, 14,  8,
-                     9, 10,  4,  5,
-                     6,  0,  1,  2
+                     2,  1,  0,  6,
+                     5,  4, 10,  9,
+                     8, 14, 13, 12,
+                    -1, -1, -1, -1
                 );
 
-                s_avx_decodePermuteVec = Avx.SetVector256(-1, -1, 6, 5, 4, 2, 1, 0);
+                s_avx_decodePermuteVec = Vector256.Create(0, 1, 2, 4, 5, 6, -1, -1);
             }
-#endif
 #endif
         }
         //---------------------------------------------------------------------

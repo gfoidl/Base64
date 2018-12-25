@@ -354,8 +354,8 @@ namespace gfoidl.Base64.Internal
             Vector256<sbyte> lutLo            = s_avx_decodeLutLo;
             Vector256<sbyte> lutShift         = s_avx_decodeLutShift;
             Vector256<sbyte> mask2F           = s_avx_decodeMask2F;
-            Vector256<sbyte> shuffleConstant0 = Avx.StaticCast<int, sbyte>(Avx.SetAllVector256(0x01400140));
-            Vector256<short> shuffleConstant1 = Avx.StaticCast<int, short>(Avx.SetAllVector256(0x00011000));
+            Vector256<sbyte> shuffleConstant0 = Vector256.Create(0x01400140).AsSByte();
+            Vector256<short> shuffleConstant1 = Vector256.Create(0x00011000).AsInt16();
             Vector256<sbyte> shuffleVec       = s_avx_decodeShuffleVec;
             Vector256<int> permuteVec         = s_avx_decodePermuteVec;
 
@@ -377,11 +377,15 @@ namespace gfoidl.Base64.Internal
                     throw new NotSupportedException(); // just in case new types are introduced in the future
                 }
 
+#if NETCOREAPP3_0
+                Vector256<sbyte> hiNibbles = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask2F);
+#else
                 Vector256<sbyte> hiNibbles = Avx2.And(Avx.StaticCast<int, sbyte>(Avx2.ShiftRightLogical(Avx.StaticCast<sbyte, int>(str), 4)), mask2F);
+#endif
                 Vector256<sbyte> loNibbles = Avx2.And(str, mask2F);
                 Vector256<sbyte> hi        = Avx2.Shuffle(lutHi, hiNibbles);
                 Vector256<sbyte> lo        = Avx2.Shuffle(lutLo, loNibbles);
-                Vector256<sbyte> zero      = Avx.SetZeroVector256<sbyte>();
+                Vector256<sbyte> zero      = Vector256<sbyte>.Zero;
 
                 // https://github.com/dotnet/coreclr/issues/21247
                 if (Avx2.MoveMask(Avx2.CompareGreaterThan(Avx2.And(lo, hi), zero)) != 0)
@@ -393,10 +397,17 @@ namespace gfoidl.Base64.Internal
                 Vector256<sbyte> shift = Avx2.Shuffle(lutShift, Avx2.Add(eq2F, hiNibbles));
                 str                    = Avx2.Add(str, shift);
 
+#if NETCOREAPP3_0
+                Vector256<short> merge_ab_and_bc = Avx2.MultiplyAddAdjacent(str.AsByte(), shuffleConstant0);
+                Vector256<int> @out              = Avx2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
+                @out                             = Avx2.Shuffle(@out.AsSByte(), shuffleVec).AsInt32();
+                str                              = Avx2.PermuteVar8x32(@out, permuteVec).AsSByte();
+#else
                 Vector256<short> merge_ab_and_bc = Avx2.MultiplyAddAdjacent(Avx.StaticCast<sbyte, byte>(str), shuffleConstant0);
                 Vector256<int> @out              = Avx2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
                 @out                             = Avx.StaticCast<sbyte, int>(Avx2.Shuffle(Avx.StaticCast<int, sbyte>(@out), shuffleVec));
                 str                              = Avx.StaticCast<int, sbyte>(Avx2.PermuteVar8x32(@out, permuteVec));
+#endif
 
                 // As has better CQ than WriteUnaligned
                 // https://github.com/dotnet/coreclr/issues/21132
@@ -432,8 +443,13 @@ namespace gfoidl.Base64.Internal
             Vector128<sbyte> lutLo            = s_sse_decodeLutLo;
             Vector128<sbyte> lutShift         = s_sse_decodeLutShift;
             Vector128<sbyte> mask2F           = s_sse_decodeMask2F;
+#if NETCOREAPP3_0
+            Vector128<sbyte> shuffleConstant0 = Vector128.Create(0x01400140).AsSByte();
+            Vector128<short> shuffleConstant1 = Vector128.Create(0x00011000).AsInt16();
+#else
             Vector128<sbyte> shuffleConstant0 = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x01400140));
             Vector128<short> shuffleConstant1 = Sse.StaticCast<int, short>(Sse2.SetAllVector128(0x00011000));
+#endif
             Vector128<sbyte> shuffleVec       = s_sse_decodeShuffleVec;
 
             //while (remaining >= 24)
@@ -450,21 +466,27 @@ namespace gfoidl.Base64.Internal
                     Vector128<short> c0 = Unsafe.As<T, Vector128<short>>(ref src);
                     Vector128<short> c1 = Unsafe.As<T, Vector128<short>>(ref Unsafe.Add(ref src, 8));
 
+#if NETCOREAPP3_0
+                    str = Sse2.PackUnsignedSaturate(c0, c1).AsSByte();
+#else
                     str = Sse.StaticCast<byte, sbyte>(Sse2.PackUnsignedSaturate(c0, c1));
+#endif
                 }
                 else
                 {
                     throw new NotSupportedException(); // just in case new types are introduced in the future
                 }
 
+#if NETCOREAPP3_0
+                Vector128<sbyte> hiNibbles = Sse2.And(Sse2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask2F);
+#else
                 Vector128<sbyte> hiNibbles = Sse2.And(Sse.StaticCast<int, sbyte>(Sse2.ShiftRightLogical(Sse.StaticCast<sbyte, int>(str), 4)), mask2F);
+#endif
                 Vector128<sbyte> loNibbles = Sse2.And(str, mask2F);
                 Vector128<sbyte> hi        = Ssse3.Shuffle(lutHi, hiNibbles);
                 Vector128<sbyte> lo        = Ssse3.Shuffle(lutLo, loNibbles);
 #if NETCOREAPP3_0
-                // https://github.com/dotnet/coreclr/issues/21130
-                //Vector128<sbyte> zero = Vector128<sbyte>.Zero;
-                Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
+                Vector128<sbyte> zero = Vector128<sbyte>.Zero;
 #elif NETCOREAPP2_1
                 Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 #endif
@@ -477,13 +499,15 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, Sse2.Add(eq2F, hiNibbles));
                 str                    = Sse2.Add(str, shift);
 
-                Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(Sse.StaticCast<sbyte, byte>(str), shuffleConstant0);
 #if NETCOREAPP3_0
-                Vector128<int> @out = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
+                Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(str.AsByte(), shuffleConstant0);
+                Vector128<int> @out              = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
+                str                              = Ssse3.Shuffle(@out.AsSByte(), shuffleVec);
 #elif NETCOREAPP2_1
-                Vector128<int> @out = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
+                Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(Sse.StaticCast<sbyte, byte>(str), shuffleConstant0);
+                Vector128<int> @out              = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
+                str                              = Ssse3.Shuffle(Sse.StaticCast<int, sbyte>(@out), shuffleVec);
 #endif
-                str = Ssse3.Shuffle(Sse.StaticCast<int, sbyte>(@out), shuffleVec);
 
                 // As has better CQ than WriteUnaligned
                 // https://github.com/dotnet/coreclr/issues/21132

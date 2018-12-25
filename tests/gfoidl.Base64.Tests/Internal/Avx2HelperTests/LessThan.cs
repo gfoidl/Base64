@@ -8,9 +8,9 @@ namespace gfoidl.Base64.Tests.Internal.Avx2HelperTests
 {
     public class LessThan
     {
-        private static readonly Vector256<sbyte> s_zero    = Avx.SetZeroVector256<sbyte>();
-        private static readonly Vector256<sbyte> s_one     = Avx.SetAllVector256<sbyte>(1);
-        private static readonly Vector256<sbyte> s_allOnes = Avx.SetAllVector256<sbyte>(-1);
+        private static readonly Vector256<sbyte> s_zero    = Vector256<sbyte>.Zero;
+        private static readonly Vector256<sbyte> s_one     = Vector256.Create((sbyte)1);
+        private static readonly Vector256<sbyte> s_allOnes = Vector256.Create((sbyte)-1);
         //---------------------------------------------------------------------
         [Test]
         public void Zero_and_zero___false()
@@ -57,7 +57,7 @@ namespace gfoidl.Base64.Tests.Internal.Avx2HelperTests
             Vector256<sbyte> left  = s_one;
             Vector256<sbyte> right = s_one;
 
-            left = Avx.Insert(left, 0, index: 3);
+            left = left.WithElement(index: 3, 0);
 
             Vector256<sbyte> res = Avx2Helper.LessThan(left, right);
 
@@ -73,10 +73,10 @@ namespace gfoidl.Base64.Tests.Internal.Avx2HelperTests
         [Test]
         public void One_4_in_5s_and_5s___true()
         {
-            Vector256<sbyte> left  = Avx.SetAllVector256<sbyte>(5);
-            Vector256<sbyte> right = Avx.SetAllVector256<sbyte>(5);
+            Vector256<sbyte> left  = Vector256.Create((sbyte)5);
+            Vector256<sbyte> right = Vector256.Create((sbyte)5);
 
-            left = Avx.Insert(left, 4, index: 7);
+            left = left.WithElement(index: 7, 4);
 
             Vector256<sbyte> res = Avx2Helper.LessThan(left, right);
 
