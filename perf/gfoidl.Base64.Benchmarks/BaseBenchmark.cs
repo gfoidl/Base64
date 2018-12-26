@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 namespace gfoidl.Base64.Benchmarks
 {
     [Config(typeof(HardwareIntrinsicsCustomConfig))]
-    public abstract class BaseBenchmarks
+    public abstract class BaseBenchmark
     {
         private const int ByteArraySize = 500;
         private readonly byte[]    _data;
@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Benchmarks
         private readonly string    _guidEncoded;
         protected readonly IBase64 _encoder;
         //---------------------------------------------------------------------
-        protected BaseBenchmarks(IBase64 encoder)
+        protected BaseBenchmark(IBase64 encoder)
         {
             _encoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 

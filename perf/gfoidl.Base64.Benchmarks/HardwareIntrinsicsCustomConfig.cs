@@ -7,7 +7,7 @@ namespace gfoidl.Base64.Benchmarks
     {
         private const string EnableAVX2  = "COMPlus_EnableAVX2";
         private const string EnableSSSE3 = "COMPlus_EnableSSSE3";
-
+        //---------------------------------------------------------------------
         public HardwareIntrinsicsCustomConfig()
         {
             this.Add(Job.Core.WithId("AVX2"));
