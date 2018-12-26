@@ -8,13 +8,25 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
 {
     public class LessThan
     {
-        private static readonly Vector256<sbyte> s_zero    = Vector256<sbyte>.Zero;
-        private static readonly Vector256<sbyte> s_one     = Vector256.Create((sbyte)1);
-        private static readonly Vector256<sbyte> s_allOnes = Vector256.Create((sbyte)-1);
+        private static readonly Vector256<sbyte> s_zero;
+        private static readonly Vector256<sbyte> s_one;
+        private static readonly Vector256<sbyte> s_allOnes;
+        //---------------------------------------------------------------------
+        static LessThan()
+        {
+            if (Avx2.IsSupported)
+            {
+                s_zero    = Vector256<sbyte>.Zero;
+                s_one     = Vector256.Create((sbyte)1);
+                s_allOnes = Vector256.Create((sbyte)-1);
+            }
+        }
         //---------------------------------------------------------------------
         [Test]
         public void Zero_and_zero___false()
         {
+            Assume.That(Avx2.IsSupported);
+
             Vector256<sbyte> left  = s_zero;
             Vector256<sbyte> right = s_zero;
 
@@ -28,6 +40,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
         [Test]
         public void One_and_zero___false()
         {
+            Assume.That(Avx2.IsSupported);
+
             Vector256<sbyte> left  = s_one;
             Vector256<sbyte> right = s_zero;
 
@@ -41,6 +55,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
         [Test]
         public void Zero_and_one___true()
         {
+            Assume.That(Avx2.IsSupported);
+
             Vector256<sbyte> left  = s_zero;
             Vector256<sbyte> right = s_one;
 
@@ -54,6 +70,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
         [Test]
         public void Only_one_zero_and_one___true()
         {
+            Assume.That(Avx2.IsSupported);
+
             Vector256<sbyte> left  = s_one;
             Vector256<sbyte> right = s_one;
 
@@ -73,6 +91,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
         [Test]
         public void One_4_in_5s_and_5s___true()
         {
+            Assume.That(Avx2.IsSupported);
+
             Vector256<sbyte> left  = Vector256.Create((sbyte)5);
             Vector256<sbyte> right = Vector256.Create((sbyte)5);
 

@@ -35,7 +35,7 @@ namespace gfoidl.Base64.Internal
             if (srcLength < 16)
                 goto Scalar;
 
-            if (Avx2.IsSupported && srcLength >= 32 && !s_isMac)
+            if (Avx2.IsSupported && srcLength - 32 >= 0)
             {
                 Avx2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
 

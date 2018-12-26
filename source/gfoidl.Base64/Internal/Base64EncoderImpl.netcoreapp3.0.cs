@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.Intrinsics;
+﻿using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64.Internal
@@ -14,12 +13,8 @@ namespace gfoidl.Base64.Internal
         protected static readonly Vector256<sbyte> s_avx_decodeShuffleVec;
         protected static readonly Vector256<int>   s_avx_decodePermuteVec;
         //---------------------------------------------------------------------
-        protected static readonly bool s_isMac = false;
-        //---------------------------------------------------------------------
         static Base64EncoderImpl()
         {
-            s_isMac = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-
             if (Ssse3.IsSupported)
             {
                 s_sse_encodeShuffleVec = Vector128.Create(

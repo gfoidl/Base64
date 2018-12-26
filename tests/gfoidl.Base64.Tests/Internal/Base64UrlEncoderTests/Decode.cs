@@ -5,6 +5,10 @@ using System.Runtime.InteropServices;
 using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
+#if NETCOREAPP
+using System.Runtime.Intrinsics.X86;
+#endif
+
 namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
 {
     [TestFixture(typeof(byte))]
@@ -105,10 +109,12 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
             }
         }
         //---------------------------------------------------------------------
-#if NETCOREAPP3_0 && DEBUG && !OSX
+#if NETCOREAPP3_0 && DEBUG
         [Test]
         public void Large_data___avx2_event_fired()
         {
+            Assume.That(Avx2.IsSupported);
+
             var sut  = new Base64UrlEncoder();
             var data = new byte[50];
             var rnd  = new Random(0);

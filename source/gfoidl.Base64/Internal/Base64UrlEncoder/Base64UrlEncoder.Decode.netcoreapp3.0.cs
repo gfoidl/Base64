@@ -34,7 +34,7 @@ namespace gfoidl.Base64.Internal
             ref byte destBytes = ref MemoryMarshal.GetReference(data);
 
             // s - 45 >= 0 used 'lea' as opposed to s >= 45
-            if (Avx2.IsSupported && srcLength - 45 >= 0 && !s_isMac)
+            if (Avx2.IsSupported && srcLength - 45 >= 0)
             {
                 Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
 
