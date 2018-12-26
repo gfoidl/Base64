@@ -22,6 +22,7 @@ namespace gfoidl.Base64.Internal
             out int consumed,
             out int written,
             bool isFinalBlock = true)
+            where T : unmanaged
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
@@ -214,6 +215,7 @@ namespace gfoidl.Base64.Internal
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+            where T : unmanaged
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
@@ -232,20 +234,7 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 45)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
-                Vector256<sbyte> str;
-
-                if (typeof(T) == typeof(byte))
-                {
-                    str = Unsafe.As<T, Vector256<sbyte>>(ref src);
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    str = Avx2Helper.Read(ref Unsafe.As<T, char>(ref src));
-                }
-                else
-                {
-                    throw new NotSupportedException(); // just in case new types are introduced in the future
-                }
+                Vector256<sbyte> str = src.ReadVector256();
 
                 Vector256<sbyte> hiNibbles = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask2F);
                 Vector256<sbyte> loNibbles = Avx2.And(str, mask2F);
@@ -268,9 +257,7 @@ namespace gfoidl.Base64.Internal
                 @out                             = Avx2.Shuffle(@out.AsSByte(), shuffleVec).AsInt32();
                 str                              = Avx2.PermuteVar8x32(@out, permuteVec).AsSByte();
 
-                // As has better CQ than WriteUnaligned
-                // https://github.com/dotnet/coreclr/issues/21132
-                Unsafe.As<byte, Vector256<sbyte>>(ref destBytes) = str;
+                destBytes.WriteVector256(str);
 
                 src       = ref Unsafe.Add(ref src, 32);
                 destBytes = ref Unsafe.Add(ref destBytes, 24);
@@ -286,6 +273,7 @@ namespace gfoidl.Base64.Internal
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+            where T : unmanaged
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
@@ -303,22 +291,7 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 24)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
-                Vector128<sbyte> str;
-
-                if (typeof(T) == typeof(byte))
-                {
-                    str = Unsafe.As<T, Vector128<sbyte>>(ref src);
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    Vector128<short> c0 = Unsafe.As<T, Vector128<short>>(ref src);
-                    Vector128<short> c1 = Unsafe.As<T, Vector128<short>>(ref Unsafe.Add(ref src, 8));
-                    str                 = Sse2.PackUnsignedSaturate(c0, c1).AsSByte();
-                }
-                else
-                {
-                    throw new NotSupportedException(); // just in case new types are introduced in the future
-                }
+                Vector128<sbyte> str = src.ReadVector128();
 
                 Vector128<sbyte> hiNibbles = Sse2.And(Sse2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask2F);
                 Vector128<sbyte> loNibbles = Sse2.And(str, mask2F);
@@ -339,9 +312,7 @@ namespace gfoidl.Base64.Internal
                 Vector128<int> @out              = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
                 str                              = Ssse3.Shuffle(@out.AsSByte(), shuffleVec);
 
-                // As has better CQ than WriteUnaligned
-                // https://github.com/dotnet/coreclr/issues/21132
-                Unsafe.As<byte, Vector128<sbyte>>(ref destBytes) = str;
+                destBytes.WriteVector128(str);
 
                 src       = ref Unsafe.Add(ref src,  16);
                 destBytes = ref Unsafe.Add(ref destBytes, 12);

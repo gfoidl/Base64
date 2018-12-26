@@ -4,9 +4,26 @@
         <TargetFrameworks>$(StandardTestTfms)</TargetFrameworks>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Compile Remove="Internal\Vector*HelperTests\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Internal\Vector*HelperTests\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+        <Compile Include="Internal\Vector*HelperTests\*.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+        <Compile Include="Internal\Vector128HelperTests\*.cs" />
+    </ItemGroup>
+
+    <!-- https://github.com/gfoidl/Base64/issues/2 -->
     <!-- https://github.com/Microsoft/msbuild/issues/2468#issuecomment-324719212 -->
     <ItemGroup Condition="'$(TargetFramework)' != 'netcoreapp3.0' OR ( '$(OS)' == 'Unix' AND $([System.IO.File]::Exists('/usr/lib/libc.dylib')) )">
-        <Compile Remove="Internal\Avx2HelperTests\*.cs" />
+        <Compile Remove="Internal\Vector256HelperTests\*.cs" />
     </ItemGroup>
 
     <ItemGroup>

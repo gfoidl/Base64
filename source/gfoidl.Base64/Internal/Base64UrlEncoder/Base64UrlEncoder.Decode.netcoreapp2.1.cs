@@ -22,6 +22,7 @@ namespace gfoidl.Base64.Internal
             out int consumed,
             out int written,
             bool isFinalBlock = true)
+            where T : unmanaged
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
@@ -168,6 +169,7 @@ namespace gfoidl.Base64.Internal
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+            where T : unmanaged
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
@@ -186,22 +188,7 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 24)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
-                Vector128<sbyte> str;
-
-                if (typeof(T) == typeof(byte))
-                {
-                    str = Unsafe.As<T, Vector128<sbyte>>(ref src);
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    Vector128<short> c0 = Unsafe.As<T, Vector128<short>>(ref src);
-                    Vector128<short> c1 = Unsafe.As<T, Vector128<short>>(ref Unsafe.Add(ref src, 8));
-                    str                 = Sse.StaticCast<byte, sbyte>(Sse2.PackUnsignedSaturate(c0, c1));
-                }
-                else
-                {
-                    throw new NotSupportedException(); // just in case new types are introduced in the future
-                }
+                Vector128<sbyte> str = src.ReadVector128();
 
                 Vector128<sbyte> hiNibbles  = Sse2.And(Sse.StaticCast<int, sbyte>(Sse2.ShiftRightLogical(Sse.StaticCast<sbyte, int>(str), 4)), mask5F);
                 Vector128<sbyte> lowerBound = Ssse3.Shuffle(lutLo, hiNibbles);
@@ -225,9 +212,7 @@ namespace gfoidl.Base64.Internal
                 Vector128<int> @out              = Sse2.MultiplyHorizontalAdd(merge_ab_and_bc, shuffleConstant1);
                 str                              = Ssse3.Shuffle(Sse.StaticCast<int, sbyte>(@out), shuffleVec);
 
-                // As has better CQ than WriteUnaligned
-                // https://github.com/dotnet/coreclr/issues/21132
-                Unsafe.As<byte, Vector128<sbyte>>(ref destBytes) = str;
+                destBytes.WriteVector128(str);
 
                 src       = ref Unsafe.Add(ref src, 16);
                 destBytes = ref Unsafe.Add(ref destBytes, 12);

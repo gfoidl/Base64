@@ -41,6 +41,7 @@ namespace gfoidl.Base64.Internal
             out int written,
             int encodedLength = -1,
             bool isFinalBlock = true)
+            where T : unmanaged
         {
             if (data.IsEmpty)
             {

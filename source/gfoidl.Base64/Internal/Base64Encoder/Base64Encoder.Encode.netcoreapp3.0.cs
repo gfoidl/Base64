@@ -27,6 +27,7 @@ namespace gfoidl.Base64.Internal
             out int consumed,
             out int written,
             bool isFinalBlock = true)
+            where T : unmanaged
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
@@ -109,6 +110,7 @@ namespace gfoidl.Base64.Internal
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+            where T : unmanaged
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
@@ -125,7 +127,7 @@ namespace gfoidl.Base64.Internal
             Vector256<sbyte> lut                 = s_avx_encodeLut;
 
             // first load is done at c-0 not to get a segfault
-            Vector256<sbyte> str = Unsafe.ReadUnaligned<Vector256<sbyte>>(ref src);
+            Vector256<sbyte> str = src.ReadVector256();
 
             // shift by 4 bytes, as required by enc_reshuffle
             str = Avx2.PermuteVar8x32(str.AsInt32(), s_avx_encodePermuteVec).AsSByte();
@@ -146,20 +148,7 @@ namespace gfoidl.Base64.Internal
                 Vector256<sbyte> tmp     = Avx2.Subtract(indices.AsSByte(), mask);
                 str                      = Avx2.Add(str, Avx2.Shuffle(lut, tmp));
 
-                if (typeof(T) == typeof(byte))
-                {
-                    // As has better CQ than WriteUnaligned
-                    // https://github.com/dotnet/coreclr/issues/21132
-                    Unsafe.As<T, Vector256<sbyte>>(ref dest) = str;
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    Avx2Helper.Write(str, ref Unsafe.As<T, char>(ref dest));
-                }
-                else
-                {
-                    throw new NotSupportedException(); // just in case new types are introduced in the future
-                }
+                dest.WriteVector256(str);
 
                 src  = ref Unsafe.Add(ref src,  24);
                 dest = ref Unsafe.Add(ref dest, 32);
@@ -168,7 +157,7 @@ namespace gfoidl.Base64.Internal
                     break;
 
                 // Load at c-4, as required by enc_reshuffle
-                str = Unsafe.ReadUnaligned<Vector256<sbyte>>(ref Unsafe.Subtract(ref src, 4));
+                str = Unsafe.Subtract(ref src, 4).ReadVector256();
             }
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
@@ -184,6 +173,7 @@ namespace gfoidl.Base64.Internal
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+            where T : unmanaged
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
@@ -206,7 +196,7 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 16)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
-                Vector128<sbyte> str = Unsafe.ReadUnaligned<Vector128<sbyte>>(ref src);
+                Vector128<sbyte> str = src.ReadVector128();
 
                 // Reshuffle
                 str                  = Ssse3.Shuffle(str, shuffleVec);
@@ -222,27 +212,7 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> tmp     = Sse2.Subtract(indices.AsSByte(), mask);
                 str                      = Sse2.Add(str, Ssse3.Shuffle(lut, tmp));
 
-                if (typeof(T) == typeof(byte))
-                {
-                    // As has better CQ than WriteUnaligned
-                    // https://github.com/dotnet/coreclr/issues/21132
-                    Unsafe.As<T, Vector128<sbyte>>(ref dest) = str;
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    Vector128<sbyte> zero = Vector128<sbyte>.Zero;
-                    Vector128<sbyte> c0   = Sse2.UnpackLow(str , zero);
-                    Vector128<sbyte> c1   = Sse2.UnpackHigh(str, zero);
-
-                    // As has better CQ than WriteUnaligned
-                    // https://github.com/dotnet/coreclr/issues/21132
-                    Unsafe.As<T, Vector128<sbyte>>(ref dest)                    = c0;
-                    Unsafe.As<T, Vector128<sbyte>>(ref Unsafe.Add(ref dest, 8)) = c1;
-                }
-                else
-                {
-                    throw new NotSupportedException(); // just in case new types are introduced in the future
-                }
+                dest.WriteVector128(str);
 
                 src  = ref Unsafe.Add(ref src,  12);
                 dest = ref Unsafe.Add(ref dest, 16);

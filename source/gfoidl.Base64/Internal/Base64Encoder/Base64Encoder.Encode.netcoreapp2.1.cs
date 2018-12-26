@@ -25,6 +25,7 @@ namespace gfoidl.Base64.Internal
             out int consumed,
             out int written,
             bool isFinalBlock = true)
+            where T : unmanaged
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
@@ -98,6 +99,7 @@ namespace gfoidl.Base64.Internal
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+            where T : unmanaged
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
@@ -120,7 +122,7 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 16)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
-                Vector128<sbyte> str = Unsafe.ReadUnaligned<Vector128<sbyte>>(ref src);
+                Vector128<sbyte> str = src.ReadVector128();
 
                 // Reshuffle
                 str                  = Ssse3.Shuffle(str, shuffleVec);
@@ -136,27 +138,7 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> tmp     = Sse2.Subtract(Sse.StaticCast<byte, sbyte>(indices), mask);
                 str                      = Sse2.Add(str, Ssse3.Shuffle(lut, tmp));
 
-                if (typeof(T) == typeof(byte))
-                {
-                    // As has better CQ than WriteUnaligned
-                    // https://github.com/dotnet/coreclr/issues/21132
-                    Unsafe.As<T, Vector128<sbyte>>(ref dest) = str;
-                }
-                else if (typeof(T) == typeof(char))
-                {
-                    Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
-                    Vector128<sbyte> c0   = Sse2.UnpackLow(str , zero);
-                    Vector128<sbyte> c1   = Sse2.UnpackHigh(str, zero);
-
-                    // As has better CQ than WriteUnaligned
-                    // https://github.com/dotnet/coreclr/issues/21132
-                    Unsafe.As<T, Vector128<sbyte>>(ref dest)                    = c0;
-                    Unsafe.As<T, Vector128<sbyte>>(ref Unsafe.Add(ref dest, 8)) = c1;
-                }
-                else
-                {
-                    throw new NotSupportedException(); // just in case new types are introduced in the future
-                }
+                dest.WriteVector128(str);
 
                 src  = ref Unsafe.Add(ref src,  12);
                 dest = ref Unsafe.Add(ref dest, 16);

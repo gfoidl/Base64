@@ -112,6 +112,7 @@ namespace gfoidl.Base64.Internal
             out int written,
             int decodedLength = -1,
             bool isFinalBlock = true)
+            where T : unmanaged
         {
             if (encoded.IsEmpty)
             {
