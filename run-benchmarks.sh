@@ -24,8 +24,8 @@ cd perf/gfoidl.Base64.Benchmarks
 dotnet build -c Release
 cd bin/Release/netcoreapp3.0
 dotnet gfoidl.Base64.Benchmarks.dll --list tree
-dotnet gfoidl.Base64.Benchmarks.dll -f *Base64EncoderBenchmarks*
-dotnet gfoidl.Base64.Benchmarks.dll -f *Base64UrlEncoderBenchmarks*
+dotnet gfoidl.Base64.Benchmarks.dll -f *Base64EncoderBenchmark*
+dotnet gfoidl.Base64.Benchmarks.dll -f *Base64UrlEncoderBenchmark*
 dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeStringBenchmark*
 dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeUtf8Benchmark*
 dotnet gfoidl.Base64.Benchmarks.dll -f *EncodeStringBenchmark*
