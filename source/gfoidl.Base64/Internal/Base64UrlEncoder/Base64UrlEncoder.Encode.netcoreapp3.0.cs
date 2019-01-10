@@ -26,34 +26,34 @@ namespace gfoidl.Base64.Internal
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
+            int maxSrcLength = 0;
 
-            if (srcLength < 16)
+            if (srcLength <= MaximumEncodeLength && destLength >= encodedLength)
+                maxSrcLength = srcLength;
+            else
+                maxSrcLength = (destLength >> 2) * 3;
+
+            if (maxSrcLength < 16)
                 goto Scalar;
 
-            if (Avx2.IsSupported && srcLength - 32 >= 0)
+            if (Avx2.IsSupported && maxSrcLength >= 32)
             {
-                Avx2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
+                Avx2Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
 
-            if (Ssse3.IsSupported && ((uint)srcLength - 16 >= sourceIndex))
+            if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 16))
             {
-                Ssse3Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
+                Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
 
         Scalar:
-            int maxSrcLength = -2;
-
-            if (srcLength <= MaximumEncodeLength && destLength >= encodedLength)
-                maxSrcLength += srcLength;
-            else
-                maxSrcLength += (destLength >> 2) * 3;
-
+            maxSrcLength        -= 2;
             ref byte encodingMap = ref s_encodingMap[0];
 
             // In order to elide the movsxd in the loop
@@ -69,7 +69,7 @@ namespace gfoidl.Base64.Internal
             }
 
             if (maxSrcLength != srcLength - 2)
-                goto DestinationSmallExit;
+                goto DestinationTooSmallExit;
 
             if (!isFinalBlock)
                 goto NeedMoreDataExit;
@@ -97,7 +97,7 @@ namespace gfoidl.Base64.Internal
             written  = (int)destIndex;
             return OperationStatus.NeedMoreData;
 
-        DestinationSmallExit:
+        DestinationTooSmallExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.DestinationTooSmall;
@@ -109,12 +109,12 @@ namespace gfoidl.Base64.Internal
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 28 + 1));
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 28));   // 28 = 32-4, no +1 as the comparison is >
 
             // The JIT won't hoist these "constants", so help him
             Vector256<sbyte>  shuffleVec          = s_avx_encodeShuffleVec;
@@ -124,9 +124,10 @@ namespace gfoidl.Base64.Internal
             Vector256<short>  shuffleConstant3    = Vector256.Create(0x01000010).AsInt16();
             Vector256<byte>   translationContant0 = Vector256.Create((byte)51);
             Vector256<sbyte>  translationContant1 = Vector256.Create((sbyte)25);
-            Vector256<sbyte> lut                  = s_avx_encodeLut;
+            Vector256<sbyte>  lut                 = s_avx_encodeLut;
 
             // first load is done at c-0 not to get a segfault
+            src.AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
             Vector256<sbyte> str = src.ReadVector256();
 
             // shift by 4 bytes, as required by enc_reshuffle
@@ -148,6 +149,7 @@ namespace gfoidl.Base64.Internal
                 Vector256<sbyte> tmp     = Avx2.Subtract(indices.AsSByte(), mask);
                 str                      = Avx2.Add(str, Avx2.Shuffle(lut, tmp));
 
+                dest.AssertWrite<Vector256<sbyte>, T>(ref destStart, destLength);
                 dest.WriteVector256(str);
 
                 src  = ref Unsafe.Add(ref src,  24);
@@ -157,6 +159,7 @@ namespace gfoidl.Base64.Internal
                     break;
 
                 // Load at c-4, as required by enc_reshuffle
+                Unsafe.Subtract(ref src, 4).AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
                 str = Unsafe.Subtract(ref src, 4).ReadVector256();
             }
 
@@ -172,12 +175,12 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 16 + 1));
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 16 + 1));   //  +1 for <=
 
             // Shift to workspace
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
@@ -196,6 +199,7 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 16)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
             {
+                src.AssertRead<Vector128<sbyte>, byte>(ref srcStart, sourceLength);
                 Vector128<sbyte> str = src.ReadVector128();
 
                 // Reshuffle
@@ -212,6 +216,7 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> tmp     = Sse2.Subtract(indices.AsSByte(), mask);
                 str                      = Sse2.Add(str, Ssse3.Shuffle(lut, tmp));
 
+                dest.AssertWrite<Vector128<sbyte>, T>(ref destStart, destLength);
                 dest.WriteVector128(str);
 
                 src  = ref Unsafe.Add(ref src,  12);

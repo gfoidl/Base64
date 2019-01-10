@@ -5,6 +5,10 @@ using System.Text;
 using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
+#if NETCOREAPP
+using System.Runtime.Intrinsics.X86;
+#endif
+
 namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
 {
     [TestFixture(typeof(byte))]
@@ -109,6 +113,29 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
                 Assert.AreEqual(expected.ToBase64Url(), actual);
             }
         }
+        //---------------------------------------------------------------------
+#if NETCOREAPP3_0 && DEBUG
+        [Test]
+        public void Large_data___avx2_event_fired()
+        {
+            Assume.That(Avx2.IsSupported);
+
+            var sut  = new Base64Encoder();
+            var data = new byte[50];
+            var rnd  = new Random();
+            rnd.NextBytes(data);
+
+            int encodedLength = sut.GetEncodedLength(data.Length);
+            Span<T> encoded   = new T[encodedLength];
+
+            bool avx2Executed = false;
+            Base64Encoder.Avx2Encoded += (s, e) => avx2Executed = true;
+
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+
+            Assert.IsTrue(avx2Executed);
+        }
+#endif
         //---------------------------------------------------------------------
 #if NETCOREAPP && DEBUG
         [Test]
@@ -239,6 +266,48 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
 
                 Assert.AreEqual(expectedText, encodedText);
             }
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        [TestCase(3)]
+        [TestCase(24)]
+        [TestCase(60)]
+        public void DestinationLength_too_small___status_DestinationTooSmall(int dataLength)
+        {
+            var sut         = new Base64UrlEncoder();
+            var data        = new byte[dataLength];
+            Span<T> encoded = new T[1];
+
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+                Assert.AreEqual(0, written);
+            });
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        public void DestiantationLength_large_but_too_small___status_DestinationTooSmall()
+        {
+            const int dataLength = 300;
+            const int destLength = 40;
+
+            var sut         = new Base64UrlEncoder();
+            var data        = new byte[dataLength];
+            Span<T> encoded = new T[destLength];
+
+            OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
+
+            Assert.Multiple(() =>
+            {
+                const int expectedConsumed = destLength / 4 * 3;
+                const int expectedWritten  = expectedConsumed / 3 * 4;
+
+                Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+                Assert.AreEqual(expectedConsumed, consumed);
+                Assert.AreEqual(expectedWritten, written);
+            });
         }
     }
 }

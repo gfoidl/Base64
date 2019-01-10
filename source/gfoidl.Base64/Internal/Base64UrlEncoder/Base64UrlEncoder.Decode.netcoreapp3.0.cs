@@ -28,35 +28,38 @@ namespace gfoidl.Base64.Internal
             uint sourceIndex = 0;
             uint destIndex   = 0;
 
-            decodedLength = GetDataLen(inputLength, out int base64Len, isFinalBlock);
-            int srcLength = base64Len & ~0x3;       // only decode input up to the closest multiple of 4.
+            decodedLength    = GetDataLen(inputLength, out int base64Len, isFinalBlock);
+            int srcLength    = base64Len & ~0x3;       // only decode input up to the closest multiple of 4.
+            int maxSrcLength = srcLength;
+            int destLength   = data.Length;
+
+            // max. 2 padding chars
+            if (destLength + 2 < decodedLength)
+            {
+                // For overflow see comment below
+                maxSrcLength = destLength / 3 * 4;
+            }
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);
 
-            // s - 45 >= 0 used 'lea' as opposed to s >= 45
-            if (Avx2.IsSupported && srcLength - 45 >= 0)
+            if (Avx2.IsSupported && maxSrcLength >= 45)
             {
-                Avx2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
+                Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
-            else if (Ssse3.IsSupported && srcLength - 24 >= 0)
+            else if (Ssse3.IsSupported && maxSrcLength >= 24)
             {
-                Ssse3Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
+                Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
-
-            ref sbyte decodingMap = ref s_decodingMap[0];
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
             // if isFinalBlock is false, padding characters are considered invalid
             int skipLastChunk = isFinalBlock ? 4 : 0;
-
-            int maxSrcLength = 0;
-            int destLength   = data.Length;
 
             if (destLength >= decodedLength)
             {
@@ -69,6 +72,8 @@ namespace gfoidl.Base64.Internal
                 maxSrcLength = (destLength / 3) * 4;
             }
 
+            ref sbyte decodingMap = ref s_decodingMap[0];
+
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
             {
@@ -77,7 +82,7 @@ namespace gfoidl.Base64.Internal
                     int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
                     if (result < 0)
-                        goto InvalidExit;
+                        goto InvalidDataExit;
 
                     WriteThreeLowOrderBytes(ref destBytes, destIndex, result);
                     destIndex   += 3;
@@ -87,14 +92,14 @@ namespace gfoidl.Base64.Internal
             }
 
             if (maxSrcLength != srcLength - skipLastChunk)
-                goto DestinationSmallExit;
+                goto DestinationTooSmallExit;
 
             // If input is less than 4 bytes, srcLength == sourceIndex == 0
             // If input is not a multiple of 4, sourceIndex == srcLength != 0
             if (sourceIndex == srcLength)
             {
                 if (isFinalBlock)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 goto NeedMoreDataExit;
             }
@@ -109,8 +114,8 @@ namespace gfoidl.Base64.Internal
             {
                 int result = DecodeFour(ref lastFourStart, ref decodingMap);
 
-                if (result < 0) goto InvalidExit;
-                if (destIndex > destLength - 3) goto DestinationSmallExit;
+                if (result < 0) goto InvalidDataExit;
+                if (destIndex > destLength - 3) goto DestinationTooSmallExit;
 
                 WriteThreeLowOrderBytes(ref destBytes, destIndex, result);
                 sourceIndex += 4;
@@ -121,10 +126,10 @@ namespace gfoidl.Base64.Internal
                 int result = DecodeThree(ref lastFourStart, ref decodingMap);
 
                 if (result < 0)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 if (destIndex > destLength - 2)
-                    goto DestinationSmallExit;
+                    goto DestinationTooSmallExit;
 
                 WriteTwoLowOrderBytes(ref destBytes, destIndex, result);
                 sourceIndex += 3;
@@ -135,10 +140,10 @@ namespace gfoidl.Base64.Internal
                 int result = DecodeTwo(ref lastFourStart, ref decodingMap);
 
                 if (result < 0)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 if (destIndex > destLength - 1)
-                    goto DestinationSmallExit;
+                    goto DestinationTooSmallExit;
 
                 WriteOneLowOrderByte(ref destBytes, destIndex, result);
                 sourceIndex += 2;
@@ -146,16 +151,16 @@ namespace gfoidl.Base64.Internal
             }
 
             if (srcLength != base64Len)
-                goto InvalidExit;
+                goto InvalidDataExit;
 
         DoneExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.Done;
 
-        DestinationSmallExit:
+        DestinationTooSmallExit:
             if (srcLength != inputLength && isFinalBlock)
-                goto InvalidExit; // if input is not a multiple of 4, and there is no more data, return invalid data instead
+                goto InvalidDataExit; // if input is not a multiple of 4, and there is no more data, return invalid data instead
 
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
@@ -166,7 +171,7 @@ namespace gfoidl.Base64.Internal
             written  = (int)destIndex;
             return OperationStatus.NeedMoreData;
 
-        InvalidExit:
+        InvalidDataExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.InvalidData;
@@ -178,12 +183,12 @@ namespace gfoidl.Base64.Internal
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));
+            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));   //  +1 for <=
 
             // The JIT won't hoist these "constants", so help him
             Vector256<sbyte> allOnes          = Vector256.Create((sbyte)-1);        // -1 = 0xFF = true in simd
@@ -198,8 +203,9 @@ namespace gfoidl.Base64.Internal
             Vector256<int> permuteVec         = s_avx_decodePermuteVec;
 
             //while (remaining >= 45)
-            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
+            do
             {
+                src.AssertRead<Vector256<sbyte>, T>(ref srcStart, sourceLength);
                 Vector256<sbyte> str = src.ReadVector256();
 
                 Vector256<sbyte> hiNibbles = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask5F);
@@ -226,11 +232,13 @@ namespace gfoidl.Base64.Internal
                 @out                             = Avx2.Shuffle(@out.AsSByte(), shuffleVec).AsInt32();
                 str                              = Avx2.PermuteVar8x32(@out, permuteVec).AsSByte();
 
+                destBytes.AssertWrite<Vector256<sbyte>, byte>(ref destStart, destLength);
                 destBytes.WriteVector256(str);
 
                 src       = ref Unsafe.Add(ref src, 32);
                 destBytes = ref Unsafe.Add(ref destBytes, 24);
             }
+            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
             sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src) / (uint)Unsafe.SizeOf<T>();
@@ -241,12 +249,12 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Ssse3Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Ssse3Decode<T>(ref T src, ref byte destBytes, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref destBytes;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));
+            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));   //  +1 for <=
 
             // The JIT won't hoist these "constants", so help him
             Vector128<sbyte> lutHi            = s_sse_decodeLutHi;
@@ -259,8 +267,9 @@ namespace gfoidl.Base64.Internal
             Vector128<sbyte> shuffleVec       = s_sse_decodeShuffleVec;
 
             //while (remaining >= 24)
-            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
+            do
             {
+                src.AssertRead<Vector128<sbyte>, T>(ref srcStart, sourceLength);
                 Vector128<sbyte> str = src.ReadVector128();
 
                 Vector128<sbyte> hiNibbles  = Sse2.And(Sse2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask5F);
@@ -285,11 +294,13 @@ namespace gfoidl.Base64.Internal
                 Vector128<int> @out              = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
                 str                              = Ssse3.Shuffle(@out.AsSByte(), shuffleVec);
 
+                destBytes.AssertWrite<Vector128<sbyte>, byte>(ref destStart, destLength);
                 destBytes.WriteVector128(str);
 
                 src       = ref Unsafe.Add(ref src, 16);
                 destBytes = ref Unsafe.Add(ref destBytes, 12);
             }
+            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
             sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src) / (uint)Unsafe.SizeOf<T>();

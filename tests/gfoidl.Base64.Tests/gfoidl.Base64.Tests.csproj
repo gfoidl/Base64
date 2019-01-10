@@ -9,23 +9,28 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Internal\Vector*HelperTests\*.cs" />
+        <Compile Remove="Internal\*HelperTests\*.cs" />
         <Compile Remove="HWInfo.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Internal\Vector*HelperTests\*.cs" />
+        <None Include="Internal\*HelperTests\*.cs" />
         <None Include="HWInfo.cs" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
         <Compile Include="Internal\Vector*HelperTests\*.cs" />
         <Compile Include="HWInfo.cs" />
+
+        <Compile Include="Internal\AssertHelperTests\*.cs" Condition="'$(Configuration)' == 'Debug'" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
         <Compile Include="Internal\Vector128HelperTests\*.cs" />
         <Compile Include="HWInfo.cs" />
+        
+        <Compile Include="Internal\AssertHelperTests\AssertRead.cs" Condition="'$(Configuration)' == 'Debug'" />
+        <Compile Include="Internal\AssertHelperTests\AssertWrite.cs" Condition="'$(Configuration)' == 'Debug'" />
     </ItemGroup>
 
 </Project>

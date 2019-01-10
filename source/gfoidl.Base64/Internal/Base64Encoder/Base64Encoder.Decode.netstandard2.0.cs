@@ -51,7 +51,7 @@ namespace gfoidl.Base64.Internal
                     int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
                     if (result < 0)
-                        goto InvalidExit;
+                        goto InvalidDataExit;
 
                     WriteThreeLowOrderBytes(ref destBytes, destIndex, result);
                     destIndex   += 3;
@@ -61,14 +61,14 @@ namespace gfoidl.Base64.Internal
             }
 
             if (maxSrcLength != srcLength - skipLastChunk)
-                goto DestinationSmallExit;
+                goto DestinationTooSmallExit;
 
             // If input is less than 4 bytes, srcLength == sourceIndex == 0
             // If input is not a multiple of 4, sourceIndex == srcLength != 0
             if (sourceIndex == srcLength)
             {
                 if (isFinalBlock)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 goto NeedMoreDataExit;
             }
@@ -81,18 +81,18 @@ namespace gfoidl.Base64.Internal
             if (typeof(T) == typeof(byte))
             {
                 ref byte tmp = ref Unsafe.As<T, byte>(ref src);
-                t0 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 4));
-                t1 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 3));
-                t2 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 2));
-                t3 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 1));
+                t0 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 4));
+                t1 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 3));
+                t2 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 2));
+                t3 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 1));
             }
             else if (typeof(T) == typeof(char))
             {
                 ref char tmp = ref Unsafe.As<T, char>(ref src);
-                t0 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 4));
-                t1 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 3));
-                t2 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 2));
-                t3 = Unsafe.Add(ref tmp, (IntPtr)(srcLength - 1));
+                t0 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 4));
+                t1 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 3));
+                t2 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 2));
+                t3 = Unsafe.Add(ref tmp, (IntPtr)(uint)(srcLength - 1));
             }
             else
             {
@@ -118,10 +118,10 @@ namespace gfoidl.Base64.Internal
                 i0 |= i2;
 
                 if (i0 < 0)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 if (destIndex > destLength - 3)
-                    goto DestinationSmallExit;
+                    goto DestinationTooSmallExit;
 
                 WriteThreeLowOrderBytes(ref destBytes, destIndex, i0);
                 destIndex += 3;
@@ -135,10 +135,10 @@ namespace gfoidl.Base64.Internal
                 i0 |= i2;
 
                 if (i0 < 0)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 if (destIndex > destLength - 2)
-                    goto DestinationSmallExit;
+                    goto DestinationTooSmallExit;
 
                 Unsafe.Add(ref destBytes, (IntPtr)destIndex)       = (byte)(i0 >> 16);
                 Unsafe.Add(ref destBytes, (IntPtr)(destIndex + 1)) = (byte)(i0 >> 8);
@@ -147,10 +147,10 @@ namespace gfoidl.Base64.Internal
             else
             {
                 if (i0 < 0)
-                    goto InvalidExit;
+                    goto InvalidDataExit;
 
                 if (destIndex > destLength - 1)
-                    goto DestinationSmallExit;
+                    goto DestinationTooSmallExit;
 
                 Unsafe.Add(ref destBytes, (IntPtr)destIndex) = (byte)(i0 >> 16);
                 destIndex += 1;
@@ -159,15 +159,15 @@ namespace gfoidl.Base64.Internal
             sourceIndex += 4;
 
             if (srcLength != inputLength)
-                goto InvalidExit;
+                goto InvalidDataExit;
 
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.Done;
 
-        DestinationSmallExit:
+        DestinationTooSmallExit:
             if (srcLength != inputLength && isFinalBlock)
-                goto InvalidExit; // if input is not a multiple of 4, and there is no more data, return invalid data instead
+                goto InvalidDataExit; // if input is not a multiple of 4, and there is no more data, return invalid data instead
 
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
@@ -178,7 +178,7 @@ namespace gfoidl.Base64.Internal
             written = (int)destIndex;
             return OperationStatus.NeedMoreData;
 
-        InvalidExit:
+        InvalidDataExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.InvalidData;

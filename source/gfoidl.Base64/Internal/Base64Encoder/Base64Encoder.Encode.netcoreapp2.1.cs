@@ -29,26 +29,22 @@ namespace gfoidl.Base64.Internal
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
+            int maxSrcLength = 0;
 
-            if (srcLength < 16)
-                goto Scalar;
+            if (srcLength <= MaximumEncodeLength && destLength >= encodedLength)
+                maxSrcLength = srcLength;
+            else
+                maxSrcLength = (destLength >> 2) * 3;
 
-            if (Sse2.IsSupported && Ssse3.IsSupported && ((uint)srcLength - 16 >= sourceIndex))
+            if (Sse2.IsSupported && Ssse3.IsSupported && maxSrcLength >= 16)
             {
-                Ssse3Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
+                Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
             }
 
-        Scalar:
-            int maxSrcLength = -2;
-
-            if (srcLength <= MaximumEncodeLength && destLength >= encodedLength)
-                maxSrcLength += srcLength;
-            else
-                maxSrcLength += (destLength >> 2) * 3;
-
+            maxSrcLength        -= 2;
             ref byte encodingMap = ref s_encodingMap[0];
 
             // In order to elide the movsxd in the loop
@@ -64,7 +60,7 @@ namespace gfoidl.Base64.Internal
             }
 
             if (maxSrcLength != srcLength - 2)
-                goto DestinationSmallExit;
+                goto DestinationTooSmallExit;
 
             if (!isFinalBlock)
                 goto NeedMoreDataExit;
@@ -81,6 +77,7 @@ namespace gfoidl.Base64.Internal
                 destIndex   += 4;
                 sourceIndex += 2;
             }
+
         DoneExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
@@ -91,19 +88,19 @@ namespace gfoidl.Base64.Internal
             written  = (int)destIndex;
             return OperationStatus.NeedMoreData;
 
-        DestinationSmallExit:
+        DestinationTooSmallExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.DestinationTooSmall;
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 16 + 1));
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 16 + 1));   //  +1 for <=
 
             // Shift to workspace
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
@@ -120,8 +117,9 @@ namespace gfoidl.Base64.Internal
             Vector128<sbyte>  lut                 = s_sse_encodeLut;
 
             //while (remaining >= 16)
-            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
+            do
             {
+                src.AssertRead<Vector128<sbyte>, byte>(ref srcStart, sourceLength);
                 Vector128<sbyte> str = src.ReadVector128();
 
                 // Reshuffle
@@ -138,11 +136,13 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> tmp     = Sse2.Subtract(Sse.StaticCast<byte, sbyte>(indices), mask);
                 str                      = Sse2.Add(str, Ssse3.Shuffle(lut, tmp));
 
+                dest.AssertWrite<Vector128<sbyte>, T>(ref destStart, destLength);
                 dest.WriteVector128(str);
 
                 src  = ref Unsafe.Add(ref src,  12);
                 dest = ref Unsafe.Add(ref dest, 16);
             }
+            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
             sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src);

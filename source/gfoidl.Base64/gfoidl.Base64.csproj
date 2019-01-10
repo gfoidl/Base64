@@ -42,7 +42,7 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Internal\Vector*Helper.cs" />
+        <Compile Remove="Internal\*Helper.cs" />
         <Compile Remove="**\*.netcoreapp3.0.cs" />
         <Compile Remove="**\*.netcoreapp2.1.cs" />
         <Compile Remove="**\*.netcoreapp.cs" />
@@ -50,7 +50,7 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Internal\Vector*Helper.cs" />
+        <None Include="Internal\*Helper.cs" />
         <None Include="**\*.netcoreapp3.0.cs" />
         <None Include="**\*.netcoreapp2.1.cs" />
         <None Include="**\*.netcoreapp.cs" />
@@ -58,12 +58,13 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-        <Compile Include="Internal\Vector*Helper.cs" />
+        <Compile Include="Internal\*Helper.cs" />
         <Compile Include="**\*.netcoreapp3.0.cs" />
         <Compile Include="**\*.netcoreapp.cs" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
+        <Compile Include="Internal\AssertHelper.cs" />
         <Compile Include="Internal\Vector128Helper.cs" />
         <Compile Include="**\*.netcoreapp2.1.cs" />
         <Compile Include="**\*.netcoreapp.cs" />
