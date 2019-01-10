@@ -173,7 +173,7 @@ speedups for input-length 1000 can be in the height of 5 to 12x.
 
 ## Acknowledgements
 
-The scalar version of the base64 encoding / decoding is based on [System.Buffers.Tesxt.Base64](https://github.com/dotnet/corefx/tree/9c68db7fb016c6c9ae4d0f6152798d7ab1e38a37/src/System.Memory/src/System/Buffers/Text).
+The scalar version of the base64 encoding / decoding is based on [System.Buffers.Text.Base64](https://github.com/dotnet/corefx/tree/9c68db7fb016c6c9ae4d0f6152798d7ab1e38a37/src/System.Memory/src/System/Buffers/Text).
 
 The scalar version of the base64Url encoding / decoding is based on https://github.com/aspnet/Extensions/pull/334 and https://github.com/aspnet/Extensions/pull/338.
 
