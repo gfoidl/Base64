@@ -152,7 +152,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         //---------------------------------------------------------------------
 #if NETCOREAPP && DEBUG
         [Test]
-        public void Large_data_but_to_small_for_avx2___sse2_event_fired()
+        public void Large_data_but_to_small_for_avx2___ssse3_event_fired()
         {
             var sut  = new Base64Encoder();
             var data = new byte[20];
@@ -183,17 +183,17 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
 
             Span<byte> decoded = new byte[decodedLength];
 
-            bool sse2Executed = false;
-            Base64Encoder.Sse2Decoded += (s, e) => sse2Executed = true;
+            bool ssse3Executed = false;
+            Base64Encoder.Ssse3Decoded += (s, e) => ssse3Executed = true;
 
             status = sut.DecodeCore<T>(encoded, decoded, out int _, out int _);
             Assume.That(status, Is.EqualTo(OperationStatus.Done));
 
-            Assert.IsTrue(sse2Executed);
+            Assert.IsTrue(ssse3Executed);
         }
         //---------------------------------------------------------------------
         [Test]
-        public void Guid___sse2_event_fired()
+        public void Guid___ssse3_event_fired()
         {
             var sut  = new Base64Encoder();
             var data = Guid.NewGuid().ToByteArray();
@@ -222,13 +222,13 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
 
             Span<byte> decoded = new byte[decodedLength];
 
-            bool sse2Executed = false;
-            Base64Encoder.Sse2Decoded += (s, e) => sse2Executed = true;
+            bool ssse3Executed = false;
+            Base64Encoder.Ssse3Decoded += (s, e) => ssse3Executed = true;
 
             status = sut.DecodeCore<T>(encoded, decoded, out int _, out int _);
             Assume.That(status, Is.EqualTo(OperationStatus.Done));
 
-            Assert.IsTrue(sse2Executed);
+            Assert.IsTrue(ssse3Executed);
         }
 #endif
         //---------------------------------------------------------------------

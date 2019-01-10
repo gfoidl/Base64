@@ -31,7 +31,7 @@ namespace gfoidl.Base64.Internal
 
             if (Sse2.IsSupported && Ssse3.IsSupported && srcLength - 24 >= 0)
             {
-                Sse2Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
+                Ssse3Decode(ref src, ref destBytes, srcLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
@@ -200,11 +200,11 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
 #if DEBUG
-        public static event EventHandler<EventArgs> Sse2Decoded;
+        public static event EventHandler<EventArgs> Ssse3Decoded;
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Sse2Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Ssse3Decode<T>(ref T src, ref byte destBytes, int sourceLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref T srcStart     = ref src;
@@ -233,7 +233,7 @@ namespace gfoidl.Base64.Internal
                 if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
                     break;
 #if DEBUG
-                Sse2Decoded?.Invoke(null, EventArgs.Empty);
+                Ssse3Decoded?.Invoke(null, EventArgs.Empty);
 #endif
                 Vector128<sbyte> eq2F  = Sse2.CompareEqual(str, mask2F);
                 Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, Sse2.Add(eq2F, hiNibbles));

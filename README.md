@@ -16,7 +16,7 @@ Encoding / decoding supports buffer-chains, for example for very large data or w
 
 In .NET Core 2.1+ encoding / decoding is done with SIMD-support:
 
-| Framework | scalar | SSE | AVX |
+| Framework | scalar | SSSE3 | AVX2 |
 | -- | -- | -- | -- |
 | .NET Core 3.0 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | .NET Core 2.1+ | :heavy_check_mark: | :heavy_check_mark: | :x: |

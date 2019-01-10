@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Internal
     partial class Base64Encoder
     {
 #if DEBUG
-        public static event EventHandler<EventArgs> Sse2Encoded;
+        public static event EventHandler<EventArgs> Ssse3Encoded;
 #endif
         //---------------------------------------------------------------------
         private OperationStatus EncodeImpl<T>(
@@ -35,7 +35,7 @@ namespace gfoidl.Base64.Internal
 
             if (Sse2.IsSupported && Ssse3.IsSupported && ((uint)srcLength - 16 >= sourceIndex))
             {
-                Sse2Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
+                Ssse3Encode(ref srcBytes, ref dest, srcLength, ref sourceIndex, ref destIndex);
 
                 if (sourceIndex == srcLength)
                     goto DoneExit;
@@ -98,7 +98,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Sse2Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
+        private static void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref byte srcStart   = ref src;
@@ -151,7 +151,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            Sse2Encoded?.Invoke(null, EventArgs.Empty);
+            Ssse3Encoded?.Invoke(null, EventArgs.Empty);
 #endif
         }
         //---------------------------------------------------------------------

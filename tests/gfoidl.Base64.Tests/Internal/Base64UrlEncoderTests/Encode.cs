@@ -112,7 +112,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
         //---------------------------------------------------------------------
 #if NETCOREAPP && DEBUG
         [Test]
-        public void Guid___sse2_event_fired()
+        public void Guid___ssse3_event_fired()
         {
             var sut = new Base64UrlEncoder();
             var data = Guid.NewGuid().ToByteArray();
@@ -120,12 +120,12 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
             int encodedLength = sut.GetEncodedLength(data.Length);
             Span<T> encoded = new T[encodedLength];
 
-            bool sse2Executed = false;
-            Base64UrlEncoder.Sse2Encoded += (s, e) => sse2Executed = true;
+            bool ssse3Executed = false;
+            Base64UrlEncoder.Ssse3Encoded += (s, e) => ssse3Executed = true;
 
             OperationStatus status = sut.EncodeCore(data, encoded, out int consumed, out int written);
 
-            Assert.IsTrue(sse2Executed);
+            Assert.IsTrue(ssse3Executed);
         }
 #endif
         //---------------------------------------------------------------------
