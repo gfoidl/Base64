@@ -75,7 +75,7 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
             Vector256<sbyte> left  = s_one;
             Vector256<sbyte> right = s_one;
 
-            left = left.WithElement(index: 3, 0);
+            left = left.WithElement(index: 3, (sbyte)0);
 
             Vector256<sbyte> res = Avx2Helper.LessThan(left, right);
 
@@ -96,7 +96,7 @@ namespace gfoidl.Base64.Tests.Internal.Vector256HelperTests
             Vector256<sbyte> left  = Vector256.Create((sbyte)5);
             Vector256<sbyte> right = Vector256.Create((sbyte)5);
 
-            left = left.WithElement(index: 7, 4);
+            left = left.WithElement(index: 7, (sbyte)4);
 
             Vector256<sbyte> res = Avx2Helper.LessThan(left, right);
 
