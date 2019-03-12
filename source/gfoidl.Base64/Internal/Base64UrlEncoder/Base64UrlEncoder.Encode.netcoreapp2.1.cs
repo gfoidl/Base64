@@ -105,7 +105,7 @@ namespace gfoidl.Base64.Internal
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
             dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
 
-            // The JIT won't hoist these "constants", so help him
+            // The JIT won't hoist these "constants", so help it
             Vector128<sbyte>  shuffleVec          = s_sse_encodeShuffleVec;
             Vector128<sbyte>  shuffleConstant0    = Sse.StaticCast<int, sbyte> (Sse2.SetAllVector128(0x0fc0fc00));
             Vector128<sbyte>  shuffleConstant2    = Sse.StaticCast<int, sbyte> (Sse2.SetAllVector128(0x003f03f0));

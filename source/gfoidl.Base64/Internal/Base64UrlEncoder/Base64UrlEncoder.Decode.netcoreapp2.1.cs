@@ -33,7 +33,7 @@ namespace gfoidl.Base64.Internal
             int destLength   = data.Length;
 
             // max. 2 padding chars
-            if (destLength + 2 < decodedLength)
+            if (destLength < decodedLength - 2)
             {
                 // For overflow see comment below
                 maxSrcLength = destLength / 3 * 4;
@@ -181,7 +181,7 @@ namespace gfoidl.Base64.Internal
             ref byte destStart = ref destBytes;
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));   //  +1 for <=
 
-            // The JIT won't hoist these "constants", so help him
+            // The JIT won't hoist these "constants", so help it
             Vector128<sbyte> lutHi            = s_sse_decodeLutHi;
             Vector128<sbyte> lutLo            = s_sse_decodeLutLo;
             Vector128<sbyte> lutShift         = s_sse_decodeLutShift;

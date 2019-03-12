@@ -114,9 +114,9 @@ namespace gfoidl.Base64.Internal
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 28));   // 28 = 32-4, no +1 as the comparison is >
+            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 32));   // no +1 as the comparison is >
 
-            // The JIT won't hoist these "constants", so help him
+            // The JIT won't hoist these "constants", so help it
             Vector256<sbyte>  shuffleVec          = s_avx_encodeShuffleVec;
             Vector256<sbyte>  shuffleConstant0    = Vector256.Create(0x0fc0fc00).AsSByte();
             Vector256<sbyte>  shuffleConstant2    = Vector256.Create(0x003f03f0).AsSByte();
@@ -132,6 +132,9 @@ namespace gfoidl.Base64.Internal
 
             // shift by 4 bytes, as required by enc_reshuffle
             str = Avx2.PermuteVar8x32(str.AsInt32(), s_avx_encodePermuteVec).AsSByte();
+
+            // Next loads are at c-4, so shift it once
+            src = ref Unsafe.Subtract(ref src, 4);
 
             while (true)
             {
@@ -159,12 +162,12 @@ namespace gfoidl.Base64.Internal
                     break;
 
                 // Load at c-4, as required by enc_reshuffle
-                Unsafe.Subtract(ref src, 4).AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
-                str = Unsafe.Subtract(ref src, 4).ReadVector256();
+                src.AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
+                str = src.ReadVector256();
             }
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
-            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart,  ref src);
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart,  ref src) + 4;
             destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest) / (uint)Unsafe.SizeOf<T>();
 
             src  = ref srcStart;
@@ -186,7 +189,7 @@ namespace gfoidl.Base64.Internal
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
             dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
 
-            // The JIT won't hoist these "constants", so help him
+            // The JIT won't hoist these "constants", so help it
             Vector128<sbyte>  shuffleVec          = s_sse_encodeShuffleVec;
             Vector128<sbyte>  shuffleConstant0    = Vector128.Create(0x0fc0fc00).AsSByte();
             Vector128<sbyte>  shuffleConstant2    = Vector128.Create(0x003f03f0).AsSByte();
