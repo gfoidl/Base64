@@ -12,24 +12,30 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         [Test]
         public void Verify_encoding_map()
         {
+            byte[] expected = new byte[64];
+            Base64Encoder.s_encodingMap.Slice(1).CopyTo(expected.AsSpan());
+
             byte[] data = new byte[64];
 
             for (int i = 0; i < s_characters.Length; ++i)
                 data[i] = (byte)s_characters[i];
 
-            CollectionAssert.AreEqual(Base64Encoder.s_encodingMap, data);
+            CollectionAssert.AreEqual(expected, data);
         }
         //---------------------------------------------------------------------
         [Test]
         public void Verify_decoding_map()
         {
+            sbyte[] expected = new sbyte[256];
+            Base64Encoder.s_decodingMap.Slice(1).CopyTo(expected.AsSpan());
+
             sbyte[] data = new sbyte[256];
             data.AsSpan().Fill(-1);
 
             for (int i = 0; i < s_characters.Length; ++i)
                 data[s_characters[i]] = (sbyte)i;
 
-            CollectionAssert.AreEqual(Base64Encoder.s_decodingMap, data);
+            CollectionAssert.AreEqual(expected, data);
         }
     }
 }

@@ -24,8 +24,11 @@ namespace gfoidl.Base64.Internal
             decodedLength = GetDataLen(inputLength, out int base64Len, isFinalBlock);
             int srcLength = base64Len & ~0x3;       // only decode input up to the closest multiple of 4.
 
-            ref byte destBytes    = ref MemoryMarshal.GetReference(data);
-            ref sbyte decodingMap = ref s_decodingMap[0];
+            ref byte destBytes = ref MemoryMarshal.GetReference(data);
+
+            // https://github.com/dotnet/coreclr/issues/23194
+            // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
+            ref sbyte decodingMap = ref MemoryMarshal.GetReference(s_decodingMap.Slice(1));
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
             // if isFinalBlock is false, padding characters are considered invalid

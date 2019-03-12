@@ -131,7 +131,8 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         // internal because tests use this map too
-        internal static readonly sbyte[] s_decodingMap = {
+        internal static ReadOnlySpan<sbyte> s_decodingMap => new sbyte[] {
+            0,      // https://github.com/dotnet/coreclr/issues/23194
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63,         //62 is placed at index 43 (for +), 63 at index 47 (for /)

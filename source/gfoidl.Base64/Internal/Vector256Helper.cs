@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -7,6 +8,12 @@ namespace gfoidl.Base64.Internal
 {
     internal static class Avx2Helper
     {
+        public static Vector256<sbyte> ReadVector256(this ReadOnlySpan<sbyte> data)
+        {
+            ref sbyte tmp = ref MemoryMarshal.GetReference(data);
+            return Unsafe.As<sbyte, Vector256<sbyte>>(ref tmp);
+        }
+        //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector256<sbyte> ReadVector256<T>(this ref T src) where T : unmanaged
         {

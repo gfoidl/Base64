@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -53,8 +54,11 @@ namespace gfoidl.Base64.Internal
             }
 
         Scalar:
-            maxSrcLength        -= 2;
-            ref byte encodingMap = ref s_encodingMap[0];
+            maxSrcLength -= 2;
+
+            // https://github.com/dotnet/coreclr/issues/23194
+            // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
+            ref byte encodingMap = ref MemoryMarshal.GetReference(s_encodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
@@ -117,21 +121,21 @@ namespace gfoidl.Base64.Internal
             ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 32));   // no +1 as the comparison is >
 
             // The JIT won't hoist these "constants", so help it
-            Vector256<sbyte>  shuffleVec          = s_avx_encodeShuffleVec;
+            Vector256<sbyte>  shuffleVec          = s_avxEncodeShuffleVec.ReadVector256();
             Vector256<sbyte>  shuffleConstant0    = Vector256.Create(0x0fc0fc00).AsSByte();
             Vector256<sbyte>  shuffleConstant2    = Vector256.Create(0x003f03f0).AsSByte();
             Vector256<ushort> shuffleConstant1    = Vector256.Create(0x04000040).AsUInt16();
             Vector256<short>  shuffleConstant3    = Vector256.Create(0x01000010).AsInt16();
             Vector256<byte>   translationContant0 = Vector256.Create((byte)51);
             Vector256<sbyte>  translationContant1 = Vector256.Create((sbyte)25);
-            Vector256<sbyte>  lut                 = s_avx_encodeLut;
+            Vector256<sbyte>  lut                 = s_avxEncodeLut.ReadVector256();
 
             // first load is done at c-0 not to get a segfault
             src.AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
             Vector256<sbyte> str = src.ReadVector256();
 
             // shift by 4 bytes, as required by enc_reshuffle
-            str = Avx2.PermuteVar8x32(str.AsInt32(), s_avx_encodePermuteVec).AsSByte();
+            str = Avx2.PermuteVar8x32(str.AsInt32(), s_avxEncodePermuteVec.ReadVector256().AsInt32()).AsSByte();
 
             // Next loads are at c-4, so shift it once
             src = ref Unsafe.Subtract(ref src, 4);
@@ -190,14 +194,14 @@ namespace gfoidl.Base64.Internal
             dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
 
             // The JIT won't hoist these "constants", so help it
-            Vector128<sbyte>  shuffleVec          = s_sse_encodeShuffleVec;
+            Vector128<sbyte>  shuffleVec          = s_sseEncodeShuffleVec.ReadVector128();
             Vector128<sbyte>  shuffleConstant0    = Vector128.Create(0x0fc0fc00).AsSByte();
             Vector128<sbyte>  shuffleConstant2    = Vector128.Create(0x003f03f0).AsSByte();
             Vector128<ushort> shuffleConstant1    = Vector128.Create(0x04000040).AsUInt16();
             Vector128<short>  shuffleConstant3    = Vector128.Create(0x01000010).AsInt16();
             Vector128<byte>   translationContant0 = Vector128.Create((byte) 51);
             Vector128<sbyte>  translationContant1 = Vector128.Create((sbyte)25);
-            Vector128<sbyte>  lut                 = s_sse_encodeLut;
+            Vector128<sbyte>  lut                 = s_sseEncodeLut.ReadVector128();
 
             //while (remaining >= 16)
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
@@ -237,7 +241,24 @@ namespace gfoidl.Base64.Internal
 #endif
         }
         //---------------------------------------------------------------------
-        private static readonly Vector128<sbyte> s_sse_encodeLut;
-        private static readonly Vector256<sbyte> s_avx_encodeLut;
+        private static ReadOnlySpan<sbyte> s_sseEncodeLut => new sbyte[]
+        {
+             65, 71, -4, -4,
+             -4, -4, -4, -4,
+             -4, -4, -4, -4,
+            -17, 32,  0,  0
+        };
+
+        private static ReadOnlySpan<sbyte> s_avxEncodeLut => new sbyte[]
+        {
+             65, 71, -4, -4,
+             -4, -4, -4, -4,
+             -4, -4, -4, -4,
+            -17, 32,  0,  0,
+             65, 71, -4, -4,
+             -4, -4, -4, -4,
+             -4, -4, -4, -4,
+            -17, 32,  0,  0
+        };
     }
 }

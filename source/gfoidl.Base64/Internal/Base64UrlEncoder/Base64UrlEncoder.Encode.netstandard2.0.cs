@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 // Scalar based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
 
@@ -57,7 +58,9 @@ namespace gfoidl.Base64.Internal
             else
                 maxSrcLength += (destLength >> 2) * 3;
 
-            ref byte encodingMap = ref s_encodingMap[0];
+            // https://github.com/dotnet/coreclr/issues/23194
+            // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
+            ref byte encodingMap = ref MemoryMarshal.GetReference(s_encodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -44,8 +45,11 @@ namespace gfoidl.Base64.Internal
                     goto DoneExit;
             }
 
-            maxSrcLength        -= 2;
-            ref byte encodingMap = ref s_encodingMap[0];
+            maxSrcLength -= 2;
+
+            // https://github.com/dotnet/coreclr/issues/23194
+            // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
+            ref byte encodingMap = ref MemoryMarshal.GetReference(s_encodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
@@ -107,14 +111,14 @@ namespace gfoidl.Base64.Internal
             dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
 
             // The JIT won't hoist these "constants", so help it
-            Vector128<sbyte>  shuffleVec          = s_sse_encodeShuffleVec;
+            Vector128<sbyte>  shuffleVec          = s_sseEncodeShuffleVec.ReadVector128();
             Vector128<sbyte>  shuffleConstant0    = Sse.StaticCast<int, sbyte> (Sse2.SetAllVector128(0x0fc0fc00));
             Vector128<sbyte>  shuffleConstant2    = Sse.StaticCast<int, sbyte> (Sse2.SetAllVector128(0x003f03f0));
             Vector128<ushort> shuffleConstant1    = Sse.StaticCast<int, ushort>(Sse2.SetAllVector128(0x04000040));
             Vector128<short>  shuffleConstant3    = Sse.StaticCast<int, short> (Sse2.SetAllVector128(0x01000010));
             Vector128<byte>   translationContant0 = Sse2.SetAllVector128((byte) 51);
             Vector128<sbyte>  translationContant1 = Sse2.SetAllVector128((sbyte)25);
-            Vector128<sbyte>  lut                 = s_sse_encodeLut;
+            Vector128<sbyte>  lut                 = s_sseEncodeLut.ReadVector128();
 
             //while (remaining >= 16)
             do
@@ -155,6 +159,12 @@ namespace gfoidl.Base64.Internal
 #endif
         }
         //---------------------------------------------------------------------
-        private static readonly Vector128<sbyte> s_sse_encodeLut;
+        private static ReadOnlySpan<sbyte> s_sseEncodeLut => new sbyte[]
+        {
+            65,  71, -4, -4,
+            -4,  -4, -4, -4,
+            -4,  -4, -4, -4,
+           -19, -16,  0,  0
+        };
     }
 }

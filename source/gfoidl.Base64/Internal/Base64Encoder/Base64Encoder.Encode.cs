@@ -117,7 +117,8 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         // internal because tests use this map too
-        internal static readonly byte[] s_encodingMap = {
+        internal static ReadOnlySpan<byte> s_encodingMap => new byte[] {
+            0,      // https://github.com/dotnet/coreclr/issues/23194
             65, 66, 67, 68, 69, 70, 71, 72,         //A..H
             73, 74, 75, 76, 77, 78, 79, 80,         //I..P
             81, 82, 83, 84, 85, 86, 87, 88,         //Q..X

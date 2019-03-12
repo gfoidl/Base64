@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -7,6 +8,12 @@ namespace gfoidl.Base64.Internal
 {
     internal static class Vector128Helper
     {
+        public static Vector128<sbyte> ReadVector128(this ReadOnlySpan<sbyte> data)
+        {
+            ref sbyte tmp = ref MemoryMarshal.GetReference(data);
+            return Unsafe.As<sbyte, Vector128<sbyte>>(ref tmp);
+        }
+        //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<sbyte> ReadVector128<T>(this ref T src) where T : unmanaged
         {
