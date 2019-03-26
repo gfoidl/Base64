@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="..\..\source\SimdInfo.cs" Link="SimdInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
     </ItemGroup>
 

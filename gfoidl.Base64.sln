@@ -14,6 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4259BCE-EA4C-434C-8896-CEBBEC38222D}"
 	ProjectSection(SolutionItems) = preProject
+		.codecov.yml = .codecov.yml
 		build.sh = build.sh
 		Directory.Build.props = Directory.Build.props
 		global.json = global.json

@@ -5,9 +5,8 @@ using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
-// Scalar based on https://github.com/dotnet/corefx/tree/master/src/System.Memory/src/System/Buffers/Text
-// SSE2 based on https://github.com/aklomp/base64/tree/master/lib/arch/ssse3
-// AVX2 based on https://github.com/aklomp/base64/tree/master/lib/arch/avx2
+// Scalar based on https://github.com/dotnet/corefx/tree/ec34e99b876ea1119f37986ead894f4eded1a19a/src/System.Memory/src/System/Buffers/Text
+// SSE2 based on https://github.com/aklomp/base64/tree/a27c565d1b6c676beaf297fe503c4518185666f7/lib/arch/ssse3
 // Lookup and validation for SSE2 and AVX2 based on http://0x80.pl/notesen/2016-01-17-sse-base64-decoding.html#vector-lookup-pshufb
 
 namespace gfoidl.Base64.Internal
@@ -187,8 +186,8 @@ namespace gfoidl.Base64.Internal
             Vector128<sbyte> lutHi            = s_sseDecodeLutHi.ReadVector128();
             Vector128<sbyte> lutLo            = s_sseDecodeLutLo.ReadVector128();
             Vector128<sbyte> lutShift         = s_sseDecodeLutShift.ReadVector128();
-            Vector128<sbyte> mask5F           = Sse2.SetAllVector128((sbyte)0x5F); // ASCII: _
-            Vector128<sbyte> shift5F          = Sse2.SetAllVector128((sbyte)33); // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
+            Vector128<sbyte> mask5F           = Sse2.SetAllVector128((sbyte)0x5F);      // ASCII: _
+            Vector128<sbyte> shift5F          = Sse2.SetAllVector128((sbyte)33);        // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
             Vector128<sbyte> shuffleConstant0 = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x01400140));
             Vector128<short> shuffleConstant1 = Sse.StaticCast<int, short>(Sse2.SetAllVector128(0x00011000));
             Vector128<sbyte> shuffleVec       = s_sseDecodeShuffleVec.ReadVector128();
@@ -237,7 +236,7 @@ namespace gfoidl.Base64.Internal
             destBytes = ref destStart;
         }
         //---------------------------------------------------------------------
-        private const sbyte lInv = -1;  // 0xFF
+        private const sbyte lInv = -1;      // 0xFF: Constant value '255' cannot be converted to a 'sbyte'
         private const sbyte hInv = 0x00;
 
         private static ReadOnlySpan<sbyte> s_sseDecodeLutLo => new sbyte[]
