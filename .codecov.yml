@@ -1,2 +1,3 @@
 ignore:
     - "tests/*"
+    - "source/gfoidl.Base64/Internal/AssertHelper.cs"     # only used for Debug
