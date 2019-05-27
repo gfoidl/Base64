@@ -226,6 +226,7 @@ namespace gfoidl.Base64.Internal
             Vector128<sbyte> shuffleConstant0 = Sse.StaticCast<int, sbyte>(Sse2.SetAllVector128(0x01400140));
             Vector128<short> shuffleConstant1 = Sse.StaticCast<int, short>(Sse2.SetAllVector128(0x00011000));
             Vector128<sbyte> shuffleVec       = s_sseDecodeShuffleVec.ReadVector128();
+            Vector128<sbyte> zero             = Sse2.SetZeroVector128<sbyte>();
 
             //while (remaining >= 24)
             do
@@ -237,7 +238,6 @@ namespace gfoidl.Base64.Internal
                 Vector128<sbyte> loNibbles = Sse2.And(str, mask2F);
                 Vector128<sbyte> hi        = Ssse3.Shuffle(lutHi, hiNibbles);
                 Vector128<sbyte> lo        = Ssse3.Shuffle(lutLo, loNibbles);
-                Vector128<sbyte> zero = Sse2.SetZeroVector128<sbyte>();
 
                 if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
                     break;
