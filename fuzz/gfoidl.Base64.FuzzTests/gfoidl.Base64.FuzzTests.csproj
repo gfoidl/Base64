@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SharpFuzz" Version="1.6.1" />
+        <PackageReference Include="Sigil" Version="4.7.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="gfoidl.Base64">
+            <HintPath>..\instrumented\gfoidl.Base64.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+</Project>

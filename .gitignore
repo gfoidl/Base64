@@ -220,3 +220,4 @@ _Pvt_Extensions
 # Projekte mit Schema nach gfoidl
 /source/packages
 /NuGet-Packed
+/fuzz/instrumented
