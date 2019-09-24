@@ -5,7 +5,7 @@
     <PropertyGroup>
         <DeveloperBuildTestTfms>netcoreapp3.0;netcoreapp2.1</DeveloperBuildTestTfms>
         <StandardTestTfms>$(DeveloperBuildTestTfms)</StandardTestTfms>
-        <StandardTestTfms Condition="'$(OS)' == 'Windows_NT'">$(StandardTestTfms);net472</StandardTestTfms>
+        <StandardTestTfms Condition="'$(OS)' == 'Windows_NT'">$(StandardTestTfms);net48</StandardTestTfms>
     </PropertyGroup>
 
     <PropertyGroup>
