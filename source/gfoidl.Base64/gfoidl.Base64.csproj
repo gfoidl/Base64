@@ -7,7 +7,7 @@
 
     <PropertyGroup>
         <Description>A library for base64 encoding / decoding, as well as base64url support.
-For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
+For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
         </Description>
         <PackageProjectUrl>https://github.com/gfoidl/Base64</PackageProjectUrl>
         <PackageLicenseUrl>https://github.com/gfoidl/Base64/blob/master/LICENSE</PackageLicenseUrl>
@@ -26,48 +26,33 @@ For .NET Core 2.1+ encoding / decoding is done with SIMD-support.
         <PackageReference Include="Internal.AspNetCore.Analyzers" Version="2.2.0" PrivateAssets="All" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
-        <PackageReference Include="System.Runtime.Intrinsics.Experimental" Version="4.6.0-preview1-26724-02" />
-    </ItemGroup>
-
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="System.Buffers" Version="4.4.0" />
-        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
-        <PackageReference Include="System.Memory" Version="4.5.1" />
+        <PackageReference Include="System.Buffers" Version="4.5.0" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
+        <PackageReference Include="System.Memory" Version="4.5.3" />
     </ItemGroup>
 
     <ItemGroup>
         <Compile Remove="Internal\*Helper.cs" />
-        <Compile Remove="**\*.netcoreapp3.0.cs" />
-        <Compile Remove="**\*.netcoreapp2.1.cs" />
         <Compile Remove="**\*.netcoreapp.cs" />
         <Compile Remove="**\*.netstandard2.0.cs" />
+        <Compile Remove="**\*.sse.cs" />
+        <Compile Remove="**\*.avx.cs" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="Internal\*Helper.cs" />
-        <None Include="**\*.netcoreapp3.0.cs" />
-        <None Include="**\*.netcoreapp2.1.cs" />
         <None Include="**\*.netcoreapp.cs" />
         <None Include="**\*.netstandard2.0.cs" />
+        <None Include="**\*.sse.cs" />
+        <None Include="**\*.avx.cs" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
         <Compile Include="Internal\*Helper.cs" />
-        <Compile Include="**\*.netcoreapp3.0.cs" />
         <Compile Include="**\*.netcoreapp.cs" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'">
-        <Compile Include="Internal\AssertHelper.cs" />
-        <Compile Include="Internal\Vector128Helper.cs" />
-        <Compile Include="**\*.netcoreapp2.1.cs" />
-        <Compile Include="**\*.netcoreapp.cs" />
+        <Compile Include="**\*.sse.cs" />
+        <Compile Include="**\*.avx.cs" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

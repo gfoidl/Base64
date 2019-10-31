@@ -10,20 +10,15 @@ Decoding can read from buffers of type `byte` (for UTF-8) or `char`.
 
 Encoding / decoding supports buffer-chains, for example for very large data or when the data arrives in chunks.
 
-In .NET Core 2.1+ encoding / decoding is done with SIMD-support:
+In .NET Core 3.0 onwards encoding / decoding is done with SIMD-support:
 
 | Framework | scalar | SSSE3 | AVX2 |
 | -- | -- | -- | -- |
 | .NET Core 3.0 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| .NET Core 2.1+ | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | .NET Standard 2.0 | :heavy_check_mark: | :x: | :x: |
 
 If available AVX will "eat" up as much as possible, then SSE will "eat" up as much as possible,
 finally scalar code processes the rest (including padding).
-
-**Note:** SIMD-support (with HW-intrinsics) is officially supported for .NET Core 3.0 onwards.
-Hence SIMD-support for .NET Core 2.1+ is not official, and based on an experimental (but tested) solution.
-Further note that future versions of the JIT may not compile these bits anymore. So use this library with caution in a .NET Core 2.1+ project.
 
 ## Usage
 
