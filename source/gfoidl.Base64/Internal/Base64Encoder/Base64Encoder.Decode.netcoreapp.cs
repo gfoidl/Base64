@@ -11,7 +11,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64.Internal
 {
-    partial class Base64Encoder
+    public partial class Base64Encoder
     {
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private OperationStatus DecodeImpl<T>(
@@ -71,7 +71,7 @@ namespace gfoidl.Base64.Internal
 
             // https://github.com/dotnet/coreclr/issues/23194
             // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
-            ref sbyte decodingMap = ref MemoryMarshal.GetReference(s_decodingMap.Slice(1));
+            ref sbyte decodingMap = ref MemoryMarshal.GetReference(DecodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
@@ -216,8 +216,8 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
 #if DEBUG
-        public static event EventHandler<EventArgs> Avx2Decoded;
-        public static event EventHandler<EventArgs> Ssse3Decoded;
+        public static event EventHandler<EventArgs>? Avx2Decoded;
+        public static event EventHandler<EventArgs>? Ssse3Decoded;
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -229,9 +229,9 @@ namespace gfoidl.Base64.Internal
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));   //  +1 for <=
 
             // The JIT won't hoist these "constants", so help it
-            Vector256<sbyte> lutHi            = s_avxDecodeLutHi.ReadVector256();
-            Vector256<sbyte> lutLo            = s_avxDecodeLutLo.ReadVector256();
-            Vector256<sbyte> lutShift         = s_avxDecodeLutShift.ReadVector256();
+            Vector256<sbyte> lutHi            = AvxDecodeLutHi.ReadVector256();
+            Vector256<sbyte> lutLo            = AvxDecodeLutLo.ReadVector256();
+            Vector256<sbyte> lutShift         = AvxDecodeLutShift.ReadVector256();
             Vector256<sbyte> mask2F           = Vector256.Create((sbyte)0x2F);     // ASCII: /
             Vector256<sbyte> shuffleConstant0 = Vector256.Create(0x01400140).AsSByte();
             Vector256<short> shuffleConstant1 = Vector256.Create(0x00011000).AsInt16();
@@ -290,13 +290,13 @@ namespace gfoidl.Base64.Internal
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));   //  +1 for <=
 
             // The JIT won't hoist these "constants", so help it
-            Vector128<sbyte> lutHi            = s_sseDecodeLutHi.ReadVector128();
-            Vector128<sbyte> lutLo            = s_sseDecodeLutLo.ReadVector128();
-            Vector128<sbyte> lutShift         = s_sseDecodeLutShift.ReadVector128();
+            Vector128<sbyte> lutHi            = SseDecodeLutHi.ReadVector128();
+            Vector128<sbyte> lutLo            = SseDecodeLutLo.ReadVector128();
+            Vector128<sbyte> lutShift         = SseDecodeLutShift.ReadVector128();
             Vector128<sbyte> mask2F           = Vector128.Create((sbyte)0x2F);      // ASCII: /
             Vector128<sbyte> shuffleConstant0 = Vector128.Create(0x01400140).AsSByte();
             Vector128<short> shuffleConstant1 = Vector128.Create(0x00011000).AsInt16();
-            Vector128<sbyte> shuffleVec       = s_sseDecodeShuffleVec.ReadVector128();
+            Vector128<sbyte> shuffleVec       = SseDecodeShuffleVec.ReadVector128();
             Vector128<sbyte> zero             = Vector128<sbyte>.Zero;
 
             //while (remaining >= 24)
@@ -339,7 +339,7 @@ namespace gfoidl.Base64.Internal
             destBytes = ref destStart;
         }
         //---------------------------------------------------------------------
-        private static ReadOnlySpan<sbyte> s_sseDecodeLutLo => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseDecodeLutLo => new sbyte[16]
         {
             0x15, 0x11, 0x11, 0x11,
             0x11, 0x11, 0x11, 0x11,
@@ -347,7 +347,7 @@ namespace gfoidl.Base64.Internal
             0x1B, 0x1B, 0x1B, 0x1A
         };
 
-        private static ReadOnlySpan<sbyte> s_sseDecodeLutHi => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseDecodeLutHi => new sbyte[16]
         {
             0x10, 0x10, 0x01, 0x02,
             0x04, 0x08, 0x04, 0x08,
@@ -355,7 +355,7 @@ namespace gfoidl.Base64.Internal
             0x10, 0x10, 0x10, 0x10
         };
 
-        private static ReadOnlySpan<sbyte> s_sseDecodeLutShift => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseDecodeLutShift => new sbyte[16]
         {
               0,  16,  19,   4,
             -65, -65, -71, -71,
@@ -363,7 +363,7 @@ namespace gfoidl.Base64.Internal
               0,   0,   0,   0
         };
 
-        private static ReadOnlySpan<sbyte> s_avxDecodeLutLo => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxDecodeLutLo => new sbyte[32]
         {
             0x15, 0x11, 0x11, 0x11,
             0x11, 0x11, 0x11, 0x11,
@@ -375,7 +375,7 @@ namespace gfoidl.Base64.Internal
             0x1B, 0x1B, 0x1B, 0x1A
         };
 
-        private static ReadOnlySpan<sbyte> s_avxDecodeLutHi => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxDecodeLutHi => new sbyte[32]
         {
             0x10, 0x10, 0x01, 0x02,
             0x04, 0x08, 0x04, 0x08,
@@ -387,7 +387,7 @@ namespace gfoidl.Base64.Internal
             0x10, 0x10, 0x10, 0x10
         };
 
-        private static ReadOnlySpan<sbyte> s_avxDecodeLutShift => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxDecodeLutShift => new sbyte[32]
         {
              0,  16,  19,   4,
            -65, -65, -71, -71,

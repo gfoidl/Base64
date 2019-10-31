@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace gfoidl.Base64.Internal
 {
-    partial class Base64Encoder
+    public partial class Base64Encoder
     {
         // PERF: can't be in base class due to inlining (generic virtual)
         public override unsafe string Encode(ReadOnlySpan<byte> data)
@@ -16,8 +16,8 @@ namespace gfoidl.Base64.Internal
             if (data.IsEmpty)
                 return string.Empty;
 
-            int encodedLength          = this.GetEncodedLength(data.Length);
-            char[] arrayToReturnToPool = null;
+            int encodedLength           = this.GetEncodedLength(data.Length);
+            char[]? arrayToReturnToPool = null;
 
             Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
                 ? stackalloc char[encodedLength]
@@ -62,7 +62,7 @@ namespace gfoidl.Base64.Internal
 
             // https://github.com/dotnet/coreclr/issues/23194
             // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
-            ref byte encodingMap = ref MemoryMarshal.GetReference(s_encodingMap.Slice(1));
+            ref byte encodingMap = ref MemoryMarshal.GetReference(EncodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)

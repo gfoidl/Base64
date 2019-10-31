@@ -12,7 +12,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64.Internal
 {
-    partial class Base64Encoder
+    public partial class Base64Encoder
     {
         // PERF: can't be in base class due to inlining (generic virtual)
         public override unsafe string Encode(ReadOnlySpan<byte> data)
@@ -55,8 +55,8 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
 #if DEBUG
-        public static event EventHandler<EventArgs> Avx2Encoded;
-        public static event EventHandler<EventArgs> Ssse3Encoded;
+        public static event EventHandler<EventArgs>? Avx2Encoded;
+        public static event EventHandler<EventArgs>? Ssse3Encoded;
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
@@ -73,7 +73,7 @@ namespace gfoidl.Base64.Internal
         {
             uint sourceIndex = 0;
             uint destIndex   = 0;
-            int maxSrcLength = 0;
+            int maxSrcLength;
 
             if (srcLength <= MaximumEncodeLength && destLength >= encodedLength)
                 maxSrcLength = srcLength;
@@ -104,7 +104,7 @@ namespace gfoidl.Base64.Internal
 
             // https://github.com/dotnet/coreclr/issues/23194
             // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
-            ref byte encodingMap = ref MemoryMarshal.GetReference(s_encodingMap.Slice(1));
+            ref byte encodingMap = ref MemoryMarshal.GetReference(EncodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
@@ -169,7 +169,7 @@ namespace gfoidl.Base64.Internal
             Vector256<short>  shuffleConstant3    = Vector256.Create(0x01000010).AsInt16();
             Vector256<byte>   translationContant0 = Vector256.Create((byte)51);
             Vector256<sbyte>  translationContant1 = Vector256.Create((sbyte)25);
-            Vector256<sbyte>  lut                 = s_avxEncodeLut.ReadVector256();
+            Vector256<sbyte>  lut                 = AvxEncodeLut.ReadVector256();
 
             // first load is done at c-0 not to get a segfault
             src.AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
@@ -235,14 +235,14 @@ namespace gfoidl.Base64.Internal
             dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
 
             // The JIT won't hoist these "constants", so help it
-            Vector128<sbyte>  shuffleVec          = s_sseEncodeShuffleVec.ReadVector128();
+            Vector128<sbyte>  shuffleVec          = SseEncodeShuffleVec.ReadVector128();
             Vector128<sbyte>  shuffleConstant0    = Vector128.Create(0x0fc0fc00).AsSByte();
             Vector128<sbyte>  shuffleConstant2    = Vector128.Create(0x003f03f0).AsSByte();
             Vector128<ushort> shuffleConstant1    = Vector128.Create(0x04000040).AsUInt16();
             Vector128<short>  shuffleConstant3    = Vector128.Create(0x01000010).AsInt16();
             Vector128<byte>   translationContant0 = Vector128.Create((byte) 51);
             Vector128<sbyte>  translationContant1 = Vector128.Create((sbyte)25);
-            Vector128<sbyte>  lut                 = s_sseEncodeLut.ReadVector128();
+            Vector128<sbyte>  lut                 = SseEncodeLut.ReadVector128();
 
             //while (remaining >= 16)
             do
@@ -283,7 +283,7 @@ namespace gfoidl.Base64.Internal
 #endif
         }
         //---------------------------------------------------------------------
-        private static ReadOnlySpan<sbyte> s_sseEncodeLut => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseEncodeLut => new sbyte[16]
         {
             65,  71, -4, -4,
             -4,  -4, -4, -4,
@@ -291,7 +291,7 @@ namespace gfoidl.Base64.Internal
            -19, -16,  0,  0
         };
 
-        private static ReadOnlySpan<sbyte> s_avxEncodeLut => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxEncodeLut => new sbyte[32]
         {
             65,  71, -4, -4,
             -4,  -4, -4, -4,

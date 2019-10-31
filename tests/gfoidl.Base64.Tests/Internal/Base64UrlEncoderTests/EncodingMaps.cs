@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
         public void Verify_encoding_map()
         {
             byte[] expected = new byte[64];
-            Base64UrlEncoder.s_encodingMap.Slice(1).CopyTo(expected.AsSpan());
+            Base64UrlEncoder.EncodingMap.Slice(1).CopyTo(expected.AsSpan());
 
             byte[] data = new byte[64];
 
@@ -27,7 +27,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
         public void Verify_decoding_map()
         {
             sbyte[] expected = new sbyte[256];
-            Base64UrlEncoder.s_decodingMap.Slice(1).CopyTo(expected.AsSpan());
+            Base64UrlEncoder.DecodingMap.Slice(1).CopyTo(expected.AsSpan());
 
             sbyte[] data = new sbyte[256];
             data.AsSpan().Fill(-1);

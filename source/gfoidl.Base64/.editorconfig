@@ -1,4 +1,0 @@
-﻿[*.cs]
-
-# PUB0001: Pubternal type in public API
-dotnet_diagnostic.PUB0001.severity = suggestion

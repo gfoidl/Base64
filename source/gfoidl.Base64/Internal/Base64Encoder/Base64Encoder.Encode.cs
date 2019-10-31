@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace gfoidl.Base64.Internal
 {
-    partial class Base64Encoder
+    public partial class Base64Encoder
     {
         public override int GetEncodedLength(int sourceLength) => GetBase64EncodedLength(sourceLength);
         //---------------------------------------------------------------------
@@ -117,7 +117,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         // internal because tests use this map too
-        internal static ReadOnlySpan<byte> s_encodingMap => new byte[64 + 1] {
+        internal static ReadOnlySpan<byte> EncodingMap => new byte[64 + 1] {
             0,      // https://github.com/dotnet/coreclr/issues/23194
             65, 66, 67, 68, 69, 70, 71, 72,         //A..H
             73, 74, 75, 76, 77, 78, 79, 80,         //I..P

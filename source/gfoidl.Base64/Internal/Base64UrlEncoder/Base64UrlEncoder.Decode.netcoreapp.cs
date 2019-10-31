@@ -12,7 +12,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace gfoidl.Base64.Internal
 {
-    partial class Base64UrlEncoder
+    public partial class Base64UrlEncoder
     {
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private OperationStatus DecodeImpl<T>(
@@ -74,7 +74,7 @@ namespace gfoidl.Base64.Internal
 
             // https://github.com/dotnet/coreclr/issues/23194
             // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
-            ref sbyte decodingMap = ref MemoryMarshal.GetReference(s_decodingMap.Slice(1));
+            ref sbyte decodingMap = ref MemoryMarshal.GetReference(DecodingMap.Slice(1));
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
@@ -180,8 +180,8 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
 #if DEBUG
-        public static event EventHandler<EventArgs> Avx2Decoded;
-        public static event EventHandler<EventArgs> Ssse3Decoded;
+        public static event EventHandler<EventArgs>? Avx2Decoded;
+        public static event EventHandler<EventArgs>? Ssse3Decoded;
 #endif
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -194,9 +194,9 @@ namespace gfoidl.Base64.Internal
 
             // The JIT won't hoist these "constants", so help it
             Vector256<sbyte> allOnes          = Vector256.Create((sbyte)-1);                // -1 = 0xFF = true in simd
-            Vector256<sbyte> lutHi            = s_avxDecodeLutHi.ReadVector256();
-            Vector256<sbyte> lutLo            = s_avxDecodeLutLo.ReadVector256();
-            Vector256<sbyte> lutShift         = s_avxDecodeLutShift.ReadVector256();
+            Vector256<sbyte> lutHi            = AvxDecodeLutHi.ReadVector256();
+            Vector256<sbyte> lutLo            = AvxDecodeLutLo.ReadVector256();
+            Vector256<sbyte> lutShift         = AvxDecodeLutShift.ReadVector256();
             Vector256<sbyte> mask5F           = Vector256.Create((sbyte)0x5F);              // ASCII: _
             Vector256<sbyte> shift5F          = Vector256.Create((sbyte)33);                // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
             Vector256<sbyte> shuffleConstant0 = Vector256.Create(0x01400140).AsSByte();
@@ -259,14 +259,14 @@ namespace gfoidl.Base64.Internal
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));    //  +1 for <=
 
             // The JIT won't hoist these "constants", so help it
-            Vector128<sbyte> lutHi            = s_sseDecodeLutHi.ReadVector128();
-            Vector128<sbyte> lutLo            = s_sseDecodeLutLo.ReadVector128();
-            Vector128<sbyte> lutShift         = s_sseDecodeLutShift.ReadVector128();
+            Vector128<sbyte> lutHi            = SseDecodeLutHi.ReadVector128();
+            Vector128<sbyte> lutLo            = SseDecodeLutLo.ReadVector128();
+            Vector128<sbyte> lutShift         = SseDecodeLutShift.ReadVector128();
             Vector128<sbyte> mask5F           = Vector128.Create((sbyte)0x5F);              // ASCII: _
             Vector128<sbyte> shift5F          = Vector128.Create((sbyte)33);                // high nibble is 0x5 -> range 'P' .. 'Z' for shift, not '+' (0x2)
             Vector128<sbyte> shuffleConstant0 = Vector128.Create(0x01400140).AsSByte();
             Vector128<short> shuffleConstant1 = Vector128.Create(0x00011000).AsInt16();
-            Vector128<sbyte> shuffleVec       = s_sseDecodeShuffleVec.ReadVector128();
+            Vector128<sbyte> shuffleVec       = SseDecodeShuffleVec.ReadVector128();
 
             //while (remaining >= 24)
             do
@@ -311,11 +311,14 @@ namespace gfoidl.Base64.Internal
             src       = ref srcStart;
             destBytes = ref destStart;
         }
+
         //---------------------------------------------------------------------
+#pragma warning disable IDE1006 // Naming Styles
         private const sbyte lInv = -1;      // 0xFF: Constant value '255' cannot be converted to a 'sbyte'
         private const sbyte hInv = 0x00;
+#pragma warning restore IDE1006 // Naming Styles
 
-        private static ReadOnlySpan<sbyte> s_sseDecodeLutLo => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseDecodeLutLo => new sbyte[16]
         {
             lInv, lInv, 0x2D, 0x30,
             0x41, 0x50, 0x61, 0x70,
@@ -323,7 +326,7 @@ namespace gfoidl.Base64.Internal
             lInv, lInv, lInv, lInv
         };
 
-        private static ReadOnlySpan<sbyte> s_sseDecodeLutHi => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseDecodeLutHi => new sbyte[16]
         {
             hInv, hInv, 0x2D, 0x39,
             0x4F, 0x5A, 0x6F, 0x7A,
@@ -331,7 +334,7 @@ namespace gfoidl.Base64.Internal
             hInv, hInv, hInv, hInv
         };
 
-        private static ReadOnlySpan<sbyte> s_sseDecodeLutShift => new sbyte[16]
+        private static ReadOnlySpan<sbyte> SseDecodeLutShift => new sbyte[16]
         {
               0,   0,  17,   4,
             -65, -65, -71, -71,
@@ -339,7 +342,7 @@ namespace gfoidl.Base64.Internal
               0,   0,   0,   0
         };
 
-        private static ReadOnlySpan<sbyte> s_avxDecodeLutLo => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxDecodeLutLo => new sbyte[32]
         {
             lInv, lInv, 0x2D, 0x30,
             0x41, 0x50, 0x61, 0x70,
@@ -351,7 +354,7 @@ namespace gfoidl.Base64.Internal
             lInv, lInv, lInv, lInv
         };
 
-        private static ReadOnlySpan<sbyte> s_avxDecodeLutHi => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxDecodeLutHi => new sbyte[32]
         {
             hInv, hInv, 0x2D, 0x39,
             0x4F, 0x5A, 0x6F, 0x7A,
@@ -363,7 +366,7 @@ namespace gfoidl.Base64.Internal
             hInv, hInv, hInv, hInv
         };
 
-        private static ReadOnlySpan<sbyte> s_avxDecodeLutShift => new sbyte[32]
+        private static ReadOnlySpan<sbyte> AvxDecodeLutShift => new sbyte[32]
         {
               0,   0,  17,   4,
             -65, -65, -71, -71,

@@ -15,6 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4259BCE-EA4C-434C-8896-CEBBEC38222D}"
 	ProjectSection(SolutionItems) = preProject
 		.codecov.yml = .codecov.yml
+		.editorconfig = .editorconfig
 		build.sh = build.sh
 		Directory.Build.props = Directory.Build.props
 		nuget.config = nuget.config
@@ -67,6 +68,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testcases", "testcases", "{
 		fuzz\testcases\1.txt = fuzz\testcases\1.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{CD033330-6EDE-4E8E-976C-5CB7C58217E8}"
+	ProjectSection(SolutionItems) = preProject
+		.github\CODEOWNERS = .github\CODEOWNERS
+		.github\pull_request_template.md = .github\pull_request_template.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEMPLATE", "{3F0FD9C1-1B52-4BC6-9BD8-8FD3B0162E88}"
+	ProjectSection(SolutionItems) = preProject
+		.github\ISSUE_TEMPLATE\bug_report.md = .github\ISSUE_TEMPLATE\bug_report.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -112,6 +124,8 @@ Global
 		{41097931-26CD-4203-B69C-A14CA5FBB69D} = {35F8F60F-BAC0-487A-83EB-8588797F3B1F}
 		{DC515055-B8E7-4C25-B4CF-703292C4F975} = {89ADD037-F9FC-4ADE-99B8-D89307057409}
 		{18096666-86BE-4AEA-AE79-E4528DFFC43C} = {89ADD037-F9FC-4ADE-99B8-D89307057409}
+		{CD033330-6EDE-4E8E-976C-5CB7C58217E8} = {403238BD-BE8A-4E78-924A-C841CD8C7955}
+		{3F0FD9C1-1B52-4BC6-9BD8-8FD3B0162E88} = {CD033330-6EDE-4E8E-976C-5CB7C58217E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A902DC31-2F3E-4397-93D1-5004F325B71C}

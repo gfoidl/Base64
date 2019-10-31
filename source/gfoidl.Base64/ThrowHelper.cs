@@ -9,9 +9,12 @@ namespace gfoidl.Base64
     {
         private static readonly Lazy<ResourceManager> s_resources;
         //---------------------------------------------------------------------
+#pragma warning disable CA1810 // Initialize reference type static fields inline
         static ThrowHelper()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
-            string ns = typeof(ThrowHelper).Namespace;
+            string? ns  = typeof(ThrowHelper).Namespace;
+            Debug.Assert(ns != null);
             s_resources = new Lazy<ResourceManager>(() => new ResourceManager($"{ns}.Strings", typeof(ThrowHelper).Assembly));
         }
         //---------------------------------------------------------------------
@@ -40,18 +43,12 @@ namespace gfoidl.Base64
         }
         //---------------------------------------------------------------------
         private static Exception GetExceptionForOperationNotDone(OperationStatus status)
-        {
-            switch (status)
+            => status switch
             {
-                case OperationStatus.DestinationTooSmall:
-                    //return new InvalidOperationException(Strings.DestinationTooSmall);
-                    return new InvalidOperationException("should not be here");
-                case OperationStatus.InvalidData:
-                    return new FormatException(GetResource(ExceptionRessource.InvalidInput));
-                default:
-                    throw new NotSupportedException();
-            }
-        }
+                OperationStatus.DestinationTooSmall => new InvalidOperationException("should not be here"), // new InvalidOperationException(Strings.DestinationTooSmall);
+                OperationStatus.InvalidData         => new FormatException(GetResource(ExceptionRessource.InvalidInput)),
+                _                                   => throw new NotSupportedException(),
+            };
         //---------------------------------------------------------------------
         private static string GetArgumentName(ExceptionArgument argument)
         {
@@ -66,7 +63,13 @@ namespace gfoidl.Base64
             Debug.Assert(Enum.IsDefined(typeof(ExceptionRessource), ressource),
                 $"The enum value is not defined, please check the {nameof(ExceptionRessource)} enum.");
 
+#if NETCOREAPP
+            string? tmp = s_resources.Value.GetString(ressource.ToString());
+            Debug.Assert(tmp != null);
+            return tmp;
+#else
             return s_resources.Value.GetString(ressource.ToString());
+#endif
         }
     }
     //-------------------------------------------------------------------------

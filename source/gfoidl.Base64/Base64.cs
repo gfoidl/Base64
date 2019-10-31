@@ -22,6 +22,8 @@ namespace gfoidl.Base64
         private static readonly Base64Encoder    s_default = new Base64Encoder();
         private static readonly Base64UrlEncoder s_url     = new Base64UrlEncoder();
         //---------------------------------------------------------------------
+#pragma warning disable RCS1085 // Use auto-implemented property.
+#pragma warning disable PUB0001 // Pubternal type in public API
         /// <summary>
         /// The base64 encoder / decoder.
         /// </summary>
@@ -31,6 +33,8 @@ namespace gfoidl.Base64
         /// The base64Url encoder / decoder.
         /// </summary>
         public static Base64UrlEncoder Url => s_url;
+#pragma warning restore PUB0001 // Pubternal type in public API
+#pragma warning restore RCS1085 // Use auto-implemented property.
         //---------------------------------------------------------------------
         /// <summary>
         /// Gets the length of the encoded data.

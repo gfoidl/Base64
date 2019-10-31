@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace gfoidl.Base64.Internal
 {
-    partial class Base64UrlEncoder
+    public partial class Base64UrlEncoder
     {
         public override int GetMaxDecodedLength(int encodedLength)       => this.GetDecodedLength(encodedLength);
         public override int GetDecodedLength(ReadOnlySpan<byte> encoded) => this.GetDecodedLength(encoded.Length);
@@ -209,7 +209,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         // internal because tests use this map too
-        internal static ReadOnlySpan<sbyte> s_decodingMap => new sbyte[] {
+        internal static ReadOnlySpan<sbyte> DecodingMap => new sbyte[] {
             0,      // https://github.com/dotnet/coreclr/issues/23194
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
