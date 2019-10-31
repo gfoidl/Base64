@@ -20,7 +20,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             _dest = new byte[Size * Iterations + this.MisAlignment];
         }
         //---------------------------------------------------------------------
-        [Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true, OperationsPerInvoke = Iterations)]
         public void WriteDirect()
         {
             ref byte dest = ref this.GetDest();
@@ -37,7 +37,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             }
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = Iterations)]
         public void WriteAs2Vector128()
         {
             ref byte dest = ref this.GetDest();

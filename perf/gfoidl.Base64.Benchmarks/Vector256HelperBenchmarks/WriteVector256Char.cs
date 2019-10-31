@@ -20,7 +20,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             _dest = new char[2 * Size * Iterations + this.MisAlignment];
         }
         //---------------------------------------------------------------------
-        [Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true, OperationsPerInvoke = Iterations)]
         public void WriteAs2Vector256()
         {
             ref char dest = ref this.GetDest();
@@ -45,7 +45,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             }
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = Iterations)]
         public void WriteAs4Vector128UnpackAsVector256()
         {
             ref char dest = ref this.GetDest();
@@ -74,7 +74,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             }
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = Iterations)]
         public void WriteAs4Vector128()
         {
             ref char dest = ref this.GetDest();

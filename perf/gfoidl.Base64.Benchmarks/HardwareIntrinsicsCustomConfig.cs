@@ -10,13 +10,13 @@ namespace gfoidl.Base64.Benchmarks
         //---------------------------------------------------------------------
         public HardwareIntrinsicsCustomConfig()
         {
-            this.Add(Job.Core.WithId("AVX2"));
+            this.Add(Job.Default.WithId("AVX2"));
 
-            this.Add(Job.Core
+            this.Add(Job.Default
                 .With(new[] { new EnvironmentVariable(EnableAVX, "0") })
                 .WithId("SSSE3"));
 
-            this.Add(Job.Core
+            this.Add(Job.Default
                 .With(new[] { new EnvironmentVariable(EnableSSE, "0") })
                 .WithId("Scalar"));
         }

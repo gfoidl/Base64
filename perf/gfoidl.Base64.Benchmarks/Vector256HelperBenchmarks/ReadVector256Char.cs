@@ -25,7 +25,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
                 _src[i] = (char)rnd.Next(0, byte.MaxValue + 1);
         }
         //---------------------------------------------------------------------
-        [Benchmark(Baseline = true)]
+        [Benchmark(Baseline = true, OperationsPerInvoke = Iterations)]
         public Vector256<sbyte> ReadAs2Vector256()
         {
             ref char src = ref this.GetSrc();
@@ -47,7 +47,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             return res;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = Iterations)]
         public Vector256<sbyte> ReadAs4Vector128PackAsVector256()
         {
             ref char src = ref this.GetSrc();
@@ -74,7 +74,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
             return res;
         }
         //---------------------------------------------------------------------
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = Iterations)]
         public Vector256<sbyte> ReadAs4Vector128()
         {
             ref char src = ref this.GetSrc();
