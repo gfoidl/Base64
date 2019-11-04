@@ -24,9 +24,7 @@ namespace gfoidl.Base64.Internal
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);
 
-            // https://github.com/dotnet/coreclr/issues/23194
-            // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
-            ref sbyte decodingMap = ref MemoryMarshal.GetReference(DecodingMap.Slice(1));
+            ref sbyte decodingMap = ref MemoryMarshal.GetReference(DecodingMap);
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
             // if isFinalBlock is false, padding characters are considered invalid

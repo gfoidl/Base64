@@ -60,9 +60,7 @@ namespace gfoidl.Base64.Internal
             else
                 maxSrcLength += (destLength >> 2) * 3;
 
-            // https://github.com/dotnet/coreclr/issues/23194
-            // Slicing is necessary to "unlink" the ref and let the JIT keep it in a register
-            ref byte encodingMap = ref MemoryMarshal.GetReference(EncodingMap.Slice(1));
+            ref byte encodingMap = ref MemoryMarshal.GetReference(EncodingMap);
 
             // In order to elide the movsxd in the loop
             if (sourceIndex < maxSrcLength)
