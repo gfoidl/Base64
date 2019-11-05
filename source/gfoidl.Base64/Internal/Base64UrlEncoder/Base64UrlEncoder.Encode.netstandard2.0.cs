@@ -76,7 +76,12 @@ namespace gfoidl.Base64.Internal
                 goto DestinationTooSmallExit;
 
             if (!isFinalBlock)
+            {
+                if (sourceIndex == srcLength)
+                    goto DoneExit;
+
                 goto NeedMoreDataExit;
+            }
 
             if (sourceIndex == srcLength - 1)
             {
@@ -91,6 +96,7 @@ namespace gfoidl.Base64.Internal
                 sourceIndex += 2;
             }
 
+        DoneExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.Done;

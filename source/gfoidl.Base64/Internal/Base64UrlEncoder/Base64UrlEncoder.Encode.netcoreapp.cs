@@ -113,7 +113,12 @@ namespace gfoidl.Base64.Internal
                 goto DestinationTooSmallExit;
 
             if (!isFinalBlock)
+            {
+                if (sourceIndex == srcLength)
+                    goto DoneExit;
+
                 goto NeedMoreDataExit;
+            }
 
             if (sourceIndex == srcLength - 1)
             {

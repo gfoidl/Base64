@@ -101,6 +101,9 @@ namespace gfoidl.Base64.Internal
                 if (isFinalBlock)
                     goto InvalidDataExit;
 
+                if (sourceIndex == inputLength)
+                    goto DoneExit;
+
                 goto NeedMoreDataExit;
             }
 

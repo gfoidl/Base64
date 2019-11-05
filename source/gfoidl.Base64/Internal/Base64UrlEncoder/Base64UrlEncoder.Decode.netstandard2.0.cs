@@ -73,6 +73,9 @@ namespace gfoidl.Base64.Internal
                 if (isFinalBlock)
                     goto InvalidDataExit;
 
+                if (sourceIndex == inputLength)
+                    goto DoneExit;
+
                 goto NeedMoreDataExit;
             }
 
@@ -125,6 +128,7 @@ namespace gfoidl.Base64.Internal
             if (srcLength != base64Len)
                 goto InvalidDataExit;
 
+        DoneExit:
             consumed = (int)sourceIndex;
             written  = (int)destIndex;
             return OperationStatus.Done;

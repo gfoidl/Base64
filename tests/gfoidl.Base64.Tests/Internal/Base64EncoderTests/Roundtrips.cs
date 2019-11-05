@@ -9,7 +9,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
 {
     [TestFixture(typeof(byte))]
     [TestFixture(typeof(char))]
-    public  class Roundtrips<T> where T : unmanaged
+    public class Roundtrips<T> where T : unmanaged
     {
         [Test]
         public void Data_of_various_length___roundtrips_correclty()
@@ -27,8 +27,8 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
                 OperationStatus status = sut.EncodeCore(source, encoded, out int consumed, out int written);
 
                 Assert.AreEqual(OperationStatus.Done, status);
-                Assert.AreEqual(source.Length, consumed);
-                Assert.AreEqual(encoded.Length, written);
+                Assert.AreEqual(source.Length       , consumed);
+                Assert.AreEqual(encoded.Length      , written);
 
                 string encodedText;
                 int decodedLength;
@@ -67,8 +67,8 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
                 status             = sut.DecodeCore<T>(encoded, decoded, out consumed, out written);
 
                 Assert.AreEqual(OperationStatus.Done, status);
-                Assert.AreEqual(encoded.Length, consumed);
-                Assert.AreEqual(decodedLength , written);
+                Assert.AreEqual(encoded.Length      , consumed);
+                Assert.AreEqual(decodedLength       , written);
 
                 CollectionAssert.AreEqual(source.ToArray(), decoded.ToArray());
             }

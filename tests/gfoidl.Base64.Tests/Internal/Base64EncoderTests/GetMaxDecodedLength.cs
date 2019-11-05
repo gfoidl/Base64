@@ -8,11 +8,11 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
     public class GetMaxDecodedLength
     {
         [Test]
-        public void EncodedLength_is_negative___throws_ArgumentOutOfRange()
+        public void EncodedLength_is_negative___throws_ArgumentOutOfRange([Values(-1, int.MinValue)]int encodedLength)
         {
             var sut = new Base64Encoder();
 
-            Exception exception = Assert.Catch(() => sut.GetMaxDecodedLength(-1));
+            Exception exception = Assert.Catch(() => sut.GetMaxDecodedLength(encodedLength));
 
             Assert.Multiple(() =>
             {

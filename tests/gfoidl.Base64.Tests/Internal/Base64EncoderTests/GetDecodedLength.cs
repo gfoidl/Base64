@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -54,7 +55,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
                     }
                     else if (typeof(T) == typeof(char))
                     {
-                        actual = sut.GetDecodedLength(base64.AsSpan());
+                        actual = sut.GetDecodedLength(base64.AsSpan());  // AsSpan for net48
                     }
                     else
                     {
@@ -77,10 +78,11 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         }
         //---------------------------------------------------------------------
         [Test]
+        [Description("https://github.com/gfoidl/Base64/issues/32")]
         [TestCase(1)]
         [TestCase(2)]
         [TestCase(3)]
-        public void Issue_32_EncodedLength_is_lt_4___throws_ArgumentOutOfRange(int encodedLength)
+        public void EncodedSpanLength_is_lt_4___throws_ArgumentOutOfRange(int encodedLength)
         {
             T a         = Unsafe.As<char, T>(ref Unsafe.AsRef('='));
             T[] encoded = Enumerable.Repeat(a, encodedLength).ToArray();
@@ -95,6 +97,39 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
                 string msg = $"The 'encodedLength' is outside the allowed range by the base64 standard. It must be >= 4.";
                 StringAssert.StartsWith(msg, exception.Message);
             });
+        }
+        //---------------------------------------------------------------------
+        [Test, TestCaseSource(nameof(EncodedLength_given___correct_decoded_length_TestCases))]
+        public int EncodedLength_given___correct_decoded_length(int encodedLength)
+        {
+            var sut = new Base64Encoder();
+
+            return sut.GetDecodedLength(encodedLength);
+        }
+        //---------------------------------------------------------------------
+        private static IEnumerable<TestCaseData> EncodedLength_given___correct_decoded_length_TestCases()
+        {
+            // int.MaxValue - (int.MaxValue % 4) => 2147483644, largest multiple of 4 less than int.MaxValue
+            int[] input    = { 0, 4, 8, 12, 16, 20, 2000000000, 2147483640, 2147483644 };
+            int[] expected = { 0, 3, 6,  9, 12, 15, 1500000000, 1610612730, 1610612733 };
+
+            Assume.That(input.Length, Is.EqualTo(expected.Length));
+
+            for (int i = 0; i < input.Length; ++i)
+            {
+                yield return new TestCaseData(input[i]).Returns(expected[i]);
+            }
+
+            // Lengths that are not a multiple of 4.
+            input    = new int[] { 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 1001, 1002, 1003, 2147483645, 2147483646, 2147483647 };
+            expected = new int[] { 0, 0, 0, 3, 3, 3, 6,  6,  6,  9,  9,  9,  750,  750,  750, 1610612733, 1610612733, 1610612733 };
+
+            Assume.That(input.Length, Is.EqualTo(expected.Length));
+
+            for (int i = 0; i < input.Length; ++i)
+            {
+                yield return new TestCaseData(input[i]).Returns(expected[i]);
+            }
         }
     }
 }

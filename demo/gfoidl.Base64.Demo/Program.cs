@@ -88,7 +88,7 @@ namespace gfoidl.Base64.Demo
 
             Span<byte> decoded = new byte[5000];
             status             = Base64.Default.Decode(base64.Slice(0, 100), decoded, out consumed, out written, isFinalBlock: false);
-            Debug.Assert(status == OperationStatus.NeedMoreData);
+            Debug.Assert(status == OperationStatus.Done);   // 100 encoded bytes can be decoded to 75 bytes, so Done
             status             = Base64.Default.Decode(base64.Slice(consumed), decoded.Slice(written), out consumed, out written1, isFinalBlock: true);
             Debug.Assert(status == OperationStatus.Done);
 

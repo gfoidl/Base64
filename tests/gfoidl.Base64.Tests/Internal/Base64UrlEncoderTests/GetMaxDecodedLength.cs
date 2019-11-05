@@ -8,6 +8,14 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
     public class GetMaxDecodedLength
     {
         [Test]
+        public void EncodedLength_is_negative___throws_ArgumentOutOfRange([Values(-1, int.MinValue)]int encodedLength)
+        {
+            var sut = new Base64UrlEncoder();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => sut.GetMaxDecodedLength(encodedLength));
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void EncodedLength_1_to_50_given___correct_max_decoded_len()
         {
             var sut = new Base64UrlEncoder();

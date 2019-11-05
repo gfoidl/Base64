@@ -13,7 +13,21 @@ namespace gfoidl.Base64.Internal
 {
     public partial class Base64UrlEncoder
     {
-        public override int GetMaxDecodedLength(int encodedLength)       => this.GetDecodedLength(encodedLength);
+        public override int GetMaxDecodedLength(int encodedLength)
+        {
+            try
+            {
+                return this.GetDecodedLength(encodedLength);
+            }
+            catch (FormatException)
+            {
+                // In the case of malformed input, i.e. wrong number of padding,
+                // just assume 2 padding chars and compute the data length.
+                // It's "max" anyway.
+                return (encodedLength + 2) / 4 * 3;
+            }
+        }
+        //---------------------------------------------------------------------
         public override int GetDecodedLength(ReadOnlySpan<byte> encoded) => this.GetDecodedLength(encoded.Length);
         public override int GetDecodedLength(ReadOnlySpan<char> encoded) => this.GetDecodedLength(encoded.Length);
         //---------------------------------------------------------------------
@@ -88,7 +102,16 @@ namespace gfoidl.Base64.Internal
             //if (decodedLength == -1)
             //  decodedLength = this.GetDecodedLength(srcLength);
 
-            return this.DecodeImpl(ref src, srcLength, data, decodedLength, out consumed, out written, isFinalBlock);
+            try
+            {
+                return this.DecodeImpl(ref src, srcLength, data, decodedLength, out consumed, out written, isFinalBlock);
+            }
+            catch (FormatException)
+            {
+                consumed = 0;
+                written  = 0;
+                return OperationStatus.InvalidData;
+            }
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -177,6 +200,11 @@ namespace gfoidl.Base64.Internal
 
                 int numPaddingChars = GetNumBase64PaddingCharsToAddForDecode(urlEncodedLen);
                 base64Len           = urlEncodedLen + numPaddingChars;
+
+                if (base64Len < 0)    // overflow
+                {
+                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
+                }
 
                 Debug.Assert(base64Len % 4 == 0, "Invariant: Array length must be a multiple of 4.");
 
