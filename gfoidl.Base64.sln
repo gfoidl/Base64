@@ -38,6 +38,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{42D5558B-424A-4A6F-BFD7-F82D344CD4F5}"
 	ProjectSection(SolutionItems) = preProject
 		.azure\pipelines\ci.yml = .azure\pipelines\ci.yml
+		.azure\pipelines\fuzz.yml = .azure\pipelines\fuzz.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3522-4A1F-87F7-1D88280529C5}"
@@ -45,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3
 		.azure\pipelines\jobs\benchmarks.yml = .azure\pipelines\jobs\benchmarks.yml
 		.azure\pipelines\jobs\build_and_test.yml = .azure\pipelines\jobs\build_and_test.yml
 		.azure\pipelines\jobs\demo.yml = .azure\pipelines\jobs\demo.yml
+		.azure\pipelines\jobs\fuzzing.yml = .azure\pipelines\jobs\fuzzing.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{A52BCD9C-4216-42E5-AB37-FD5F6C46A9E7}"
@@ -56,16 +58,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Base64.Benchmarks", "perf\gfoidl.Base64.Benchmarks\gfoidl.Base64.Benchmarks.csproj", "{41097931-26CD-4203-B69C-A14CA5FBB69D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fuzz", "fuzz", "{89ADD037-F9FC-4ADE-99B8-D89307057409}"
-	ProjectSection(SolutionItems) = preProject
-		fuzz\init.sh = fuzz\init.sh
-		fuzz\run.sh = fuzz\run.sh
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Base64.FuzzTests", "fuzz\gfoidl.Base64.FuzzTests\gfoidl.Base64.FuzzTests.csproj", "{DC515055-B8E7-4C25-B4CF-703292C4F975}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testcases", "testcases", "{18096666-86BE-4AEA-AE79-E4528DFFC43C}"
 	ProjectSection(SolutionItems) = preProject
-		fuzz\testcases\1.txt = fuzz\testcases\1.txt
+		fuzz\testcases\1.dat = fuzz\testcases\1.dat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{CD033330-6EDE-4E8E-976C-5CB7C58217E8}"
@@ -77,6 +75,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ISSUE_TEMPLATE", "ISSUE_TEMPLATE", "{3F0FD9C1-1B52-4BC6-9BD8-8FD3B0162E88}"
 	ProjectSection(SolutionItems) = preProject
 		.github\ISSUE_TEMPLATE\bug_report.md = .github\ISSUE_TEMPLATE\bug_report.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{692006B6-CD1B-4A91-97C5-0A98C25EAD23}"
+	ProjectSection(SolutionItems) = preProject
+		fuzz\init-system.sh = fuzz\init-system.sh
+		fuzz\init.sh = fuzz\init.sh
+		fuzz\run.sh = fuzz\run.sh
+		fuzz\setup.sh = fuzz\setup.sh
 	EndProjectSection
 EndProject
 Global
@@ -107,8 +113,8 @@ Global
 		{41097931-26CD-4203-B69C-A14CA5FBB69D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41097931-26CD-4203-B69C-A14CA5FBB69D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC515055-B8E7-4C25-B4CF-703292C4F975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC515055-B8E7-4C25-B4CF-703292C4F975}.Fuzz|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC515055-B8E7-4C25-B4CF-703292C4F975}.Fuzz|Any CPU.Build.0 = Debug|Any CPU
+		{DC515055-B8E7-4C25-B4CF-703292C4F975}.Fuzz|Any CPU.ActiveCfg = Release|Any CPU
+		{DC515055-B8E7-4C25-B4CF-703292C4F975}.Fuzz|Any CPU.Build.0 = Release|Any CPU
 		{DC515055-B8E7-4C25-B4CF-703292C4F975}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
@@ -126,6 +132,7 @@ Global
 		{18096666-86BE-4AEA-AE79-E4528DFFC43C} = {89ADD037-F9FC-4ADE-99B8-D89307057409}
 		{CD033330-6EDE-4E8E-976C-5CB7C58217E8} = {403238BD-BE8A-4E78-924A-C841CD8C7955}
 		{3F0FD9C1-1B52-4BC6-9BD8-8FD3B0162E88} = {CD033330-6EDE-4E8E-976C-5CB7C58217E8}
+		{692006B6-CD1B-4A91-97C5-0A98C25EAD23} = {89ADD037-F9FC-4ADE-99B8-D89307057409}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A902DC31-2F3E-4397-93D1-5004F325B71C}

@@ -309,7 +309,6 @@ namespace gfoidl.Base64.Internal
             src       = ref srcStart;
             destBytes = ref destStart;
         }
-
         //---------------------------------------------------------------------
 #pragma warning disable IDE1006 // Naming Styles
         private const sbyte lInv = -1;      // 0xFF: Constant value '255' cannot be converted to a 'sbyte'
