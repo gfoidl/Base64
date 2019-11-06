@@ -175,6 +175,45 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests.Decode
         }
         //---------------------------------------------------------------------
         [Test]
+        public void Basic_decoding_with_invalid_input_length_isFinalBlock_false___NeedMoreData()
+        {
+            var sut = new Base64Encoder();
+            var rnd = new Random(42);
+
+            for (int i = 0; i < 10; ++i)
+            {
+                int encodedLength;
+                do
+                {
+                    encodedLength = rnd.Next(100, 1_000 * 1_000);
+                }
+                while (encodedLength % 4 == 0);      // ensure we have invalid length
+
+                ReadOnlySpan<T> encoded;
+
+                if (typeof(T) == typeof(byte))
+                {
+                    ReadOnlySpan<byte> tmp = Enumerable.Repeat((byte)'a', encodedLength).ToArray();
+                    encoded = MemoryMarshal.Cast<byte, T>(tmp);
+                }
+                else if (typeof(T) == typeof(char))
+                {
+                    ReadOnlySpan<char> tmp = Enumerable.Repeat('a', encodedLength).ToArray();
+                    encoded = MemoryMarshal.Cast<char, T>(tmp);
+                }
+                else
+                {
+                    throw new NotSupportedException(); // just in case new types are introduced in the future
+                }
+
+                Span<byte> data        = new byte[sut.GetMaxDecodedLength(encoded.Length)];
+                OperationStatus status = sut.DecodeCore(encoded, data, out int consumed, out int written, isFinalBlock: false);
+
+                Assert.AreEqual(OperationStatus.NeedMoreData, status, "fail at i = {0}", i);
+            }
+        }
+        //---------------------------------------------------------------------
+        [Test]
         [TestCase("AQ==", 0, 0)]
         [TestCase("AQI=", 0, 0)]
         [TestCase("AQIDBA==", 4, 3)]
