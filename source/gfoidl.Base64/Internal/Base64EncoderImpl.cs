@@ -187,5 +187,22 @@ namespace gfoidl.Base64.Internal
             Unsafe.Add(ref destination, (IntPtr)(destIndex + 1)) = (byte)(value >> 8);
             Unsafe.Add(ref destination, (IntPtr)(destIndex + 2)) = (byte)value;
         }
+        //---------------------------------------------------------------------
+#if NETCOREAPP && DEBUG
+        public Action? Avx2Encoded;
+        public Action? Avx2Decoded;
+
+        public Action? Avx2EncodingIteration;
+        public Action? Avx2DecodingIteration;
+
+        public Action? Ssse3Encoded;
+        public Action? Ssse3Decoded;
+
+        public Action? Ssse3EncodingIteration;
+        public Action? Ssse3DecodingIteration;
+
+        public Action? ScalarEncodingIteration;
+        public Action? ScalarDecodingIteration;
+#endif
     }
 }

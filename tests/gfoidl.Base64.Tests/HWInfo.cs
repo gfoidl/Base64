@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
 
+[assembly: Parallelizable(ParallelScope.Children)]
+
 namespace gfoidl.Base64.Tests
 {
     [SetUpFixture]

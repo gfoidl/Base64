@@ -54,11 +54,6 @@ namespace gfoidl.Base64.Internal
             }
         }
         //---------------------------------------------------------------------
-#if DEBUG
-        public static event EventHandler<EventArgs>? Avx2Encoded;
-        public static event EventHandler<EventArgs>? Ssse3Encoded;
-#endif
-        //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private OperationStatus EncodeImpl<T>(
             ref byte srcBytes,
@@ -108,6 +103,9 @@ namespace gfoidl.Base64.Internal
             {
                 do
                 {
+#if DEBUG
+                    this.ScalarEncodingIteration?.Invoke();
+#endif
                     EncodeThreeBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
                     destIndex   += 4;
                     sourceIndex += 3;
@@ -156,7 +154,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
+        private void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref byte srcStart   = ref src;
@@ -185,6 +183,9 @@ namespace gfoidl.Base64.Internal
 
             while (true)
             {
+#if DEBUG
+                this.Avx2EncodingIteration?.Invoke();
+#endif
                 // Reshuffle
                 str                  = Avx2.Shuffle(str, shuffleVec);
                 Vector256<sbyte>  t0 = Avx2.And(str, shuffleConstant0);
@@ -202,7 +203,7 @@ namespace gfoidl.Base64.Internal
                 dest.AssertWrite<Vector256<sbyte>, T>(ref destStart, destLength);
                 dest.WriteVector256(str);
 
-                src  = ref Unsafe.Add(ref src,  24);
+                src  = ref Unsafe.Add(ref src , 24);
                 dest = ref Unsafe.Add(ref dest, 32);
 
                 if (Unsafe.IsAddressGreaterThan(ref src, ref simdSrcEnd))
@@ -220,12 +221,12 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            Avx2Encoded?.Invoke(null, EventArgs.Empty);
+            this.Avx2Encoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
+        private void Ssse3Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref byte srcStart   = ref src;
@@ -249,6 +250,9 @@ namespace gfoidl.Base64.Internal
             //while (remaining >= 16)
             do
             {
+#if DEBUG
+                this.Ssse3EncodingIteration?.Invoke();
+#endif
                 src.AssertRead<Vector128<sbyte>, byte>(ref srcStart, sourceLength);
                 Vector128<sbyte> str = src.ReadVector128();
 
@@ -275,13 +279,13 @@ namespace gfoidl.Base64.Internal
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
-            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src);
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart , ref src);
             destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest) / (uint)Unsafe.SizeOf<T>();
 
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            Ssse3Encoded?.Invoke(null, EventArgs.Empty);
+            this.Ssse3Encoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------

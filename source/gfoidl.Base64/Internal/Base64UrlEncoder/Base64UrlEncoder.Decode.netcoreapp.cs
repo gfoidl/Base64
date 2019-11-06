@@ -85,6 +85,9 @@ namespace gfoidl.Base64.Internal
             {
                 do
                 {
+#if DEBUG
+                    this.ScalarDecodingIteration?.Invoke();
+#endif
                     int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
                     if (result < 0)
@@ -186,17 +189,12 @@ namespace gfoidl.Base64.Internal
             return OperationStatus.InvalidData;
         }
         //---------------------------------------------------------------------
-#if DEBUG
-        public static event EventHandler<EventArgs>? Avx2Decoded;
-        public static event EventHandler<EventArgs>? Ssse3Decoded;
-#endif
-        //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Avx2Decode<T>(ref T src, ref byte destBytes, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
+        private void Avx2Decode<T>(ref T src, ref byte dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref T srcStart     = ref src;
-            ref byte destStart = ref destBytes;
+            ref byte destStart = ref dest;
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));    //  +1 for <=
 
             // The JIT won't hoist these "constants", so help it
@@ -217,7 +215,7 @@ namespace gfoidl.Base64.Internal
                 src.AssertRead<Vector256<sbyte>, T>(ref srcStart, sourceLength);
                 Vector256<sbyte> str = src.ReadVector256();
 
-                Vector256<sbyte> hiNibbles = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask5F);
+                Vector256<sbyte> hiNibbles  = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask5F);
                 Vector256<sbyte> lowerBound = Avx2.Shuffle(lutLo, hiNibbles);
                 Vector256<sbyte> upperBound = Avx2.Shuffle(lutHi, hiNibbles);
 
@@ -230,7 +228,7 @@ namespace gfoidl.Base64.Internal
                 if (Avx2.MoveMask(outside) != 0)
                     break;
 #if DEBUG
-                Avx2Decoded?.Invoke(null, EventArgs.Empty);
+                this.Avx2DecodingIteration?.Invoke();
 #endif
                 Vector256<sbyte> shift = Avx2.Shuffle(lutShift, hiNibbles);
                 str                    = Avx2.Add(str, shift);
@@ -241,29 +239,36 @@ namespace gfoidl.Base64.Internal
                 @out                             = Avx2.Shuffle(@out.AsSByte(), shuffleVec).AsInt32();
                 str                              = Avx2.PermuteVar8x32(@out, permuteVec).AsSByte();
 
-                destBytes.AssertWrite<Vector256<sbyte>, byte>(ref destStart, destLength);
-                destBytes.WriteVector256(str);
+                dest.AssertWrite<Vector256<sbyte>, byte>(ref destStart, destLength);
+                dest.WriteVector256(str);
 
-                src       = ref Unsafe.Add(ref src, 32);
-                destBytes = ref Unsafe.Add(ref destBytes, 24);
+                src  = ref Unsafe.Add(ref src , 32);
+                dest = ref Unsafe.Add(ref dest, 24);
             }
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
-            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src) / (uint)Unsafe.SizeOf<T>();
-            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref destBytes);
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart , ref src) / (uint)Unsafe.SizeOf<T>();
+            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest);
 
-            src       = ref srcStart;
-            destBytes = ref destStart;
+            src  = ref srcStart;
+            dest = ref destStart;
+#if DEBUG
+            this.Avx2Decoded?.Invoke();
+#endif
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void Ssse3Decode<T>(ref T src, ref byte destBytes, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
+        private void Ssse3Decode<T>(ref T src, ref byte dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
             ref T srcStart     = ref src;
-            ref byte destStart = ref destBytes;
+            ref byte destStart = ref dest;
             ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));    //  +1 for <=
+
+            // Shift to workspace
+            src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
+            dest = ref Unsafe.Add(ref dest, (IntPtr)destIndex);
 
             // The JIT won't hoist these "constants", so help it
             Vector128<sbyte> lutHi            = SseDecodeLutHi.ReadVector128();
@@ -293,7 +298,7 @@ namespace gfoidl.Base64.Internal
                 if (Sse2.MoveMask(outside) != 0)
                     break;
 #if DEBUG
-                Ssse3Decoded?.Invoke(null, EventArgs.Empty);
+                this.Ssse3DecodingIteration?.Invoke();
 #endif
                 Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, hiNibbles);
                 str                    = Sse2.Add(str, shift);
@@ -303,20 +308,23 @@ namespace gfoidl.Base64.Internal
                 Vector128<int> @out              = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
                 str                              = Ssse3.Shuffle(@out.AsSByte(), shuffleVec);
 
-                destBytes.AssertWrite<Vector128<sbyte>, byte>(ref destStart, destLength);
-                destBytes.WriteVector128(str);
+                dest.AssertWrite<Vector128<sbyte>, byte>(ref destStart, destLength);
+                dest.WriteVector128(str);
 
-                src       = ref Unsafe.Add(ref src, 16);
-                destBytes = ref Unsafe.Add(ref destBytes, 12);
+                src  = ref Unsafe.Add(ref src , 16);
+                dest = ref Unsafe.Add(ref dest, 12);
             }
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
 
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
-            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart, ref src) / (uint)Unsafe.SizeOf<T>();
-            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref destBytes);
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart , ref src) / (uint)Unsafe.SizeOf<T>();
+            destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest);
 
-            src       = ref srcStart;
-            destBytes = ref destStart;
+            src  = ref srcStart;
+            dest = ref destStart;
+#if DEBUG
+            this.Ssse3Decoded?.Invoke();
+#endif
         }
         //---------------------------------------------------------------------
 #pragma warning disable IDE1006 // Naming Styles
