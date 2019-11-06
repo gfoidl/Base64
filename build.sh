@@ -35,8 +35,8 @@
 #   _testCore           helper -- used by test
 #
 # Exit-codes:
-#   1001                deploy target is neither 'nuget' nor 'myget', so it is unknown
-#   1002                no args given for script, help is displayed and exited
+#   101                 deploy target is neither 'nuget' nor 'myget', so it is unknown
+#   102                 no args given for script, help is displayed and exited
 #   $?                  exit-code for build-step is returned unmodified
 #------------------------------------------------------------------------------
 set -e
@@ -60,7 +60,7 @@ setBuildEnv() {
     export BuildNumber=$CI_BUILD_NUMBER
 
     if [[ -n "$TAG_NAME" ]]; then
-        if [[ "$TAG_NAME" =~ ^v([0-9])\.([0-9])\.([0-9])(-(preview-[0-9]+))?$ ]]; then
+        if [[ "$TAG_NAME" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)(-(preview-[0-9]+))?$ ]]; then
             export VersionMajor="${BASH_REMATCH[1]}"
             export VersionMinor="${BASH_REMATCH[2]}"
             export VersionPatch="${BASH_REMATCH[3]}"
@@ -82,6 +82,9 @@ build() {
 }
 #------------------------------------------------------------------------------
 _testCore() {
+    # continue on error, as the results file should be moved
+    set +e
+
     local testFullName
     local testDir
     local testNameWOExtension
@@ -94,8 +97,8 @@ _testCore() {
     testDir=$(dirname "$testFullName")
     testNameWOExtension=$(basename "$testDir")
     testName=$(basename "$testFullName")
-    testResultName="$testName-$(date +%s).trx"
-    dotnetTestArgs="-c $BUILD_CONFIG --no-build --logger \"trx;LogFileName=$testResultName\" $testFullName"
+    testResultName="$testNameWOExtension-$(date +%s)"
+    dotnetTestArgs="-c $BUILD_CONFIG --no-build --verbosity quiet --logger \"trx;LogFileName=$testResultName.trx\" $testFullName"
 
     if [[ -n "$TESTS_TO_SKIP" ]]; then
         testsToSkip=(${TESTS_TO_SKIP//;/ })
@@ -124,11 +127,14 @@ _testCore() {
     local result=$?
 
     mkdir -p "./tests/TestResults"
-    mv "$testDir/TestResults/$testResultName" "./tests/TestResults/$testResultName"
+    mv $testDir/TestResults/$testResultName*.trx ./tests/TestResults
 
     if [[ $result != 0 ]]; then
         exit $result
     fi
+
+    # restore previous state
+    set -e
 }
 #------------------------------------------------------------------------------
 test() {
@@ -140,13 +146,10 @@ test() {
         return
     fi
 
-    export -f _testCore
-    find "$testDir" -name "*.csproj" -print0 | xargs -0 -n1 bash -c '_testCore "$@"' _
-
-    # similar, but not so save (i.e. _testCore has to be updated) as the find-variant
-    # for testProject in "$testDir"/**/*.csproj; do
-        # _testCore "$testProject"
-    # done
+    for testProject in "$testDir"/**/*.csproj; do
+        _testCore "$testProject"
+		echo "-------------------------------------------------"
+    done
 }
 #------------------------------------------------------------------------------
 _coverageCore() {
@@ -159,7 +162,7 @@ _coverageCore() {
 
     cd "$testDir"
 
-    for test in ./bin/$BUILD_CONFIG/**/*.Tests.dll; do
+    for test in ./bin/$BUILD_CONFIG/**/*.Tests*.dll; do
         targetFramework=$(basename $(dirname $test))
         mkdir -p "coverage/$targetFramework"
         coverlet "$test" --target "dotnet" --targetargs "test --no-build -c $BUILD_CONFIG" --format opencover -o "./coverage/$targetFramework/coverage.opencover.xml"
@@ -226,7 +229,7 @@ deploy() {
         echo "Skipping deploy because 'local'"
     else
         echo "Unknown deploy target '$1', aborting"
-        exit 1001
+        exit 101
     fi
 }
 #------------------------------------------------------------------------------
@@ -253,13 +256,13 @@ main() {
     esac
 }
 #------------------------------------------------------------------------------
-echo "build script, (c) gfoidl, 2018"
+echo "build script, (c) gfoidl, 2018-$(date +%Y)"
 
 workingDir=$(pwd)
 
 if [[ $# -lt 1 ]]; then
     help
-    exit 1002
+    exit 102
 fi
 
 main $*

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -42,19 +43,23 @@ namespace gfoidl.Base64.Internal
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);
 
-            if (Avx2.IsSupported && maxSrcLength >= 45)
+            if (Ssse3.IsSupported && maxSrcLength >= 24)
             {
-                Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                if (Avx2.IsSupported && maxSrcLength >= 45)
+                {
+                    Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
-                if (sourceIndex == srcLength)
-                    goto DoneExit;
-            }
-            else if (Ssse3.IsSupported && maxSrcLength >= 24)
-            {
-                Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    if (sourceIndex == srcLength)
+                        goto DoneExit;
+                }
 
-                if (sourceIndex == srcLength)
-                    goto DoneExit;
+                if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 24))
+                {
+                    Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+
+                    if (sourceIndex == srcLength)
+                        goto DoneExit;
+                }
             }
 
             // Last bytes could have padding characters, so process them separately and treat them as valid only if isFinalBlock is true
@@ -69,6 +74,7 @@ namespace gfoidl.Base64.Internal
             {
                 // This should never overflow since destLength here is less than int.MaxValue / 4 * 3 (i.e. 1610612733)
                 // Therefore, (destLength / 3) * 4 will always be less than 2147483641
+                Debug.Assert(destLength < (int.MaxValue / 4 * 3));
                 maxSrcLength = (destLength / 3) * 4;
             }
 
@@ -314,7 +320,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
 #pragma warning disable IDE1006 // Naming Styles
-        private const sbyte lInv = -1;      // 0xFF: Constant value '255' cannot be converted to a 'sbyte'
+        private const sbyte lInv = 1;       // any value so that a comparison < results in true for invalid values
         private const sbyte hInv = 0x00;
 #pragma warning restore IDE1006 // Naming Styles
 

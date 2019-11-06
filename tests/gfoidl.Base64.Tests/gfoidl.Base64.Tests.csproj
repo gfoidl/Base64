@@ -27,4 +27,8 @@
         <Compile Include="Internal\AssertHelperTests\*.cs" Condition="'$(Configuration)' == 'Debug'" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="data\**\*" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
 </Project>

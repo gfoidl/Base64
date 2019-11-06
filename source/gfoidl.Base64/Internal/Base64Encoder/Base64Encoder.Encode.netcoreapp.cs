@@ -80,26 +80,25 @@ namespace gfoidl.Base64.Internal
             else
                 maxSrcLength = (destLength >> 2) * 3;
 
-            if (maxSrcLength < 16)
-                goto Scalar;
-
-            if (Avx2.IsSupported && maxSrcLength >= 32)
+            if (Ssse3.IsSupported && maxSrcLength >= 16)
             {
-                Avx2Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                if (Avx2.IsSupported && maxSrcLength >= 32)
+                {
+                    Avx2Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
-                if (sourceIndex == srcLength)
-                    goto DoneExit;
+                    if (sourceIndex == srcLength)
+                        goto DoneExit;
+                }
+
+                if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 16))
+                {
+                    Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+
+                    if (sourceIndex == srcLength)
+                        goto DoneExit;
+                }
             }
 
-            if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 16))
-            {
-                Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
-
-                if (sourceIndex == srcLength)
-                    goto DoneExit;
-            }
-
-        Scalar:
             maxSrcLength -= 2;
 
             ref byte encodingMap = ref MemoryMarshal.GetReference(EncodingMap);
