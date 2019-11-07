@@ -17,7 +17,7 @@ namespace gfoidl.Base64.Benchmarks
         {
             _encoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 
-            var random   = new Random();
+            var random   = new Random(42);
             _data        = new byte[ByteArraySize];
             random.NextBytes(_data);
             _dataEncoded = _encoder.Encode(_data);

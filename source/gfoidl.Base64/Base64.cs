@@ -47,11 +47,11 @@ namespace gfoidl.Base64
         public abstract int GetEncodedLength(int sourceLength);
         //---------------------------------------------------------------------
         /// <summary>
-        /// Gets the maximum length of the decoded data. 
-        /// The result may not be the exact length due to padding. 
-        /// Use <see cref="GetDecodedLength(ReadOnlySpan{byte})" /> or <see cref="GetDecodedLength(ReadOnlySpan{char})" /> 
+        /// Gets the maximum length of the decoded data.
+        /// The result may not be the exact length due to padding.
+        /// Use <see cref="GetDecodedLength(ReadOnlySpan{byte})" /> or <see cref="GetDecodedLength(ReadOnlySpan{char})" />
         /// for an accurate length.
-        /// </summary>     
+        /// </summary>
         /// <param name="encodedLength">The length of the encoded data.</param>
         /// <returns>The maximum base64 decoded length of <paramref name="encodedLength" />.</returns>
         /// <remarks>
@@ -69,7 +69,7 @@ namespace gfoidl.Base64
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// For <see cref="Base64.Default" /> thrown when the length of <paramref name="encoded" /> is 
+        /// For <see cref="Base64.Default" /> thrown when the length of <paramref name="encoded" /> is
         /// less than 4, as it is not a valid length according the base64 standard.
         /// </exception>
         public abstract int GetDecodedLength(ReadOnlySpan<byte> encoded);
@@ -80,7 +80,7 @@ namespace gfoidl.Base64
         /// <param name="encoded">The encoded data.</param>
         /// <returns>The base64 decoded length of <paramref name="encoded" />. Any padding is handled.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// For <see cref="Base64.Default" /> thrown when the length of <paramref name="encoded" /> is 
+        /// For <see cref="Base64.Default" /> thrown when the length of <paramref name="encoded" /> is
         /// less than 4, as it is not a valid length according the base64 standard.
         /// </exception>
         public abstract int GetDecodedLength(ReadOnlySpan<char> encoded);
@@ -91,11 +91,11 @@ namespace gfoidl.Base64
         /// <param name="data">The data to be base64 encoded.</param>
         /// <param name="encoded">The base64 encoded data.</param>
         /// <param name="consumed">
-        /// The number of input bytes consumed during the operation. This can be used to slice the input for 
+        /// The number of input bytes consumed during the operation. This can be used to slice the input for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="written">
-        /// The number of bytes written into the output span. This can be used to slice the output for 
+        /// The number of bytes written into the output span. This can be used to slice the output for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="isFinalBlock">
@@ -108,11 +108,11 @@ namespace gfoidl.Base64
         /// <item><description>Done - on successful processing of the entire input span</description></item>
         /// <item><description>DestinationTooSmall - if there is not enough space in the output span to fit the decoded input</description></item>
         /// <item><description>
-        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input 
+        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input
         /// would be considered as InvalidData
         /// </description></item>
         /// <item><description>
-        /// InvalidData - if the input contains bytes outside of the expected base64 range, or if it contains invalid/more 
+        /// InvalidData - if the input contains bytes outside of the expected base64 range, or if it contains invalid/more
         /// than two padding characters, or if the input is incomplete (i.e. not a multiple of 4) and isFinalBlock is true.
         /// </description></item>
         /// </list>
@@ -130,11 +130,11 @@ namespace gfoidl.Base64
         /// <param name="data">The data to be base64 encoded.</param>
         /// <param name="encoded">The base64 encoded data.</param>
         /// <param name="consumed">
-        /// The number of input bytes consumed during the operation. This can be used to slice the input for 
+        /// The number of input bytes consumed during the operation. This can be used to slice the input for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="written">
-        /// The number of chars written into the output span. This can be used to slice the output for 
+        /// The number of chars written into the output span. This can be used to slice the output for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="isFinalBlock">
@@ -147,11 +147,11 @@ namespace gfoidl.Base64
         /// <item><description>Done - on successful processing of the entire input span</description></item>
         /// <item><description>DestinationTooSmall - if there is not enough space in the output span to fit the decoded input</description></item>
         /// <item><description>
-        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input 
+        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input
         /// would be considered as InvalidData
         /// </description></item>
         /// <item><description>
-        /// InvalidData - if the input contains bytes outside of the expected base64 range, or if it contains invalid/more 
+        /// InvalidData - if the input contains bytes outside of the expected base64 range, or if it contains invalid/more
         /// than two padding characters, or if the input is incomplete (i.e. not a multiple of 4) and isFinalBlock is true.
         /// </description></item>
         /// </list>
@@ -169,11 +169,11 @@ namespace gfoidl.Base64
         /// <param name="encoded">The base64 encoded data.</param>
         /// <param name="data">The base64 decoded data.</param>
         /// <param name="consumed">
-        /// The number of input bytes consumed during the operation. This can be used to slice the input for 
+        /// The number of input bytes consumed during the operation. This can be used to slice the input for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="written">
-        /// The number of bytes written into the output span. This can be used to slice the output for 
+        /// The number of bytes written into the output span. This can be used to slice the output for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="isFinalBlock">
@@ -186,11 +186,11 @@ namespace gfoidl.Base64
         /// <item><description>Done - on successful processing of the entire input span</description></item>
         /// <item><description>DestinationTooSmall - if there is not enough space in the output span to fit the decoded input</description></item>
         /// <item><description>
-        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input 
+        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input
         /// would be considered as InvalidData
         /// </description></item>
         /// <item><description>
-        /// InvalidData - if the input contains bytes outside of the expected base64 range, or if it contains invalid/more 
+        /// InvalidData - if the input contains bytes outside of the expected base64 range, or if it contains invalid/more
         /// than two padding characters, or if the input is incomplete (i.e. not a multiple of 4) and isFinalBlock is true.
         /// </description></item>
         /// </list>
@@ -212,11 +212,11 @@ namespace gfoidl.Base64
         /// <param name="encoded">The base64 encoded data.</param>
         /// <param name="data">The base64 decoded data.</param>
         /// <param name="consumed">
-        /// The number of input chars consumed during the operation. This can be used to slice the input for 
+        /// The number of input chars consumed during the operation. This can be used to slice the input for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="written">
-        /// The number of bytes written into the output span. This can be used to slice the output for 
+        /// The number of bytes written into the output span. This can be used to slice the output for
         /// subsequent calls, if necessary.
         /// </param>
         /// <param name="isFinalBlock">
@@ -229,11 +229,11 @@ namespace gfoidl.Base64
         /// <item><description>Done - on successful processing of the entire input span</description></item>
         /// <item><description>DestinationTooSmall - if there is not enough space in the output span to fit the decoded input</description></item>
         /// <item><description>
-        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input 
+        /// NeedMoreData - only if isFinalBlock is false and the input is not a multiple of 4, otherwise the partial input
         /// would be considered as InvalidData
         /// </description></item>
         /// <item><description>
-        /// InvalidData - if the input contains chars outside of the expected base64 range, or if it contains invalid/more 
+        /// InvalidData - if the input contains chars outside of the expected base64 range, or if it contains invalid/more
         /// than two padding characters, or if the input is incomplete (i.e. not a multiple of 4) and isFinalBlock is true.
         /// </description></item>
         /// </list>
@@ -262,7 +262,7 @@ namespace gfoidl.Base64
         /// <param name="encoded">The base64 encoded data in string-form.</param>
         /// <returns>The base64 decoded data.</returns>
         /// <exception cref="FormatException">
-        /// The input is not a valid Base64 string as it contains a non-base 64 character, 
+        /// The input is not a valid Base64 string as it contains a non-base 64 character,
         /// more than two padding characters, or an illegal character among the padding characters.
         /// </exception>
         public abstract byte[] Decode(ReadOnlySpan<char> encoded);
@@ -272,7 +272,7 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="encoded">The base64 encoded data.</param>
         /// <param name="fast">
-        /// When <c>false</c> (default) <paramref name="encoded" /> is scanned 
+        /// When <c>false</c> (default) <paramref name="encoded" /> is scanned
         /// one time for base64 chars and a second time for base64Url chars.
         /// So if there is a mix of them, <see cref="EncodingType.Unknown" />
         /// will be returned.
@@ -285,7 +285,7 @@ namespace gfoidl.Base64
         /// </param>
         /// <returns>base64 or base64Url</returns>
         /// <remarks>
-        /// It is an O(n) scan / detection of the encoding type, and input is 
+        /// It is an O(n) scan / detection of the encoding type, and input is
         /// not validated for conforming the base64 standard. Thus there is no
         /// 'Invalid' encoding type.
         /// </remarks>
@@ -297,7 +297,7 @@ namespace gfoidl.Base64
         /// </summary>
         /// <param name="encoded">The base64 encoded data.</param>
         /// <param name="fast">
-        /// When <c>false</c> (default) <paramref name="encoded" /> is scanned 
+        /// When <c>false</c> (default) <paramref name="encoded" /> is scanned
         /// one time for base64 chars and a second time for base64Url chars.
         /// So if there is a mix of them, <see cref="EncodingType.Unknown" />
         /// will be returned.
@@ -310,7 +310,7 @@ namespace gfoidl.Base64
         /// </param>
         /// <returns>base64 or base64Url</returns>
         /// <remarks>
-        /// It is an O(n) fast scan / detection of the encoding type, and input is 
+        /// It is an O(n) fast scan / detection of the encoding type, and input is
         /// not validated for conforming the base64 standard. Thus there is no
         /// 'Invalid' encoding type.
         /// </remarks>

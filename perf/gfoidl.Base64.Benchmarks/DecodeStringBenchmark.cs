@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 using BenchmarkDotNet.Attributes;
 
 namespace gfoidl.Base64.Benchmarks
 {
     [Config(typeof(HardwareIntrinsicsCustomConfig))]
+    [MemoryDiagnoser]
     public class DecodeStringBenchmark
     {
-        private char[] _base64;
+        private char[]? _base64;
         //---------------------------------------------------------------------
         [Params(5, 16, 1_000)]
         public int DataLen { get; set; } = 16;
@@ -17,7 +19,7 @@ namespace gfoidl.Base64.Benchmarks
             var data = new byte[this.DataLen];
             _base64  = new char[Base64.Default.GetEncodedLength(this.DataLen)];
 
-            var rnd = new Random();
+            var rnd = new Random(42);
             rnd.NextBytes(data);
 
             Base64.Default.Encode(data, _base64, out int _, out int _);
@@ -26,6 +28,8 @@ namespace gfoidl.Base64.Benchmarks
         [Benchmark(Baseline = true)]
         public byte[] ConvertFromBase64CharArray()
         {
+            Debug.Assert(_base64 != null);
+
             return Convert.FromBase64CharArray(_base64, 0, _base64.Length);
         }
         //---------------------------------------------------------------------

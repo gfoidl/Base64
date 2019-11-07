@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
@@ -10,7 +11,7 @@ namespace gfoidl.Base64.Benchmarks.Vector128HelperBenchmarks
     {
         private const int Iterations = 1_000;
         private const int Size       = 16;
-        private char[] _src;
+        private char[]? _src;
         //---------------------------------------------------------------------
         [Params(0, 3, 15)]
         public int MisAlignment { get; set; } = 3;
@@ -71,6 +72,8 @@ namespace gfoidl.Base64.Benchmarks.Vector128HelperBenchmarks
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ref char GetSrc()
         {
+            Debug.Assert(_src != null);
+
             ref char ptr = ref _src[0];
             ref char src = ref Unsafe.Add(ref ptr, this.MisAlignment);
 

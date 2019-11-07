@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using BenchmarkDotNet.Attributes;
@@ -9,7 +10,7 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
     {
         private const int Iterations = 1_000;
         private const int Size       = 32;
-        private char[] _dest;
+        private char[]? _dest;
         //---------------------------------------------------------------------
         [Params(0, 3, 15)]
         public int MisAlignment { get; set; } = 3;
@@ -106,6 +107,8 @@ namespace gfoidl.Base64.Benchmarks.Vector256HelperBenchmarks
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ref char GetDest()
         {
+            Debug.Assert(_dest != null);
+
             ref char ptr = ref _dest[0];
             ref char src = ref Unsafe.Add(ref ptr, this.MisAlignment);
 

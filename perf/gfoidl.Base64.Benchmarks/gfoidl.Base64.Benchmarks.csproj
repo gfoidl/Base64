@@ -3,6 +3,8 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.0</TargetFramework>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -11,6 +13,11 @@
 
     <ItemGroup>
         <PackageReference Include="BenchmarkDotNet" Version="0.12.0" />
+        <PackageReference Include="Fody" Version="6.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="LocalsInit.Fody" Version="1.1.0" />
     </ItemGroup>
 
     <ItemGroup>

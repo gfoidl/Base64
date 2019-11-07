@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 using BenchmarkDotNet.Attributes;
 
@@ -7,7 +8,7 @@ namespace gfoidl.Base64.Benchmarks
     [MemoryDiagnoser]
     public class DecodeStringUrlBenchmark
     {
-        private char[] _base64Url;
+        private char[]? _base64Url;
         //---------------------------------------------------------------------
         [Params(5, 16, 1_000)]
         public int DataLen { get; set; } = 16;
@@ -18,7 +19,7 @@ namespace gfoidl.Base64.Benchmarks
             var data   = new byte[this.DataLen];
             _base64Url = new char[Base64.Url.GetEncodedLength(this.DataLen)];
 
-            var rnd = new Random();
+            var rnd = new Random(42);
             rnd.NextBytes(data);
 
             Base64.Url.Encode(data, _base64Url, out int _, out int _);
@@ -27,6 +28,8 @@ namespace gfoidl.Base64.Benchmarks
         [Benchmark(Baseline = true)]
         public byte[] ConvertFromBase64StringWithStringReplace()
         {
+            Debug.Assert(_base64Url != null);
+
             int urlEncodedLen  = _base64Url.Length;
             int noPaddingChars = (4 - urlEncodedLen) & 3;
             var sb             = new StringBuilder(urlEncodedLen + noPaddingChars);

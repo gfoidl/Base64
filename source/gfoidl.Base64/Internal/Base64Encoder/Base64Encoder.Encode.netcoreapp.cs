@@ -7,29 +7,30 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 // Scalar based on https://github.com/dotnet/corefx/tree/ec34e99b876ea1119f37986ead894f4eded1a19a/src/System.Memory/src/System/Buffers/Text
-// SSE2 based on https://github.com/aklomp/base64/tree/a27c565d1b6c676beaf297fe503c4518185666f7/lib/arch/ssse3
-// AVX2 based on https://github.com/aklomp/base64/tree/a27c565d1b6c676beaf297fe503c4518185666f7/lib/arch/avx2
+// SSE2   based on https://github.com/aklomp/base64/tree/a27c565d1b6c676beaf297fe503c4518185666f7/lib/arch/ssse3
+// AVX2   based on https://github.com/aklomp/base64/tree/a27c565d1b6c676beaf297fe503c4518185666f7/lib/arch/avx2
 
 namespace gfoidl.Base64.Internal
 {
     public partial class Base64Encoder
     {
         // PERF: can't be in base class due to inlining (generic virtual)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override unsafe string Encode(ReadOnlySpan<byte> data)
         {
-            // Threshoulds found by testing -- may not be ideal on all targets
-
-            if (data.Length < 26)
-                return Convert.ToBase64String(data);
-
-            // Get the encoded length here, to avoid this compution in the above path
-            int encodedLength = this.GetEncodedLength(data.Length);
-
-            if (data.Length < 82)
+            // Threshould found by testing -- may not be ideal on all targets
+            return data.Length < 72
+                ? EncodeWithNewString(data)
+                : EncodeWithStringCreate(data);
+            //-----------------------------------------------------------------
+            string EncodeWithNewString(ReadOnlySpan<byte> data)
             {
-                char* ptr              = stackalloc char[encodedLength];
+                // stackallocing a power of 2 is preferred, as the JIT can produce better code,
+                // especially if `locals init` is skipped, so it's just a pointer move `sub rsp, 256`
+                char* ptr              = stackalloc char[128];
                 ref char encoded       = ref Unsafe.AsRef<char>(ptr);
                 ref byte srcBytes      = ref MemoryMarshal.GetReference(data);
+                int encodedLength      = this.GetEncodedLength(data.Length);
                 OperationStatus status = this.EncodeImpl(ref srcBytes, data.Length, ref encoded, encodedLength, encodedLength, out int consumed, out int written);
 
                 Debug.Assert(status        == OperationStatus.Done);
@@ -38,24 +39,28 @@ namespace gfoidl.Base64.Internal
 
                 return new string(ptr, 0, written);
             }
-
-            fixed (byte* ptr = data)
+            //-----------------------------------------------------------------
+            string EncodeWithStringCreate(ReadOnlySpan<byte> data)
             {
-                return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
+                fixed (byte* ptr = data)
                 {
-                    ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
-                    ref char dest          = ref MemoryMarshal.GetReference(encoded);
-                    OperationStatus status = this.EncodeImpl(ref srcBytes, state.Length, ref dest, encoded.Length, encoded.Length, out int consumed, out int written);
+                    int encodedLength = this.GetEncodedLength(data.Length);
+                    return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
+                    {
+                        ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
+                        ref char dest          = ref MemoryMarshal.GetReference(encoded);
+                        OperationStatus status = this.EncodeImpl(ref srcBytes, state.Length, ref dest, encoded.Length, encoded.Length, out int consumed, out int written);
 
-                    Debug.Assert(status         == OperationStatus.Done);
-                    Debug.Assert(state.Length   == consumed);
-                    Debug.Assert(encoded.Length == written);
-                });
+                        Debug.Assert(status         == OperationStatus.Done);
+                        Debug.Assert(state.Length   == consumed);
+                        Debug.Assert(encoded.Length == written);
+                    });
+                }
             }
         }
         //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        private OperationStatus EncodeImpl<T>(
+        // internal for benchmarks
+        internal OperationStatus EncodeImpl<T>(
             ref byte srcBytes,
             int srcLength,
             ref T dest,

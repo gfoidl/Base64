@@ -110,9 +110,11 @@ namespace gfoidl.Base64.Internal
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static void EncodeThreeBytes<T>(ref byte threeBytes, ref T encoded, ref byte encodingMap)
         {
-            uint i = (uint)threeBytes << 16
-                | (uint)Unsafe.Add(ref threeBytes, 1) << 8
-                | Unsafe.Add(ref threeBytes, 2);
+            uint t0 = threeBytes;
+            uint t1 = Unsafe.Add(ref threeBytes, 1);
+            uint t2 = Unsafe.Add(ref threeBytes, 2);
+
+            uint i = (t0 << 16) | (t1 << 8) | t2;
 
             uint i0 = Unsafe.Add(ref encodingMap, (IntPtr)(i >> 18));
             uint i1 = Unsafe.Add(ref encodingMap, (IntPtr)((i >> 12) & 0x3F));
