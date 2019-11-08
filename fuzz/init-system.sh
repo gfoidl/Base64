@@ -3,8 +3,8 @@
 aptUpdated=0
 
 # make, gcc, patch, etc. get installed if not available
-which gcc > /dev/null
-if [[ $? -ne 0 ]]; then
+if ! command -v gcc > /dev/null
+then
     if [[ $aptUpdated -eq 0 ]]; then
         apt update
         aptUpdated=1
@@ -13,9 +13,9 @@ if [[ $? -ne 0 ]]; then
     apt install -y build-essential
 fi
 
-which rename > /dev/null
-if [[ $? -ne 0 ]]; then
-    if [ $aptUpdated -eq 0 ]]; then
+if ! command -v rename > /dev/null
+then
+    if [[ $aptUpdated -eq 0 ]]; then
         apt update
         aptUpdated=1
     fi
