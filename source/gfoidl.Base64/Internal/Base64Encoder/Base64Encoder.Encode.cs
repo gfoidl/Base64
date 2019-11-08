@@ -87,6 +87,7 @@ namespace gfoidl.Base64.Internal
                 {
                     if (arrayToReturnToPool != null)
                     {
+                        encoded.Clear();
                         ArrayPool<char>.Shared.Return(arrayToReturnToPool);
                     }
                 }
