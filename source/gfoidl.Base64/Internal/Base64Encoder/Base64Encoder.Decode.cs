@@ -32,7 +32,7 @@ namespace gfoidl.Base64.Internal
 
             int maxLen = this.GetDecodedLength(encoded.Length);
 
-            Debug.Assert(maxLen >= 3, "maxLen >= 3");
+            Debug.Assert(maxLen         >= 3, "maxLen >= 3");
             Debug.Assert(encoded.Length >= 4, "encoded.Length >= 4");
 
             ref T enc = ref MemoryMarshal.GetReference(encoded);

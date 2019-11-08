@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,6 +13,86 @@ namespace gfoidl.Base64.Internal
     public partial class Base64Encoder
     {
         public override int GetEncodedLength(int sourceLength) => GetBase64EncodedLength(sourceLength);
+        //---------------------------------------------------------------------
+        // PERF: can't be in base class due to inlining (generic virtual)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override unsafe string Encode(ReadOnlySpan<byte> data)
+        {
+            if (data.IsEmpty) return string.Empty;
+
+#if NETCOREAPP || NETSTANDARD2_1
+            // Threshould found by testing -- may not be ideal on all targets
+            return data.Length < 72
+                ? EncodeWithNewString(data)
+                : EncodeWithStringCreate(data);
+            //-----------------------------------------------------------------
+            string EncodeWithNewString(ReadOnlySpan<byte> data)
+            {
+                // stackallocing a power of 2 is preferred, as the JIT can produce better code,
+                // especially if `locals init` is skipped, so it's just a pointer move `sub rsp, 256`
+                char* ptr              = stackalloc char[MaxStackallocBytes / sizeof(char)];
+                ref char encoded       = ref Unsafe.AsRef<char>(ptr);
+                ref byte srcBytes      = ref MemoryMarshal.GetReference(data);
+                int encodedLength      = this.GetEncodedLength(data.Length);
+                OperationStatus status = this.EncodeImpl(ref srcBytes, data.Length, ref encoded, encodedLength, encodedLength, out int consumed, out int written);
+
+                Debug.Assert(status        == OperationStatus.Done);
+                Debug.Assert(data.Length   == consumed);
+                Debug.Assert(encodedLength == written);
+
+                return new string(ptr, 0, written);
+            }
+            //-----------------------------------------------------------------
+            string EncodeWithStringCreate(ReadOnlySpan<byte> data)
+            {
+                fixed (byte* ptr = data)
+                {
+                    int encodedLength = this.GetEncodedLength(data.Length);
+
+                    return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
+                    {
+                        ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
+                        ref char dest          = ref MemoryMarshal.GetReference(encoded);
+                        OperationStatus status = this.EncodeImpl(ref srcBytes, state.Length, ref dest, encoded.Length, encoded.Length, out int consumed, out int written);
+
+                        Debug.Assert(status         == OperationStatus.Done);
+                        Debug.Assert(state.Length   == consumed);
+                        Debug.Assert(encoded.Length == written);
+                    });
+                }
+            }
+#else
+            return EncodeWithNewString(data);
+            //-----------------------------------------------------------------
+            string EncodeWithNewString(ReadOnlySpan<byte> data)
+            {
+                int encodedLength           = this.GetEncodedLength(data.Length);
+                char[]? arrayToReturnToPool = null;
+                Span<char> encoded          = encodedLength <= MaxStackallocBytes / sizeof(char)
+                    ? stackalloc char[MaxStackallocBytes / sizeof(char)]
+                    : ArrayPool<char>.Shared.Rent(encodedLength);
+
+                try
+                {
+                    OperationStatus status = this.EncodeImpl(data, encoded, out int consumed, out int written, encodedLength);
+
+                    Debug.Assert(status        == OperationStatus.Done);
+                    Debug.Assert(data.Length   == consumed);
+                    Debug.Assert(encodedLength == written);
+
+                    fixed (char* ptr = &MemoryMarshal.GetReference(encoded))
+                        return new string(ptr, 0, written);
+                }
+                finally
+                {
+                    if (arrayToReturnToPool != null)
+                    {
+                        ArrayPool<char>.Shared.Return(arrayToReturnToPool);
+                    }
+                }
+            }
+#endif
+        }
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
         protected override OperationStatus EncodeCore(

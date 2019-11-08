@@ -46,7 +46,7 @@ namespace gfoidl.Base64.Internal
             {
                 if (Avx2.IsSupported && maxSrcLength >= 45)
                 {
-                    Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    this.Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
@@ -54,7 +54,7 @@ namespace gfoidl.Base64.Internal
 
                 if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 24))
                 {
-                    Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    this.Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
@@ -85,7 +85,7 @@ namespace gfoidl.Base64.Internal
                 do
                 {
 #if DEBUG
-                    this.ScalarDecodingIteration?.Invoke();
+                    ScalarDecodingIteration?.Invoke();
 #endif
                     int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
@@ -227,7 +227,7 @@ namespace gfoidl.Base64.Internal
                 if (Avx2.MoveMask(outside) != 0)
                     break;
 #if DEBUG
-                this.Avx2DecodingIteration?.Invoke();
+                Avx2DecodingIteration?.Invoke();
 #endif
                 Vector256<sbyte> shift = Avx2.Shuffle(lutShift, hiNibbles);
                 str                    = Avx2.Add(str, shift);
@@ -253,7 +253,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            this.Avx2Decoded?.Invoke();
+            Avx2Decoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------
@@ -297,7 +297,7 @@ namespace gfoidl.Base64.Internal
                 if (Sse2.MoveMask(outside) != 0)
                     break;
 #if DEBUG
-                this.Ssse3DecodingIteration?.Invoke();
+                Ssse3DecodingIteration?.Invoke();
 #endif
                 Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, hiNibbles);
                 str                    = Sse2.Add(str, shift);
@@ -322,7 +322,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            this.Ssse3Decoded?.Invoke();
+            Ssse3Decoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------

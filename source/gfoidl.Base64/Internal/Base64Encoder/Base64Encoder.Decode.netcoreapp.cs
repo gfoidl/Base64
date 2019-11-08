@@ -43,7 +43,7 @@ namespace gfoidl.Base64.Internal
             {
                 if (Avx2.IsSupported && maxSrcLength >= 45)
                 {
-                    Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    this.Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
@@ -51,7 +51,7 @@ namespace gfoidl.Base64.Internal
 
                 if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 24))
                 {
-                    Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    this.Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
@@ -82,7 +82,7 @@ namespace gfoidl.Base64.Internal
                 do
                 {
 #if DEBUG
-                    this.ScalarDecodingIteration?.Invoke();
+                    ScalarDecodingIteration?.Invoke();
 #endif
                     int result = DecodeFour(ref Unsafe.Add(ref src, (IntPtr)sourceIndex), ref decodingMap);
 
@@ -258,7 +258,7 @@ namespace gfoidl.Base64.Internal
                 if (Avx2.MoveMask(Avx2.CompareGreaterThan(Avx2.And(lo, hi), zero)) != 0)
                     break;
 #if DEBUG
-                this.Avx2DecodingIteration?.Invoke();
+                Avx2DecodingIteration?.Invoke();
 #endif
                 Vector256<sbyte> eq2F  = Avx2.CompareEqual(str, mask2F);
                 Vector256<sbyte> shift = Avx2.Shuffle(lutShift, Avx2.Add(eq2F, hiNibbles));
@@ -284,7 +284,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            this.Avx2Decoded?.Invoke();
+            Avx2Decoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------
@@ -324,7 +324,7 @@ namespace gfoidl.Base64.Internal
                 if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
                     break;
 #if DEBUG
-                this.Ssse3DecodingIteration?.Invoke();
+                Ssse3DecodingIteration?.Invoke();
 #endif
                 Vector128<sbyte> eq2F  = Sse2.CompareEqual(str, mask2F);
                 Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, Sse2.Add(eq2F, hiNibbles));
@@ -349,7 +349,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            this.Ssse3Decoded?.Invoke();
+            Ssse3Decoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------

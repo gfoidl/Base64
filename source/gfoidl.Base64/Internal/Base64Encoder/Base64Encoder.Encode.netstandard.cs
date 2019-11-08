@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,36 +9,6 @@ namespace gfoidl.Base64.Internal
 {
     public partial class Base64Encoder
     {
-        // PERF: can't be in base class due to inlining (generic virtual)
-        public override unsafe string Encode(ReadOnlySpan<byte> data)
-        {
-            if (data.IsEmpty)
-                return string.Empty;
-
-            int encodedLength           = this.GetEncodedLength(data.Length);
-            char[]? arrayToReturnToPool = null;
-
-            Span<char> encoded = encodedLength <= MaxStackallocBytes / sizeof(char)
-                ? stackalloc char[encodedLength]
-                : arrayToReturnToPool = ArrayPool<char>.Shared.Rent(encodedLength);
-
-            try
-            {
-                OperationStatus status = this.EncodeImpl(data, encoded, out int consumed, out int written, encodedLength);
-                Debug.Assert(status         == OperationStatus.Done);
-                Debug.Assert(data.Length    == consumed);
-                Debug.Assert(encoded.Length >= written);
-
-                fixed (char* ptr = encoded)
-                    return new string(ptr, 0, written);
-            }
-            finally
-            {
-                if (arrayToReturnToPool != null)
-                    ArrayPool<char>.Shared.Return(arrayToReturnToPool);
-            }
-        }
-        //---------------------------------------------------------------------
         private OperationStatus EncodeImpl<T>(
             ref byte srcBytes,
             int srcLength,

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -14,51 +13,6 @@ namespace gfoidl.Base64.Internal
 {
     public partial class Base64Encoder
     {
-        // PERF: can't be in base class due to inlining (generic virtual)
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override unsafe string Encode(ReadOnlySpan<byte> data)
-        {
-            // Threshould found by testing -- may not be ideal on all targets
-            return data.Length < 72
-                ? EncodeWithNewString(data)
-                : EncodeWithStringCreate(data);
-            //-----------------------------------------------------------------
-            string EncodeWithNewString(ReadOnlySpan<byte> data)
-            {
-                // stackallocing a power of 2 is preferred, as the JIT can produce better code,
-                // especially if `locals init` is skipped, so it's just a pointer move `sub rsp, 256`
-                char* ptr              = stackalloc char[128];
-                ref char encoded       = ref Unsafe.AsRef<char>(ptr);
-                ref byte srcBytes      = ref MemoryMarshal.GetReference(data);
-                int encodedLength      = this.GetEncodedLength(data.Length);
-                OperationStatus status = this.EncodeImpl(ref srcBytes, data.Length, ref encoded, encodedLength, encodedLength, out int consumed, out int written);
-
-                Debug.Assert(status        == OperationStatus.Done);
-                Debug.Assert(data.Length   == consumed);
-                Debug.Assert(encodedLength == written);
-
-                return new string(ptr, 0, written);
-            }
-            //-----------------------------------------------------------------
-            string EncodeWithStringCreate(ReadOnlySpan<byte> data)
-            {
-                fixed (byte* ptr = data)
-                {
-                    int encodedLength = this.GetEncodedLength(data.Length);
-                    return string.Create(encodedLength, (Ptr: (IntPtr)ptr, data.Length), (encoded, state) =>
-                    {
-                        ref byte srcBytes      = ref Unsafe.AsRef<byte>(state.Ptr.ToPointer());
-                        ref char dest          = ref MemoryMarshal.GetReference(encoded);
-                        OperationStatus status = this.EncodeImpl(ref srcBytes, state.Length, ref dest, encoded.Length, encoded.Length, out int consumed, out int written);
-
-                        Debug.Assert(status         == OperationStatus.Done);
-                        Debug.Assert(state.Length   == consumed);
-                        Debug.Assert(encoded.Length == written);
-                    });
-                }
-            }
-        }
-        //---------------------------------------------------------------------
         // internal for benchmarks
         internal OperationStatus EncodeImpl<T>(
             ref byte srcBytes,
@@ -84,7 +38,7 @@ namespace gfoidl.Base64.Internal
             {
                 if (Avx2.IsSupported && maxSrcLength >= 32)
                 {
-                    Avx2Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    this.Avx2Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
@@ -92,7 +46,7 @@ namespace gfoidl.Base64.Internal
 
                 if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 16))
                 {
-                    Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
+                    this.Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
@@ -109,7 +63,7 @@ namespace gfoidl.Base64.Internal
                 do
                 {
 #if DEBUG
-                    this.ScalarEncodingIteration?.Invoke();
+                    ScalarEncodingIteration?.Invoke();
 #endif
                     EncodeThreeBytes(ref Unsafe.Add(ref srcBytes, (IntPtr)sourceIndex), ref Unsafe.Add(ref dest, (IntPtr)destIndex), ref encodingMap);
                     destIndex   += 4;
@@ -189,7 +143,7 @@ namespace gfoidl.Base64.Internal
             while (true)
             {
 #if DEBUG
-                this.Avx2EncodingIteration?.Invoke();
+                Avx2EncodingIteration?.Invoke();
 #endif
                 // Reshuffle
                 str                  = Avx2.Shuffle(str, shuffleVec);
@@ -226,7 +180,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            this.Avx2Encoded?.Invoke();
+            Avx2Encoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------
@@ -256,7 +210,7 @@ namespace gfoidl.Base64.Internal
             do
             {
 #if DEBUG
-                this.Ssse3EncodingIteration?.Invoke();
+                Ssse3EncodingIteration?.Invoke();
 #endif
                 src.AssertRead<Vector128<sbyte>, byte>(ref srcStart, sourceLength);
                 Vector128<sbyte> str = src.ReadVector128();
@@ -290,7 +244,7 @@ namespace gfoidl.Base64.Internal
             src  = ref srcStart;
             dest = ref destStart;
 #if DEBUG
-            this.Ssse3Encoded?.Invoke();
+            Ssse3Encoded?.Invoke();
 #endif
         }
         //---------------------------------------------------------------------
