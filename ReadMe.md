@@ -24,6 +24,8 @@ finally scalar code processes the rest (including padding).
 
 Basically the entry to encoder / decoder is `Base64.Default` for _base64_, and `Base64.Url` for _base64Url_.
 
+See [demo](./demo/gfoidl.Base64.Demo/Program.cs) for further examples.
+
 ### Encoding
 
 ```c#
@@ -99,7 +101,27 @@ status             = Base64.Default.Decode(base64.Slice(consumed), decoded.Slice
 decoded = decoded.Slice(0, written + written1);
 ```
 
-See [demo](./demo/gfoidl.Base64.Demo/Program.cs) for further examples.
+### ReadOnlySequence / IBufferWriter
+
+Encoding / decoding with `ReadOnlySequence<byte>` and `IBufferWriter<byte>` can be used together with `System.IO.Pipelines`.
+
+```c#
+var pipeOptions = PipeOptions.Default;
+var pipe        = new Pipe(pipeOptions);
+
+var rnd  = new Random(42);
+var data = new byte[4097];
+rnd.NextBytes(data);
+
+pipe.Writer.Write(data);
+await pipe.Writer.CompleteAsync();
+
+ReadResult readResult = await pipe.Reader.ReadAsync();
+
+var resultPipe = new Pipe();
+Base64.Default.Encode(readResult.Buffer, resultPipe.Writer, out long consumed, out long written);
+await resultPipe.Writer.CompleteAsync();
+```
 
 ## (Functional) Comparison to classes in .NET
 

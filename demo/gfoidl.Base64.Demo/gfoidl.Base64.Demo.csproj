@@ -6,6 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\..\source\gfoidl.Base64\gfoidl.Base64.csproj" />
     </ItemGroup>
 

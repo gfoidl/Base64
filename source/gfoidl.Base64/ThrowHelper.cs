@@ -1,7 +1,16 @@
 ﻿using System;
 using System.Buffers;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Resources;
+
+#if NETSTANDARD2_0
+namespace System.Diagnostics.CodeAnalysis
+{
+    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
+    internal sealed class DoesNotReturnAttribute : Attribute { }
+}
+#endif
 
 namespace gfoidl.Base64
 {
@@ -18,13 +27,20 @@ namespace gfoidl.Base64
             s_resources = new Lazy<ResourceManager>(() => new ResourceManager($"{ns}.Strings", typeof(ThrowHelper).Assembly));
         }
         //---------------------------------------------------------------------
-        public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) => throw GetArgumentOutOfRangeException(argument);
-        public static void ThrowMalformedInputException(int urlEncodedLen)              => throw GetMalformdedInputException(urlEncodedLen);
-        public static void ThrowForOperationNotDone(OperationStatus status)             => throw GetExceptionForOperationNotDone(status);
+        [DoesNotReturn] public static void ThrowArgumentNullException(ExceptionArgument argument)       => throw GetArgumentNullException(argument);
+        [DoesNotReturn] public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument) => throw GetArgumentOutOfRangeException(argument);
+        [DoesNotReturn] public static void ThrowMalformedInputException(int urlEncodedLen)              => throw GetMalformdedInputException(urlEncodedLen);
+        [DoesNotReturn] public static void ThrowForOperationNotDone(OperationStatus status)             => throw GetExceptionForOperationNotDone(status);
         //---------------------------------------------------------------------
+        [DoesNotReturn]
         public static void ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionRessource ressource)
         {
             throw GetArgumentOutOfRangeException(argument, ressource);
+        }
+        //---------------------------------------------------------------------
+        private static Exception GetArgumentNullException(ExceptionArgument argument)
+        {
+            return new ArgumentNullException(GetArgumentName(argument));
         }
         //---------------------------------------------------------------------
         private static Exception GetArgumentOutOfRangeException(ExceptionArgument argument)
@@ -75,8 +91,10 @@ namespace gfoidl.Base64
     //-------------------------------------------------------------------------
     internal enum ExceptionArgument
     {
+        encoder,
+        encodedLength,
         length,
-        encodedLength
+        writer
     }
     //---------------------------------------------------------------------
     internal enum ExceptionRessource

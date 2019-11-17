@@ -120,7 +120,6 @@ namespace gfoidl.Base64.FuzzTests
         {
             ReadOnlySpan<sbyte> decodingMap = default;
 
-
             if (encoder is Base64Encoder)
             {
                 decodingMap = Base64Encoder.DecodingMap;

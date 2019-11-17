@@ -139,7 +139,7 @@ namespace gfoidl.Base64
         /// Base64 decodes <paramref name="encoded" />.
         /// </summary>
         /// <param name="encoded">The base64 encoded data.</param>
-        /// <param name="data">The base64 decoded data.</param>
+        /// <param name="data">The base64 encoded data to decode.</param>
         /// <param name="consumed">
         /// The number of input bytes consumed during the operation. This can be used to slice the input for 
         /// subsequent calls, if necessary.

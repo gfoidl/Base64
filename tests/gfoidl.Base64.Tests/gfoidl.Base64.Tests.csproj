@@ -8,9 +8,14 @@
         <ProjectReference Include="..\..\source\gfoidl.Base64\gfoidl.Base64.csproj" />
     </ItemGroup>
 
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+        <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
+    </ItemGroup>
+
     <ItemGroup>
         <Compile Remove="Internal\*HelperTests\*.cs" />
         <Compile Remove="HWInfo.cs" />
+        <Compile Remove="Extensions\ReadOnlySequenceExtensionsTests\*.cs" />
 
         <Compile Include="..\..\source\SimdInfo.cs" Link="SimdInfo.cs" />
     </ItemGroup>
@@ -23,6 +28,7 @@
     <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
         <Compile Include="Internal\Vector*HelperTests\*.cs" />
         <Compile Include="HWInfo.cs" />
+        <Compile Include="Extensions\ReadOnlySequenceExtensionsTests\*.cs" />
 
         <Compile Include="Internal\AssertHelperTests\*.cs" Condition="'$(Configuration)' == 'Debug'" />
     </ItemGroup>

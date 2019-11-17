@@ -49,6 +49,7 @@ For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
         <Compile Remove="**\*.netstandard.cs" />
         <Compile Remove="**\*.sse.cs" />
         <Compile Remove="**\*.avx.cs" />
+        <Compile Remove="Extensions\ReadOnlySequenceExtensions*.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -64,9 +65,15 @@ For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
         <Compile Include="**\*.netcoreapp.cs" />
         <Compile Include="**\*.sse.cs" />
         <Compile Include="**\*.avx.cs" />
+        <Compile Include="Extensions\ReadOnlySequenceExtensions*.cs" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+        <Compile Include="**\*.netstandard.cs" />
+        <Compile Include="Extensions\ReadOnlySequenceExtensions*.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
         <Compile Include="**\*.netstandard.cs" />
     </ItemGroup>
 

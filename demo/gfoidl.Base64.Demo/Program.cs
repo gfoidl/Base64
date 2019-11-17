@@ -1,24 +1,26 @@
 ﻿using System;
 using System.Buffers;
 using System.Diagnostics;
+using System.IO.Pipelines;
+using System.Threading.Tasks;
 
 namespace gfoidl.Base64.Demo
 {
     class Program
     {
-        static void Main()
+        static async Task Main()
         {
-            Action[] demos = { RunGuidEncoding, RunGuidDecoding, RunBufferChainEncode, RunDetectEncoding };
+            Func<Task>[] demos = { RunGuidEncoding, RunGuidDecoding, RunBufferChainEncoding, RunDetectEncoding, RunSequenceEncoding };
 
-            foreach (Action demo in demos)
+            foreach (Func<Task> demo in demos)
             {
                 Console.Write($"{demo.Method.Name}...");
-                demo();
+                await demo();
                 Console.WriteLine("done");
             }
         }
         //---------------------------------------------------------------------
-        private static void RunGuidEncoding()
+        private static Task RunGuidEncoding()
         {
             byte[] guid = Guid.NewGuid().ToByteArray();
 
@@ -38,9 +40,11 @@ namespace gfoidl.Base64.Demo
             Debug.Assert(status   == OperationStatus.Done);
             Debug.Assert(consumed == guid.Length);
             Debug.Assert(written  == guidBase64UrlUTF8.Length);
+
+            return Task.CompletedTask;
         }
         //---------------------------------------------------------------------
-        private static void RunGuidDecoding()
+        private static Task RunGuidDecoding()
         {
             Guid guid = Guid.NewGuid();
 
@@ -68,9 +72,11 @@ namespace gfoidl.Base64.Demo
             Debug.Assert(status   == OperationStatus.Done);
             Debug.Assert(consumed == guidBase64Url.Length);
             Debug.Assert(written  == guidBase64UrlDecodedBuffer.Length);
+
+            return Task.CompletedTask;
         }
         //---------------------------------------------------------------------
-        private static void RunBufferChainEncode()
+        private static Task RunBufferChainEncoding()
         {
             var rnd         = new Random();
             Span<byte> data = new byte[1000];
@@ -80,7 +86,7 @@ namespace gfoidl.Base64.Demo
             Span<char> base64 = new char[5000];
 
             OperationStatus status = Base64.Default.Encode(data.Slice(0, 400), base64, out int consumed, out int written, isFinalBlock: false);
-            Debug.Assert(status == OperationStatus.NeedMoreData);
+            Debug.Assert(status == OperationStatus.NeedMoreData);   // 400 is not a multiple of 3, so more data is needed
             status                 = Base64.Default.Encode(data.Slice(consumed), base64.Slice(written), out consumed, out int written1, isFinalBlock: true);
             Debug.Assert(status == OperationStatus.Done);
 
@@ -88,15 +94,17 @@ namespace gfoidl.Base64.Demo
 
             Span<byte> decoded = new byte[5000];
             status             = Base64.Default.Decode(base64.Slice(0, 100), decoded, out consumed, out written, isFinalBlock: false);
-            Debug.Assert(status == OperationStatus.Done);   // 100 encoded bytes can be decoded to 75 bytes, so Done
+            Debug.Assert(status == OperationStatus.Done);           // 100 encoded bytes can be decoded to 75 bytes, so Done
             status             = Base64.Default.Decode(base64.Slice(consumed), decoded.Slice(written), out consumed, out written1, isFinalBlock: true);
             Debug.Assert(status == OperationStatus.Done);
 
             decoded = decoded.Slice(0, written + written1);
             Debug.Assert(data.SequenceEqual(decoded));
+
+            return Task.CompletedTask;
         }
         //---------------------------------------------------------------------
-        private static void RunDetectEncoding()
+        private static Task RunDetectEncoding()
         {
             // Let's assume we don't know whether this string is base64 or base64Url
             string encodedString = "a-_9";
@@ -121,6 +129,30 @@ namespace gfoidl.Base64.Demo
             data = data.Slice(0, written);
 
             Debug.Assert(data.Length == 3);
+
+            return Task.CompletedTask;
+        }
+        //---------------------------------------------------------------------
+        private static async Task RunSequenceEncoding()
+        {
+            var pipeOptions = PipeOptions.Default;
+            var pipe        = new Pipe(pipeOptions);
+
+            var rnd  = new Random(42);
+            var data = new byte[4097];
+            rnd.NextBytes(data);
+
+            pipe.Writer.Write(data);
+            await pipe.Writer.CompleteAsync();
+
+            ReadResult readResult = await pipe.Reader.ReadAsync();
+
+            var resultPipe = new Pipe();
+            Base64.Default.Encode(readResult.Buffer, resultPipe.Writer, out long consumed, out long written);
+            await resultPipe.Writer.CompleteAsync();
+
+            Debug.Assert(consumed == data.Length);
+            Debug.Assert(written  == (data.Length + 2) / 3 * 4);
         }
     }
 }

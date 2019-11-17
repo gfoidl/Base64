@@ -30,3 +30,5 @@ dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeStringBenchmark*
 dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeUtf8Benchmark*
 dotnet gfoidl.Base64.Benchmarks.dll -f *EncodeStringBenchmark*
 dotnet gfoidl.Base64.Benchmarks.dll -f *EncodeUtf8Benchmark*
+dotnet gfoidl.Base64.Benchmarks.dll -f *ReadOnlySequenceBase64Benchmark*
+dotnet gfoidl.Base64.Benchmarks.dll -f *ReadOnlySequenceBase64UrlBenchmark*
