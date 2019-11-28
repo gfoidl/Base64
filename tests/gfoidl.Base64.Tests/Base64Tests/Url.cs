@@ -15,7 +15,7 @@ namespace gfoidl.Base64.Tests.Base64Tests
             byte[] data     = { 0xFF, 0xFE, 0x00 };
             string expected = Convert.ToBase64String(data).ToBase64Url();
 
-            string actual = gfoidl.Base64.Base64.Url.Encode(data);
+            string actual = Base64.Url.Encode(data);
 
             Assert.AreEqual(expected, actual);
         }

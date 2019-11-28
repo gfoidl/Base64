@@ -280,5 +280,24 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests.Encode
 
             Assert.AreEqual(expectedText.ToBase64Url(), encodedText);
         }
+        //---------------------------------------------------------------------
+        [Test]
+        public void Basic_encoding_to_string_with_different_input_length()
+        {
+            var sut = new Base64UrlEncoder();
+            var rnd = new Random(42);
+
+            for (int i = 0; i < 15; ++i)
+            {
+                int len = 1 << i;
+                byte[] source = new byte[len];
+                rnd.NextBytes(source);
+
+                string expected = Convert.ToBase64String(source).ToBase64Url();
+                string actual   = sut.Encode(source);
+
+                Assert.AreEqual(expected, actual, "Failed at length {0} (resp. i = {1})", len, i);
+            }
+        }
     }
 }

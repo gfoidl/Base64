@@ -65,13 +65,12 @@ namespace gfoidl.Base64
             Span<byte> data   = writer.GetSpan(decodedLength);
 
             OperationStatus status = encoder.Decode(base64, data, out int consumedBytes, out int writtenBytes, isFinalBlock);
-
             writer.Advance(writtenBytes);
 
             consumed = consumedBytes;
             written  = writtenBytes;
 
-            return status == OperationStatus.Done;
+            return status == OperationStatus.Done || status == OperationStatus.NeedMoreData;
         }
         //---------------------------------------------------------------------
         private static bool TryDecodeMultiSegment(
@@ -99,51 +98,74 @@ namespace gfoidl.Base64
 
                 base64 = base64.Slice(consumedInThisIteration);
 
+                int remainingFromIteration = (int)(firstSpan.Length - consumedInThisIteration);
+                Debug.Assert(remainingFromIteration < 4);
+
                 // If there are less than 4 elements remaining in this span, process them separately
                 // For System.IO.Pipelines this code-path won't be hit, as the default sizes for
                 // MinimumSegmentSize are a (higher) power of 2, so are multiples of 4, hence
                 // for base64 it is valid or invalid data.
                 // Here it is kept to be on the safe side, if non-stanard ROS should be processed.
-                int remainingFromIteration = (int)(firstSpan.Length - consumedInThisIteration);
-                Debug.Assert(remainingFromIteration < 4);
-
                 if (remainingFromIteration > 0)
                 {
-                    Debug.Assert(!isFinalSegment);
-
-                    Span<byte> tmpBuffer = stackalloc byte[4];
-                    firstSpan[^remainingFromIteration..].CopyTo(tmpBuffer);
-
-                    int base64Needed              = tmpBuffer.Length - remainingFromIteration;
-                    Span<byte> tmpBufferRemaining = tmpBuffer[remainingFromIteration..];
-                    base64                        = base64.Slice(remainingFromIteration);
-                    firstSpan                     = base64.FirstSpan;
-
-                    if (firstSpan.Length > base64Needed)
-                    {
-                        firstSpan[0..base64Needed].CopyTo(tmpBufferRemaining);
-                        base64 = base64.Slice(base64Needed);
-                    }
-                    else
-                    {
-                        firstSpan.CopyTo(tmpBufferRemaining);
-                        isFinalSegment = true;
-                        tmpBuffer      = tmpBuffer[0..(remainingFromIteration + firstSpan.Length)];
-                    }
-
-                    success = TryDecodeSingleSegment(encoder, tmpBuffer, writer, out consumedInThisIteration, out writtenInThisIteration, isFinalSegment);
-
-                    Debug.Assert(consumedInThisIteration == tmpBuffer.Length);
-                    Debug.Assert(0 < writtenInThisIteration && writtenInThisIteration <= 3);
-
-                    totalConsumed += consumedInThisIteration;
-                    totalWritten  += writtenInThisIteration;
+                    TryDecodeRemainingFromIteration(
+                        encoder,
+                        ref base64,
+                        writer,
+                        remainingFromIteration,
+                        ref totalConsumed,
+                        ref totalWritten,
+                        ref isFinalSegment,
+                        out success);
                 }
             } while (!isFinalSegment);
 
             consumed = totalConsumed;
             written  = totalWritten;
             return success;
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void TryDecodeRemainingFromIteration(
+            Base64 encoder,
+            ref ReadOnlySequence<byte> base64,
+            IBufferWriter<byte> writer,
+            int remainingFromIteration,
+            ref long totalConsumed,
+            ref long totalWritten,
+            ref bool isFinalSegment,
+            out bool success)
+        {
+            Debug.Assert(!isFinalSegment);
+
+            ReadOnlySpan<byte> firstSpan = base64.FirstSpan;
+            Span<byte> tmpBuffer         = stackalloc byte[4];
+            firstSpan[^remainingFromIteration..].CopyTo(tmpBuffer);
+
+            int base64Needed              = tmpBuffer.Length - remainingFromIteration;
+            Span<byte> tmpBufferRemaining = tmpBuffer[remainingFromIteration..];
+            base64                        = base64.Slice(remainingFromIteration);
+            firstSpan                     = base64.FirstSpan;
+
+            if (firstSpan.Length > base64Needed)
+            {
+                firstSpan[0..base64Needed].CopyTo(tmpBufferRemaining);
+                base64 = base64.Slice(base64Needed);
+            }
+            else
+            {
+                firstSpan.CopyTo(tmpBufferRemaining);
+                isFinalSegment = true;
+                Debug.Assert(tmpBuffer.Length == remainingFromIteration + firstSpan.Length);
+            }
+
+            success = TryDecodeSingleSegment(encoder, tmpBuffer, writer, out long consumedInThisIteration, out long writtenInThisIteration, isFinalSegment);
+
+            Debug.Assert(consumedInThisIteration == tmpBuffer.Length);
+            Debug.Assert(0 < writtenInThisIteration && writtenInThisIteration <= 3);
+
+            totalConsumed += consumedInThisIteration;
+            totalWritten  += writtenInThisIteration;
         }
     }
 }

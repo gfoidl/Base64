@@ -14,6 +14,15 @@ namespace gfoidl.Base64.Tests.Extensions.ReadOnlySequenceExtensionsTests
         private readonly TEncoder _encoder = new TEncoder();
         //---------------------------------------------------------------------
         [Test]
+        public void Encoder_is_null___throws_ArgumentNull()
+        {
+            var sequence               = new ReadOnlySequence<byte>();
+            IBufferWriter<byte> writer = new ArrayBufferWriter<byte>();
+
+            Assert.Throws<ArgumentNullException>(() => ReadOnlySequenceExtensions.Encode(null, sequence, writer, out long _, out long _));
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void BufferWriter_is_null___throws_ArgumentNull()
         {
             var sequence               = new ReadOnlySequence<byte>(new byte[100]);

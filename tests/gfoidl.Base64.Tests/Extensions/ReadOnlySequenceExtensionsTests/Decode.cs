@@ -15,6 +15,15 @@ namespace gfoidl.Base64.Tests.Extensions.ReadOnlySequenceExtensionsTests
         private readonly TEncoder _encoder = new TEncoder();
         //---------------------------------------------------------------------
         [Test]
+        public void Encoder_is_null___throws_ArgumentNull()
+        {
+            var sequence               = new ReadOnlySequence<byte>();
+            IBufferWriter<byte> writer = new ArrayBufferWriter<byte>();
+
+            Assert.Throws<ArgumentNullException>(() => ReadOnlySequenceExtensions.TryDecode(null, sequence, writer, out long _, out long _));
+        }
+        //---------------------------------------------------------------------
+        [Test]
         public void BufferWriter_is_null___throws_ArgumentNull()
         {
             var sequence               = new ReadOnlySequence<byte>(new byte[100]);
@@ -241,6 +250,49 @@ namespace gfoidl.Base64.Tests.Extensions.ReadOnlySequenceExtensionsTests
                 Assert.IsTrue(readResult.IsCompleted);
                 Assert.AreEqual(dataLengthExpected, readResult.Buffer.Length);
             });
+        }
+        //---------------------------------------------------------------------
+        [Test]
+        [TestCase(30)]
+        [TestCase(9)]
+        public void Custom_multisegment_sequence_decode___true(int dataSize)
+        {
+            byte[] data   = new byte[dataSize];
+            byte[] base64 = new byte[_encoder.GetEncodedLength(data.Length)];
+            var rnd       = new Random(42);
+            rnd.NextBytes(data);
+            OperationStatus status = _encoder.Encode(data, base64, out int _, out int _);
+            Assume.That(status, Is.EqualTo(OperationStatus.Done));
+
+            ReadOnlyMemory<byte> segmentMemory0 = base64.AsMemory(0, 10);
+            ReadOnlyMemory<byte> segmentMemory1 = base64.AsMemory(10);
+
+            var endSegment   = new MyReadOnlySequenceSegment(segmentMemory1, 10, null);
+            var startSegment = new MyReadOnlySequenceSegment(segmentMemory0,  0, endSegment);
+            var sequence     = new ReadOnlySequence<byte>(startSegment, 0, endSegment, endSegment.Memory.Length);
+
+            var writer = new ArrayBufferWriter<byte>(dataSize);
+
+            bool result = _encoder.TryDecode(sequence, writer, out long consumed, out long written);
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(result);
+                Assert.AreEqual(base64.Length, consumed, nameof(consumed));
+                Assert.AreEqual(data.Length  , written , nameof(written));
+            });
+
+            CollectionAssert.AreEqual(data, writer.WrittenSpan.ToArray());
+        }
+        //---------------------------------------------------------------------
+        private sealed class MyReadOnlySequenceSegment : ReadOnlySequenceSegment<byte>
+        {
+            public MyReadOnlySequenceSegment(ReadOnlyMemory<byte> memory, long runningIndex, ReadOnlySequenceSegment<byte> next)
+            {
+                this.Memory       = memory;
+                this.RunningIndex = runningIndex;
+                this.Next         = next;
+            }
         }
     }
 }
