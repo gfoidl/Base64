@@ -2,15 +2,17 @@
 
 set -e
 
+lib="gfoidl.Base64.dll"
+tfm="netcoreapp3.0"
+path="gfoidl.Base64.FuzzTests/bin/Release/$tfm"
+
+dotnet "$path"/gfoidl.Base64.FuzzTests.dll "PrintSimdInfo"
+
 if [[ $# -lt 2 ]]; then
     echo "first arg must be duration for timeout"
     echo "seconds arg must be the fuzz-function (see Program.cs)"
     exit 1
 fi
-
-lib="gfoidl.Base64.dll"
-tfm="netcoreapp3.0"
-path="gfoidl.Base64.FuzzTests/bin/Release/$tfm"
 
 cp ./instrumented/$lib "$path"/
 

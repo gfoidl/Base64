@@ -15,6 +15,8 @@ namespace gfoidl.Base64.FuzzTests
     {
         static void Main(string[] args)
         {
+            // Note: Build config "Fuzz" must be set for debugging in VS
+
             // To verify a crash switch to Debug in the configuration manager and uncomment the following lines
             //var stream = File.OpenRead(@".\findings\crashes\id%3A000001,sig%3A02,src%3A000000,op%3Ahavoc,rep%3A64");
             //Base64_Url_Decode(stream);
@@ -28,8 +30,9 @@ namespace gfoidl.Base64.FuzzTests
 
             switch (args[0])
             {
-                case "Base64_Default_Decode": Fuzzer.Run(Base64_Default_Decode); break;
-                case "Base64_Url_Decode"    : Fuzzer.Run(Base64_Url_Decode)    ; break;
+                case "PrintSimdInfo"        : SimdInfo.PrintSimdInfo(Console.Out); break;
+                case "Base64_Default_Decode": Fuzzer.Run(Base64_Default_Decode)  ; break;
+                case "Base64_Url_Decode"    : Fuzzer.Run(Base64_Url_Decode)      ; break;
                 default:
                     Console.WriteLine($"Unknown fuzzing function: {args[0]}");
                     Environment.Exit(2);
