@@ -45,6 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3
 	ProjectSection(SolutionItems) = preProject
 		.azure\pipelines\jobs\benchmarks.yml = .azure\pipelines\jobs\benchmarks.yml
 		.azure\pipelines\jobs\build_and_test.yml = .azure\pipelines\jobs\build_and_test.yml
+		.azure\pipelines\jobs\build_and_test_intrinsics.yml = .azure\pipelines\jobs\build_and_test_intrinsics.yml
 		.azure\pipelines\jobs\demo.yml = .azure\pipelines\jobs\demo.yml
 		.azure\pipelines\jobs\fuzzing.yml = .azure\pipelines\jobs\fuzzing.yml
 	EndProjectSection
@@ -85,7 +86,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{6920
 		fuzz\setup.sh = fuzz\setup.sh
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gfoidl.Base64.WebDemo", "demo\gfoidl.Base64.WebDemo\gfoidl.Base64.WebDemo.csproj", "{66E1E4B6-BD9B-40FF-85A9-070B0D497E59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Base64.WebDemo", "demo\gfoidl.Base64.WebDemo\gfoidl.Base64.WebDemo.csproj", "{66E1E4B6-BD9B-40FF-85A9-070B0D497E59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

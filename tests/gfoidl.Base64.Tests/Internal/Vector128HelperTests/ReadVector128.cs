@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
@@ -12,6 +13,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector128HelperTests
         [Test]
         public void ROSpan___correct_sbyte_vector()
         {
+            Assume.That(Sse2.IsSupported);
+
             ReadOnlySpan<sbyte> data = new sbyte[] { 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16 };
 
             Vector128<sbyte> vec = data.ReadVector128();
@@ -26,6 +29,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector128HelperTests
         [Test]
         public void Byte___correct_combined_sbyte_vector()
         {
+            Assume.That(Sse2.IsSupported);
+
             byte[] chars     = new byte[16];
             sbyte[] expected = new sbyte[16];
 
@@ -46,6 +51,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector128HelperTests
         [Test]
         public void Char___correct_combined_sbyte_vector()
         {
+            Assume.That(Sse2.IsSupported);
+
             char[] chars     = new char[16];
             sbyte[] expected = new sbyte[16];
 

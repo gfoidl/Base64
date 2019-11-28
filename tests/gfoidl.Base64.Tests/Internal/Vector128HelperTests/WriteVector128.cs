@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
 using gfoidl.Base64.Internal;
 using NUnit.Framework;
 
@@ -11,6 +12,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector128HelperTests
         [Test]
         public void Byte___correct_data_written()
         {
+            Assume.That(Sse2.IsSupported);
+
             sbyte[] data    = new sbyte[16];
             byte[] expected = new byte[16];
 
@@ -31,6 +34,8 @@ namespace gfoidl.Base64.Tests.Internal.Vector128HelperTests
         [Test]
         public void Char___correct_data_written()
         {
+            Assume.That(Sse2.IsSupported);
+
             sbyte[] data    = new sbyte[16];
             char[] expected = new char[16];
 
