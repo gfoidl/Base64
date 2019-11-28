@@ -193,7 +193,7 @@ coverage() {
         fi
 
         # a cool script, does quite a lot without any args :-)
-        ./codecov.sh
+        ./codecov.sh -Z
     else
         echo "CODECOV_TOKEN not set -- skipping upload"
     fi
