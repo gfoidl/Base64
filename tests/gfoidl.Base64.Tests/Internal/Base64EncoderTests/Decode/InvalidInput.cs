@@ -133,6 +133,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests.Decode
                 });
             }
         }
+        //---------------------------------------------------------------------
         [Test]
         [TestCase(true)]
         [TestCase(false)]
