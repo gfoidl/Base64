@@ -13,7 +13,6 @@ namespace gfoidl.Base64.Internal
             ref T src,
             int inputLength,
             Span<byte> data,
-            int decodedLength,
             out int consumed,
             out int written,
             bool isFinalBlock = true)
@@ -21,7 +20,11 @@ namespace gfoidl.Base64.Internal
             uint sourceIndex = 0;
             uint destIndex   = 0;
 
-            decodedLength = GetDataLen(inputLength, out int base64Len, isFinalBlock);
+            if (!TryGetDataLength(inputLength, out int base64Len, out int decodedLength, isFinalBlock))
+            {
+                goto InvalidDataExit;
+            }
+
             int srcLength = base64Len & ~0x3;       // only decode input up to the closest multiple of 4.
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);

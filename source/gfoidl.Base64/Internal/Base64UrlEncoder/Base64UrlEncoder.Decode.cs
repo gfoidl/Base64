@@ -36,7 +36,7 @@ namespace gfoidl.Base64.Internal
             if ((uint)encodedLength >= int.MaxValue)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
 
-            return GetDataLen(encodedLength, out int _);
+            return GetDataLength(encodedLength, out int _);
         }
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
@@ -66,7 +66,7 @@ namespace gfoidl.Base64.Internal
             out int written,
             int decodedLength = -1,
             bool isFinalBlock = true)
-            => this.DecodeImpl(encoded, data, out consumed, out written, decodedLength, isFinalBlock);
+            => this.DecodeImpl(encoded, data, out consumed, out written, isFinalBlock);
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
         protected override OperationStatus DecodeCore(
@@ -76,7 +76,7 @@ namespace gfoidl.Base64.Internal
             out int written,
             int decodedLength = -1,
             bool isFinalBlock = true)
-            => this.DecodeImpl(encoded, data, out consumed, out written, decodedLength, isFinalBlock);
+            => this.DecodeImpl(encoded, data, out consumed, out written, isFinalBlock);
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private OperationStatus DecodeImpl<T>(
@@ -84,7 +84,6 @@ namespace gfoidl.Base64.Internal
             Span<byte> data,
             out int consumed,
             out int written,
-            int decodedLength = -1,
             bool isFinalBlock = true)
             where T : unmanaged
         {
@@ -102,16 +101,7 @@ namespace gfoidl.Base64.Internal
             //if (decodedLength == -1)
             //  decodedLength = this.GetDecodedLength(srcLength);
 
-            try
-            {
-                return this.DecodeImpl(ref src, srcLength, data, decodedLength, out consumed, out written, isFinalBlock);
-            }
-            catch (FormatException)
-            {
-                consumed = 0;
-                written  = 0;
-                return OperationStatus.InvalidData;
-            }
+            return this.DecodeImpl(ref src, srcLength, data, out consumed, out written, isFinalBlock);
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -187,7 +177,7 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetDataLen(int urlEncodedLen, out int base64Len, bool isFinalBlock = true)
+        private static int GetDataLength(int urlEncodedLen, out int base64Len, bool isFinalBlock = true)
         {
             if (isFinalBlock)
             {
@@ -199,6 +189,9 @@ namespace gfoidl.Base64.Internal
                 }
 
                 int numPaddingChars = GetNumBase64PaddingCharsToAddForDecode(urlEncodedLen);
+                if (numPaddingChars == 3)
+                    ThrowHelper.ThrowMalformedInputException(urlEncodedLen);
+
                 base64Len           = urlEncodedLen + numPaddingChars;
 
                 if (base64Len < 0)    // overflow
@@ -216,6 +209,51 @@ namespace gfoidl.Base64.Internal
                 base64Len = urlEncodedLen;
                 return (urlEncodedLen >> 2) * 3;
             }
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool TryGetDataLength(int urlEncodedLen, out int base64Len, out int dataLength, bool isFinalBlock = true)
+        {
+            if (isFinalBlock)
+            {
+                // Shortcut for Guid and other 16 byte data
+                if (urlEncodedLen == 22)
+                {
+                    base64Len = 24;
+                    dataLength = 16;
+                }
+                else
+                {
+                    int numPaddingChars = (4 - urlEncodedLen) & 3;
+
+                    if (numPaddingChars == 3)
+                    {
+                        goto InvalidData;
+                    }
+
+                    base64Len = urlEncodedLen + numPaddingChars;
+                    if (base64Len < 0)    // overflow
+                    {
+                        goto InvalidData;
+                    }
+
+                    Debug.Assert(base64Len % 4 == 0, "Invariant: Array length must be a multiple of 4.");
+
+                    dataLength = ((base64Len >> 2) * 3) - numPaddingChars;
+                }
+            }
+            else
+            {
+                base64Len = urlEncodedLen;
+                dataLength = (urlEncodedLen >> 2) * 3;
+            }
+
+            return true;
+
+        InvalidData:
+                base64Len = 0;
+                dataLength = 0;
+                return false;
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
