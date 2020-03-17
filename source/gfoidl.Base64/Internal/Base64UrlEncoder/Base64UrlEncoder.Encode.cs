@@ -19,8 +19,8 @@ namespace gfoidl.Base64.Internal
             if (sourceLength == 16)
                 return 22;
 
-            int numPaddingChars  = GetNumBase64PaddingCharsAddedByEncode(sourceLength);
             int base64EncodedLen = GetBase64EncodedLength(sourceLength);
+            int numPaddingChars = GetNumBase64PaddingCharsAddedByEncode(sourceLength);
 
             return base64EncodedLen - numPaddingChars;
         }
@@ -231,8 +231,32 @@ namespace gfoidl.Base64.Internal
             // 0 -> 0
             // 1 -> 2
             // 2 -> 1
+            int mod3 = FastMod3(dataLength);
+            return mod3 == 0 ? 0 : (3 - mod3);
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int FastMod3(int value)
+        {
+            if (Environment.Is64BitProcess)
+            {
+                // We use modified Daniel Lemire's fastmod algorithm (https://github.com/dotnet/runtime/pull/406),
+                // which allows to avoid the long multiplication if the divisor is less than 2**31.
+                Debug.Assert(value <= int.MaxValue);
 
-            return dataLength % 3 == 0 ? 0 : 3 - dataLength % 3;
+                ulong lowbits = (ulong.MaxValue / 3 + 1) * (uint)value;
+
+                // 64bit * 64bit => 128bit isn't currently supported by Math https://github.com/dotnet/runtime/issues/31184
+                // otherwise we'd want this to be (uint)Math.BigMul(lowbits, divisor, out _)
+                uint highbits = (uint)((((lowbits >> 32) + 1) * 3) >> 32);
+
+                Debug.Assert(highbits == value % 3);
+                return (int)highbits;
+            }
+            else
+            {
+                return value % 3;
+            }
         }
         //---------------------------------------------------------------------
         // internal because tests use this map too
