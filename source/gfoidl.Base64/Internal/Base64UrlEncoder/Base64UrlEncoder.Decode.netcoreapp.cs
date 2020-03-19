@@ -40,7 +40,8 @@ namespace gfoidl.Base64.Internal
             if (destLength < decodedLength - 2)
             {
                 // For overflow see comment below
-                maxSrcLength = destLength / 3 * 4;
+                Debug.Assert(destIndex < int.MaxValue);
+                maxSrcLength = (int)((uint)destLength / 3 * 4);
             }
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);

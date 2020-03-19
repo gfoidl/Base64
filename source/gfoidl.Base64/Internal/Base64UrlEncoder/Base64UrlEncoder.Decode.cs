@@ -15,28 +15,57 @@ namespace gfoidl.Base64.Internal
     {
         public override int GetMaxDecodedLength(int encodedLength)
         {
-            try
+            if ((uint)encodedLength >= int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
+
+            if (TryGetDataLength(encodedLength, out int _, out int dataLength))
             {
-                return this.GetDecodedLength(encodedLength);
+                return dataLength;
             }
-            catch (FormatException)
-            {
-                // In the case of malformed input, i.e. wrong number of padding,
-                // just assume 2 padding chars and compute the data length.
-                // It's "max" anyway.
-                return (encodedLength + 2) / 4 * 3;
-            }
+
+            return GetMaxDecodedLengthForMalformedInput(encodedLength);
         }
         //---------------------------------------------------------------------
         public override int GetDecodedLength(ReadOnlySpan<byte> encoded) => this.GetDecodedLength(encoded.Length);
         public override int GetDecodedLength(ReadOnlySpan<char> encoded) => this.GetDecodedLength(encoded.Length);
         //---------------------------------------------------------------------
+        // internal for tests
         internal int GetDecodedLength(int encodedLength)
         {
             if ((uint)encodedLength >= int.MaxValue)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
 
-            return GetDataLength(encodedLength, out int _);
+            int decodedLength;
+
+            // Shortcut for Guid and other 16 byte data (arranged for the branch predictor / fallthrough)
+            if (encodedLength != 22)
+            {
+                if (!TryGetNumBase64PaddingCharsToAddForDecode(encodedLength, out int numPaddingChars))
+                {
+                    ThrowHelper.ThrowMalformedInputException(encodedLength);
+                }
+
+                int base64LenTmp = encodedLength + numPaddingChars;
+
+                if (base64LenTmp >= 0)
+                {
+                    Debug.Assert(base64LenTmp % 4 == 0, "Invariant: Array length must be a multiple of 4.");
+
+                    decodedLength = (base64LenTmp >> 2) * 3 - numPaddingChars;
+                }
+                else
+                {
+                    // overflow
+                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
+                    throw null;
+                }
+            }
+            else
+            {
+                decodedLength = 16;
+            }
+
+            return decodedLength;
         }
         //---------------------------------------------------------------------
         // PERF: can't be in base class due to inlining (generic virtual)
@@ -177,87 +206,52 @@ namespace gfoidl.Base64.Internal
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetDataLength(int urlEncodedLen, out int base64Len, bool isFinalBlock = true)
-        {
-            if (isFinalBlock)
-            {
-                // Shortcut for Guid and other 16 byte data
-                if (urlEncodedLen == 22)
-                {
-                    base64Len = 24;
-                    return 16;
-                }
-
-                int numPaddingChars = GetNumBase64PaddingCharsToAddForDecode(urlEncodedLen);
-                if (numPaddingChars == 3)
-                    ThrowHelper.ThrowMalformedInputException(urlEncodedLen);
-
-                base64Len           = urlEncodedLen + numPaddingChars;
-
-                if (base64Len < 0)    // overflow
-                {
-                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.encodedLength);
-                }
-
-                Debug.Assert(base64Len % 4 == 0, "Invariant: Array length must be a multiple of 4.");
-
-                int dataLength = (base64Len >> 2) * 3 - numPaddingChars;
-                return dataLength;
-            }
-            else
-            {
-                base64Len = urlEncodedLen;
-                return (urlEncodedLen >> 2) * 3;
-            }
-        }
-        //---------------------------------------------------------------------
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool TryGetDataLength(int urlEncodedLen, out int base64Len, out int dataLength, bool isFinalBlock = true)
         {
             if (isFinalBlock)
             {
-                // Shortcut for Guid and other 16 byte data
-                if (urlEncodedLen == 22)
+                // Shortcut for Guid and other 16 byte data (arranged for the branch predictor / fallthrough)
+                if (urlEncodedLen != 22)
                 {
-                    base64Len = 24;
-                    dataLength = 16;
-                }
-                else
-                {
-                    int numPaddingChars = (4 - urlEncodedLen) & 3;
-
-                    if (numPaddingChars == 3)
+                    if (!TryGetNumBase64PaddingCharsToAddForDecode(urlEncodedLen, out int numPaddingChars))
                     {
                         goto InvalidData;
                     }
 
-                    base64Len = urlEncodedLen + numPaddingChars;
-                    if (base64Len < 0)    // overflow
+                    int base64LenTmp = urlEncodedLen + numPaddingChars;
+
+                    if (base64LenTmp >= 0)
                     {
-                        goto InvalidData;
+                        Debug.Assert(base64LenTmp % 4 == 0, "Invariant: Array length must be a multiple of 4.");
+
+                        dataLength = (base64LenTmp >> 2) * 3 - numPaddingChars;
+                        base64Len  = base64LenTmp;
+                        return true;
                     }
 
-                    Debug.Assert(base64Len % 4 == 0, "Invariant: Array length must be a multiple of 4.");
-
-                    dataLength = ((base64Len >> 2) * 3) - numPaddingChars;
+                    // overflow
+                    goto InvalidData;
                 }
+
+                base64Len  = 24;
+                dataLength = 16;
+                return true;
             }
             else
             {
-                base64Len = urlEncodedLen;
+                base64Len  = urlEncodedLen;
                 dataLength = (urlEncodedLen >> 2) * 3;
+                return true;
             }
 
-            return true;
-
         InvalidData:
-                base64Len = 0;
-                dataLength = 0;
-                return false;
+            base64Len  = 0;
+            dataLength = 0;
+            return false;
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int GetNumBase64PaddingCharsToAddForDecode(int urlEncodedLen)
+        private static bool TryGetNumBase64PaddingCharsToAddForDecode(int urlEncodedLen, out int numPaddingChars)
         {
             // Calculation is:
             // switch (inputLength % 4)
@@ -266,12 +260,20 @@ namespace gfoidl.Base64.Internal
             // 3 -> 1
             // default -> format exception
 
-            int result = (4 - urlEncodedLen) & 3;
+            int paddingChars = (4 - urlEncodedLen) & 3;
+            numPaddingChars  = paddingChars;
 
-            if (result == 3)
-                ThrowHelper.ThrowMalformedInputException(urlEncodedLen);
+            return paddingChars != 3;
+        }
+        //---------------------------------------------------------------------
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static int GetMaxDecodedLengthForMalformedInput(int encodedLength)
+        {
+            // In the case of malformed input, i.e. wrong number of padding,
+            // just assume 2 padding chars and compute the data length.
+            // It's "max" anyway.
 
-            return result;
+            return ((encodedLength + 2) >> 2) * 3;
         }
         //---------------------------------------------------------------------
         // internal because tests use this map too

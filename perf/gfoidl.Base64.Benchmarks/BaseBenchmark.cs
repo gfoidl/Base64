@@ -13,7 +13,7 @@ namespace gfoidl.Base64.Benchmarks
         private readonly string    _guidEncoded;
         protected readonly IBase64 _encoder;
         //---------------------------------------------------------------------
-        protected BaseBenchmark(IBase64 encoder)
+        protected BaseBenchmark(IBase64? encoder)
         {
             _encoder = encoder ?? throw new ArgumentNullException(nameof(encoder));
 
@@ -43,5 +43,8 @@ namespace gfoidl.Base64.Benchmarks
         //---------------------------------------------------------------------
         [Benchmark]
         public int GetArraySizeRequiredToDecode() => _encoder.GetDecodedLength(_dataEncoded);
+        //---------------------------------------------------------------------
+        [Benchmark]
+        public int GetMaxDecodedLength() => _encoder.GetMaxDecodedLength(_dataEncoded.Length);
     }
 }

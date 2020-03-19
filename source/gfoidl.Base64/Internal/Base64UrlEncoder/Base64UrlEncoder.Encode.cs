@@ -20,7 +20,7 @@ namespace gfoidl.Base64.Internal
                 return 22;
 
             int base64EncodedLen = GetBase64EncodedLength(sourceLength);
-            int numPaddingChars = GetNumBase64PaddingCharsAddedByEncode(sourceLength);
+            int numPaddingChars  = GetNumBase64PaddingCharsAddedByEncode(sourceLength);
 
             return base64EncodedLen - numPaddingChars;
         }
