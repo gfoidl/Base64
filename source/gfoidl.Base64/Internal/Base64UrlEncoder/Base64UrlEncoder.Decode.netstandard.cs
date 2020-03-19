@@ -46,7 +46,7 @@ namespace gfoidl.Base64.Internal
             {
                 // This should never overflow since destLength here is less than int.MaxValue / 4 * 3 (i.e. 1610612733)
                 // Therefore, (destLength / 3) * 4 will always be less than 2147483641
-                maxSrcLength = (destLength / 3) * 4;
+                maxSrcLength = (int)((uint)destLength / 3 * 4);
             }
 
             // In order to elide the movsxd in the loop

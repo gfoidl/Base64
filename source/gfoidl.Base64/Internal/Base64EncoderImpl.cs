@@ -103,7 +103,7 @@ namespace gfoidl.Base64.Internal
             if ((uint)sourceLength > MaximumEncodeLength)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
 
-            int numWholeOrPartialInputBlocks = (sourceLength + 2) / 3;
+            int numWholeOrPartialInputBlocks = (int)(((uint)sourceLength + 2) / 3);
             return numWholeOrPartialInputBlocks * 4;
         }
         //---------------------------------------------------------------------

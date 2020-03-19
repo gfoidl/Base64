@@ -34,7 +34,7 @@ namespace gfoidl.Base64.Internal
             if (destLength < decodedLength - 2)
             {
                 // For overflow see comment below
-                maxSrcLength = destLength / 3 * 4;
+                maxSrcLength = (int)((uint)destLength / 3 * 4);
             }
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);
@@ -71,7 +71,7 @@ namespace gfoidl.Base64.Internal
                 // This should never overflow since destLength here is less than int.MaxValue / 4 * 3 (i.e. 1610612733)
                 // Therefore, (destLength / 3) * 4 will always be less than 2147483641
                 Debug.Assert(destLength < (int.MaxValue / 4 * 3));
-                maxSrcLength = destLength / 3 * 4;
+                maxSrcLength = (int)((uint)destLength / 3 * 4);
             }
 
             ref sbyte decodingMap = ref MemoryMarshal.GetReference(DecodingMap);
