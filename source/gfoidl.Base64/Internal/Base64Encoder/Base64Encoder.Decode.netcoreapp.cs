@@ -239,8 +239,8 @@ namespace gfoidl.Base64.Internal
             Vector256<sbyte> mask2F           = Vector256.Create((sbyte)0x2F);     // ASCII: /
             Vector256<sbyte> shuffleConstant0 = Vector256.Create(0x01400140).AsSByte();
             Vector256<short> shuffleConstant1 = Vector256.Create(0x00011000).AsInt16();
-            Vector256<sbyte> shuffleVec       = s_avxDecodeShuffleVec.ReadVector256();
-            Vector256<int>   permuteVec       = s_avxDecodePermuteVec.ReadVector256().AsInt32();
+            Vector256<sbyte> shuffleVec       = AvxDecodeShuffleVec.ReadVector256();
+            Vector256<int>   permuteVec       = AvxDecodePermuteVec.ReadVector256().AsInt32();
             Vector256<sbyte> zero             = Vector256<sbyte>.Zero;
 
             //while (remaining >= 45)

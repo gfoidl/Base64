@@ -120,7 +120,7 @@ namespace gfoidl.Base64.Internal
             ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 32));   // no +1 as the comparison is >
 
             // The JIT won't hoist these "constants", so help it
-            Vector256<sbyte>  shuffleVec          = s_avxEncodeShuffleVec.ReadVector256();
+            Vector256<sbyte>  shuffleVec          = AvxEncodeShuffleVec.ReadVector256();
             Vector256<sbyte>  shuffleConstant0    = Vector256.Create(0x0fc0fc00).AsSByte();
             Vector256<sbyte>  shuffleConstant2    = Vector256.Create(0x003f03f0).AsSByte();
             Vector256<ushort> shuffleConstant1    = Vector256.Create(0x04000040).AsUInt16();
@@ -134,7 +134,7 @@ namespace gfoidl.Base64.Internal
             Vector256<sbyte> str = src.ReadVector256();
 
             // shift by 4 bytes, as required by enc_reshuffle
-            str = Avx2.PermuteVar8x32(str.AsInt32(), s_avxEncodePermuteVec.ReadVector256().AsInt32()).AsSByte();
+            str = Avx2.PermuteVar8x32(str.AsInt32(), AvxEncodePermuteVec.ReadVector256().AsInt32()).AsSByte();
 
             // Next loads are at c-4, so shift it once
             src = ref Unsafe.Subtract(ref src, 4);

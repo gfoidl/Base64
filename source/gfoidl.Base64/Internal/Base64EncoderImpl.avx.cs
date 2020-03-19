@@ -6,7 +6,7 @@ namespace gfoidl.Base64.Internal
     {
         // Originally this is of type int, but ROSpan for static data can handly (s)byte only
         // due to endianess concerns.
-        protected static ReadOnlySpan<sbyte> s_avxEncodePermuteVec => new sbyte[32]
+        protected static ReadOnlySpan<sbyte> AvxEncodePermuteVec => new sbyte[32]
         {
             0, 0, 0, 0,
             0, 0, 0, 0,
@@ -18,7 +18,7 @@ namespace gfoidl.Base64.Internal
             6, 0, 0, 0
         };
 
-        protected static ReadOnlySpan<sbyte> s_avxEncodeShuffleVec => new sbyte[32]
+        protected static ReadOnlySpan<sbyte> AvxEncodeShuffleVec => new sbyte[32]
         {
             5,  4,  6,  5,
             8,  7,  9,  8,
@@ -30,7 +30,7 @@ namespace gfoidl.Base64.Internal
            10,  9, 11, 10
         };
 
-        protected static ReadOnlySpan<sbyte> s_avxDecodeShuffleVec => new sbyte[32]
+        protected static ReadOnlySpan<sbyte> AvxDecodeShuffleVec => new sbyte[32]
         {
              2,  1,  0,  6,
              5,  4, 10,  9,
@@ -44,7 +44,7 @@ namespace gfoidl.Base64.Internal
 
         // Originally this is of type int, but ROSpan for static data can handly (s)byte only
         // due to endianess concerns.
-        protected static ReadOnlySpan<sbyte> s_avxDecodePermuteVec => new sbyte[32]
+        protected static ReadOnlySpan<sbyte> AvxDecodePermuteVec => new sbyte[32]
         {
              0,  0,  0,  0,
              1,  0,  0,  0,
