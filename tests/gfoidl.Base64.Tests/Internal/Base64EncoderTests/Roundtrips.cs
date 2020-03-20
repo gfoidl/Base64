@@ -26,9 +26,9 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
                 Span<T> encoded        = new T[sut.GetEncodedLength(source.Length)];
                 OperationStatus status = sut.EncodeCore(source, encoded, out int consumed, out int written);
 
-                Assert.AreEqual(OperationStatus.Done, status);
-                Assert.AreEqual(source.Length       , consumed);
-                Assert.AreEqual(encoded.Length      , written);
+                Assert.AreEqual(OperationStatus.Done, status  , nameof(status)   + $" at i = {i}");
+                Assert.AreEqual(source.Length       , consumed, nameof(consumed) + $" at i = {i}");
+                Assert.AreEqual(encoded.Length      , written , nameof(written)  + $" at i = {i}");
 
                 string encodedText;
                 int decodedLength;

@@ -198,10 +198,13 @@ namespace gfoidl.Base64.Internal
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref dest;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));    //  +1 for <=
+            ref T simdSrcEnd   = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 45 + 1));    //  +1 for <=
 
             // The JIT won't hoist these "constants", so help it
-            Vector256<sbyte> allOnes          = Vector256.Create((sbyte)-1);                // -1 = 0xFF = true in simd
+            //Vector256<sbyte> allOnes = Vector256.Create((sbyte)-1);                // -1 = 0xFF = true in simd
+            Vector256<sbyte> zero    = Vector256<sbyte>.Zero;
+            Vector256<sbyte> allOnes = Avx2.CompareEqual(zero, zero);
+
             Vector256<sbyte> lutHi            = AvxDecodeLutHi.ReadVector256();
             Vector256<sbyte> lutLo            = AvxDecodeLutLo.ReadVector256();
             Vector256<sbyte> lutShift         = AvxDecodeLutShift.ReadVector256();
@@ -267,7 +270,7 @@ namespace gfoidl.Base64.Internal
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref dest;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));    //  +1 for <=
+            ref T simdSrcEnd   = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 24 + 1));    //  +1 for <=
 
             // Shift to workspace
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);

@@ -39,17 +39,21 @@ namespace gfoidl.Base64.Internal
 
             ref byte destBytes = ref MemoryMarshal.GetReference(data);
 
-            if (Ssse3.IsSupported && maxSrcLength >= 24)
+            if (Avx2.IsSupported)
             {
-                if (Avx2.IsSupported && maxSrcLength >= 45)
+                // AVX will eat as much as possible, then SSE will eat as much as possible.
+                // In order to reuse AVX vectors in SSE the SSE-path is "duplicated" in Avx2Encode.
+                if (maxSrcLength >= 24)
                 {
                     this.Avx2Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
                 }
-
-                if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 24))
+            }
+            else if (Ssse3.IsSupported)
+            {
+                if (maxSrcLength >= 24)
                 {
                     this.Ssse3Decode(ref src, ref destBytes, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
@@ -230,18 +234,22 @@ namespace gfoidl.Base64.Internal
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref dest;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 45 + 1));   //  +1 for <=
 
             // The JIT won't hoist these "constants", so help it
-            Vector256<sbyte> lutHi            = AvxDecodeLutHi.ReadVector256();
-            Vector256<sbyte> lutLo            = AvxDecodeLutLo.ReadVector256();
-            Vector256<sbyte> lutShift         = AvxDecodeLutShift.ReadVector256();
-            Vector256<sbyte> mask2F           = Vector256.Create((sbyte)0x2F);     // ASCII: /
-            Vector256<sbyte> shuffleConstant0 = Vector256.Create(0x01400140).AsSByte();
-            Vector256<short> shuffleConstant1 = Vector256.Create(0x00011000).AsInt16();
-            Vector256<sbyte> shuffleVec       = AvxDecodeShuffleVec.ReadVector256();
-            Vector256<int>   permuteVec       = AvxDecodePermuteVec.ReadVector256().AsInt32();
-            Vector256<sbyte> zero             = Vector256<sbyte>.Zero;
+            Vector256<sbyte> avxLutHi            = AvxDecodeLutHi.ReadVector256();
+            Vector256<sbyte> avxLutLo            = AvxDecodeLutLo.ReadVector256();
+            Vector256<sbyte> avxLutShift         = AvxDecodeLutShift.ReadVector256();
+            Vector256<sbyte> avxMask2F           = Vector256.Create((sbyte)0x2F);     // ASCII: /
+            Vector256<sbyte> avxShuffleConstant0 = Vector256.Create(0x01400140).AsSByte();
+            Vector256<short> avxShuffleConstant1 = Vector256.Create(0x00011000).AsInt16();
+            Vector256<sbyte> avxShuffleVec       = AvxDecodeShuffleVec.ReadVector256();
+            Vector256<int>   avxPermuteVec       = AvxDecodePermuteVec.ReadVector256().AsInt32();
+            Vector256<sbyte> avxZero             = Vector256<sbyte>.Zero;
+
+            if (sourceLength < 45)
+                goto Sse;
+
+            ref T simdSrcEnd = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 45 + 1));   //  +1 for <=
 
             //while (remaining >= 45)
             do
@@ -249,25 +257,25 @@ namespace gfoidl.Base64.Internal
                 src.AssertRead<Vector256<sbyte>, T>(ref srcStart, sourceLength);
                 Vector256<sbyte> str = src.ReadVector256();
 
-                Vector256<sbyte> hiNibbles = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask2F);
-                Vector256<sbyte> loNibbles = Avx2.And(str, mask2F);
-                Vector256<sbyte> hi        = Avx2.Shuffle(lutHi, hiNibbles);
-                Vector256<sbyte> lo        = Avx2.Shuffle(lutLo, loNibbles);
+                Vector256<sbyte> hiNibbles = Avx2.And(Avx2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), avxMask2F);
+                Vector256<sbyte> loNibbles = Avx2.And(str, avxMask2F);
+                Vector256<sbyte> hi        = Avx2.Shuffle(avxLutHi, hiNibbles);
+                Vector256<sbyte> lo        = Avx2.Shuffle(avxLutLo, loNibbles);
 
                 // https://github.com/dotnet/coreclr/issues/21247
-                if (Avx2.MoveMask(Avx2.CompareGreaterThan(Avx2.And(lo, hi), zero)) != 0)
+                if (Avx2.MoveMask(Avx2.CompareGreaterThan(Avx2.And(lo, hi), avxZero)) != 0)
                     break;
 #if DEBUG
                 Avx2DecodingIteration?.Invoke();
 #endif
-                Vector256<sbyte> eq2F  = Avx2.CompareEqual(str, mask2F);
-                Vector256<sbyte> shift = Avx2.Shuffle(lutShift, Avx2.Add(eq2F, hiNibbles));
+                Vector256<sbyte> eq2F  = Avx2.CompareEqual(str, avxMask2F);
+                Vector256<sbyte> shift = Avx2.Shuffle(avxLutShift, Avx2.Add(eq2F, hiNibbles));
                 str                    = Avx2.Add(str, shift);
 
-                Vector256<short> merge_ab_and_bc = Avx2.MultiplyAddAdjacent(str.AsByte(), shuffleConstant0);
-                Vector256<int> @out              = Avx2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
-                @out                             = Avx2.Shuffle(@out.AsSByte(), shuffleVec).AsInt32();
-                str                              = Avx2.PermuteVar8x32(@out, permuteVec).AsSByte();
+                Vector256<short> merge_ab_and_bc = Avx2.MultiplyAddAdjacent(str.AsByte(), avxShuffleConstant0);
+                Vector256<int> @out              = Avx2.MultiplyAddAdjacent(merge_ab_and_bc, avxShuffleConstant1);
+                @out                             = Avx2.Shuffle(@out.AsSByte(), avxShuffleVec).AsInt32();
+                str                              = Avx2.PermuteVar8x32(@out, avxPermuteVec).AsSByte();
 
                 dest.AssertWrite<Vector256<sbyte>, byte>(ref destStart, destLength);
                 dest.WriteVector256(str);
@@ -276,16 +284,66 @@ namespace gfoidl.Base64.Internal
                 dest = ref Unsafe.Add(ref dest, 24);
             }
             while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
+#if DEBUG
+            Avx2Decoded?.Invoke();
+#endif
+        Sse:
+            simdSrcEnd = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 24 + 1));   //  +1 for <
 
+            if (!Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
+                goto Exit;
+
+            // Reuse AVX vectors
+            Vector128<sbyte> lutHi            = avxLutHi.GetLower();
+            Vector128<sbyte> lutLo            = avxLutLo.GetLower();
+            Vector128<sbyte> lutShift         = avxLutShift.GetLower();
+            Vector128<sbyte> mask2F           = avxMask2F.GetLower();
+            Vector128<sbyte> shuffleConstant0 = avxShuffleConstant0.GetLower();
+            Vector128<short> shuffleConstant1 = avxShuffleConstant1.GetLower();
+            Vector128<sbyte> shuffleVec       = avxShuffleVec.GetLower();
+            Vector128<sbyte> zero             = Vector128<sbyte>.Zero;
+
+            //while (remaining >= 24)
+            do
+            {
+                src.AssertRead<Vector128<sbyte>, T>(ref srcStart, sourceLength);
+                Vector128<sbyte> str = src.ReadVector128();
+
+                Vector128<sbyte> hiNibbles = Sse2.And(Sse2.ShiftRightLogical(str.AsInt32(), 4).AsSByte(), mask2F);
+                Vector128<sbyte> loNibbles = Sse2.And(str, mask2F);
+                Vector128<sbyte> hi        = Ssse3.Shuffle(lutHi, hiNibbles);
+                Vector128<sbyte> lo        = Ssse3.Shuffle(lutLo, loNibbles);
+
+                if (Sse2.MoveMask(Sse2.CompareGreaterThan(Sse2.And(lo, hi), zero)) != 0)
+                    break;
+#if DEBUG
+                Ssse3DecodingIteration?.Invoke();
+#endif
+                Vector128<sbyte> eq2F  = Sse2.CompareEqual(str, mask2F);
+                Vector128<sbyte> shift = Ssse3.Shuffle(lutShift, Sse2.Add(eq2F, hiNibbles));
+                str                    = Sse2.Add(str, shift);
+
+                Vector128<short> merge_ab_and_bc = Ssse3.MultiplyAddAdjacent(str.AsByte(), shuffleConstant0);
+                Vector128<int> @out              = Sse2.MultiplyAddAdjacent(merge_ab_and_bc, shuffleConstant1);
+                str                              = Ssse3.Shuffle(@out.AsSByte(), shuffleVec);
+
+                dest.AssertWrite<Vector128<sbyte>, byte>(ref destStart, destLength);
+                dest.WriteVector128(str);
+
+                src  = ref Unsafe.Add(ref src , 16);
+                dest = ref Unsafe.Add(ref dest, 12);
+            }
+            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
+#if DEBUG
+            Ssse3Decoded?.Invoke();
+#endif
+        Exit:
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
             sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart , ref src) / (uint)Unsafe.SizeOf<T>();
             destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest);
 
             src  = ref srcStart;
             dest = ref destStart;
-#if DEBUG
-            Avx2Decoded?.Invoke();
-#endif
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -294,7 +352,7 @@ namespace gfoidl.Base64.Internal
         {
             ref T srcStart     = ref src;
             ref byte destStart = ref dest;
-            ref T simdSrcEnd   = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 24 + 1));   //  +1 for <=
+            ref T simdSrcEnd   = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 24 + 1));   //  +1 for <=
 
             // Shift to workspace
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);

@@ -30,21 +30,29 @@ namespace gfoidl.Base64.Internal
             int maxSrcLength;
 
             if (srcLength <= MaximumEncodeLength && destLength >= encodedLength)
-                maxSrcLength = srcLength;
-            else
-                maxSrcLength = (destLength >> 2) * 3;
-
-            if (Ssse3.IsSupported && maxSrcLength >= 16)
             {
-                if (Avx2.IsSupported && maxSrcLength >= 32)
+                maxSrcLength = srcLength;
+            }
+            else
+            {
+                maxSrcLength = (destLength >> 2) * 3;
+            }
+
+            if (Avx2.IsSupported)
+            {
+                // AVX will eat as much as possible, then SSE will eat as much as possible.
+                // In order to reuse AVX vectors in SSE the SSE-path is "duplicated" in Avx2Encode.
+                if (maxSrcLength >= 16)
                 {
                     this.Avx2Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
                     if (sourceIndex == srcLength)
                         goto DoneExit;
                 }
-
-                if (Ssse3.IsSupported && (maxSrcLength >= (int)sourceIndex + 16))
+            }
+            else if (Ssse3.IsSupported)
+            {
+                if (maxSrcLength >= 16)
                 {
                     this.Ssse3Encode(ref srcBytes, ref dest, maxSrcLength, destLength, ref sourceIndex, ref destIndex);
 
@@ -116,29 +124,33 @@ namespace gfoidl.Base64.Internal
         private void Avx2Encode<T>(ref byte src, ref T dest, int sourceLength, int destLength, ref uint sourceIndex, ref uint destIndex)
             where T : unmanaged
         {
-            ref byte srcStart   = ref src;
-            ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 32));   // no +1 as the comparison is >
+            ref byte srcStart = ref src;
+            ref T destStart   = ref dest;
 
             // The JIT won't hoist these "constants", so help it
-            Vector256<sbyte>  shuffleVec          = AvxEncodeShuffleVec.ReadVector256();
-            Vector256<sbyte>  shuffleConstant0    = Vector256.Create(0x0fc0fc00).AsSByte();
-            Vector256<sbyte>  shuffleConstant2    = Vector256.Create(0x003f03f0).AsSByte();
-            Vector256<ushort> shuffleConstant1    = Vector256.Create(0x04000040).AsUInt16();
-            Vector256<short>  shuffleConstant3    = Vector256.Create(0x01000010).AsInt16();
-            Vector256<byte>   translationContant0 = Vector256.Create((byte)51);
-            Vector256<sbyte>  translationContant1 = Vector256.Create((sbyte)25);
-            Vector256<sbyte>  lut                 = AvxEncodeLut.ReadVector256();
+            Vector256<sbyte>  avxShuffleVec          = AvxEncodeShuffleVec.ReadVector256();
+            Vector256<sbyte>  avxShuffleConstant0    = Vector256.Create(0x0fc0fc00).AsSByte();
+            Vector256<sbyte>  avxShuffleConstant2    = Vector256.Create(0x003f03f0).AsSByte();
+            Vector256<ushort> avxShuffleConstant1    = Vector256.Create(0x04000040).AsUInt16();
+            Vector256<short>  avxShuffleConstant3    = Vector256.Create(0x01000010).AsInt16();
+            Vector256<byte>   avxTranslationContant0 = Vector256.Create((byte)51);
+            Vector256<sbyte>  avxTranslationContant1 = Vector256.Create((sbyte)25);
+            Vector256<sbyte>  avxLut                 = AvxEncodeLut.ReadVector256();
+
+            if (sourceLength < 32)
+                goto Sse;
 
             // first load is done at c-0 not to get a segfault
             src.AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
-            Vector256<sbyte> str = src.ReadVector256();
+            Vector256<sbyte> avxStr = src.ReadVector256();
 
             // shift by 4 bytes, as required by enc_reshuffle
-            str = Avx2.PermuteVar8x32(str.AsInt32(), AvxEncodePermuteVec.ReadVector256().AsInt32()).AsSByte();
+            avxStr = Avx2.PermuteVar8x32(avxStr.AsInt32(), AvxEncodePermuteVec.ReadVector256().AsInt32()).AsSByte();
 
             // Next loads are at c-4, so shift it once
             src = ref Unsafe.Subtract(ref src, 4);
+
+            ref byte simdSrcEnd = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 32));   // no +1 as the comparison is >
 
             while (true)
             {
@@ -146,21 +158,21 @@ namespace gfoidl.Base64.Internal
                 Avx2EncodingIteration?.Invoke();
 #endif
                 // Reshuffle
-                str                  = Avx2.Shuffle(str, shuffleVec);
-                Vector256<sbyte>  t0 = Avx2.And(str, shuffleConstant0);
-                Vector256<sbyte>  t2 = Avx2.And(str, shuffleConstant2);
-                Vector256<ushort> t1 = Avx2.MultiplyHigh(t0.AsUInt16(), shuffleConstant1);
-                Vector256<short>  t3 = Avx2.MultiplyLow(t2.AsInt16(), shuffleConstant3);
-                str                  = Avx2.Or(t1.AsSByte(), t3.AsSByte());
+                avxStr               = Avx2.Shuffle(avxStr, avxShuffleVec);
+                Vector256<sbyte>  t0 = Avx2.And(avxStr, avxShuffleConstant0);
+                Vector256<sbyte>  t2 = Avx2.And(avxStr, avxShuffleConstant2);
+                Vector256<ushort> t1 = Avx2.MultiplyHigh(t0.AsUInt16(), avxShuffleConstant1);
+                Vector256<short>  t3 = Avx2.MultiplyLow(t2.AsInt16(), avxShuffleConstant3);
+                avxStr               = Avx2.Or(t1.AsSByte(), t3.AsSByte());
 
                 // Translation
-                Vector256<byte>  indices = Avx2.SubtractSaturate(str.AsByte(), translationContant0);
-                Vector256<sbyte> mask    = Avx2.CompareGreaterThan(str, translationContant1);
+                Vector256<byte>  indices = Avx2.SubtractSaturate(avxStr.AsByte(), avxTranslationContant0);
+                Vector256<sbyte> mask    = Avx2.CompareGreaterThan(avxStr, avxTranslationContant1);
                 Vector256<sbyte> tmp     = Avx2.Subtract(indices.AsSByte(), mask);
-                str                      = Avx2.Add(str, Avx2.Shuffle(lut, tmp));
+                avxStr                   = Avx2.Add(avxStr, Avx2.Shuffle(avxLut, tmp));
 
                 dest.AssertWrite<Vector256<sbyte>, T>(ref destStart, destLength);
-                dest.WriteVector256(str);
+                dest.WriteVector256(avxStr);
 
                 src  = ref Unsafe.Add(ref src , 24);
                 dest = ref Unsafe.Add(ref dest, 32);
@@ -170,18 +182,69 @@ namespace gfoidl.Base64.Internal
 
                 // Load at c-4, as required by enc_reshuffle
                 src.AssertRead<Vector256<sbyte>, byte>(ref srcStart, sourceLength);
-                str = src.ReadVector256();
+                avxStr = src.ReadVector256();
             }
+#if DEBUG
+            Avx2Encoded?.Invoke();
+#endif
+            src = ref Unsafe.Add(ref src, 4);
 
+        Sse:
+            simdSrcEnd = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 16 + 1));   //  +1 for <
+
+            if (!Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd))
+                goto Exit;
+
+            // Reuse AVX vectors
+            Vector128<sbyte>  shuffleVec          = avxShuffleVec.GetUpper();
+            Vector128<sbyte>  shuffleConstant0    = avxShuffleConstant0.GetLower();
+            Vector128<sbyte>  shuffleConstant2    = avxShuffleConstant2.GetLower();
+            Vector128<ushort> shuffleConstant1    = avxShuffleConstant1.GetLower();
+            Vector128<short>  shuffleConstant3    = avxShuffleConstant3.GetLower();
+            Vector128<byte>   translationContant0 = avxTranslationContant0.GetLower();
+            Vector128<sbyte>  translationContant1 = avxTranslationContant1.GetLower();
+            Vector128<sbyte>  lut                 = avxLut.GetLower();
+
+            //while (remaining >= 16)
+            do
+            {
+#if DEBUG
+                Ssse3EncodingIteration?.Invoke();
+#endif
+                src.AssertRead<Vector128<sbyte>, byte>(ref srcStart, sourceLength);
+                Vector128<sbyte> str = src.ReadVector128();
+
+                // Reshuffle
+                str                  = Ssse3.Shuffle(str, shuffleVec);
+                Vector128<sbyte>  t0 = Sse2.And(str, shuffleConstant0);
+                Vector128<sbyte>  t2 = Sse2.And(str, shuffleConstant2);
+                Vector128<ushort> t1 = Sse2.MultiplyHigh(t0.AsUInt16(), shuffleConstant1);
+                Vector128<short>  t3 = Sse2.MultiplyLow(t2.AsInt16(), shuffleConstant3);
+                str                  = Sse2.Or(t1.AsSByte(), t3.AsSByte());
+
+                // Translation
+                Vector128<byte>  indices = Sse2.SubtractSaturate(str.AsByte(), translationContant0);
+                Vector128<sbyte> mask    = Sse2.CompareGreaterThan(str, translationContant1);
+                Vector128<sbyte> tmp     = Sse2.Subtract(indices.AsSByte(), mask);
+                str                      = Sse2.Add(str, Ssse3.Shuffle(lut, tmp));
+
+                dest.AssertWrite<Vector128<sbyte>, T>(ref destStart, destLength);
+                dest.WriteVector128(str);
+
+                src  = ref Unsafe.Add(ref src,  12);
+                dest = ref Unsafe.Add(ref dest, 16);
+            }
+            while (Unsafe.IsAddressLessThan(ref src, ref simdSrcEnd));
+#if DEBUG
+            Ssse3Encoded?.Invoke();
+#endif
+        Exit:
             // Cast to ulong to avoid the overflow-check. Codegen for x86 is still good.
-            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart,  ref src) + 4;
+            sourceIndex = (uint)(ulong)Unsafe.ByteOffset(ref srcStart , ref src);
             destIndex   = (uint)(ulong)Unsafe.ByteOffset(ref destStart, ref dest) / (uint)Unsafe.SizeOf<T>();
 
             src  = ref srcStart;
             dest = ref destStart;
-#if DEBUG
-            Avx2Encoded?.Invoke();
-#endif
         }
         //---------------------------------------------------------------------
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -190,7 +253,7 @@ namespace gfoidl.Base64.Internal
         {
             ref byte srcStart   = ref src;
             ref T destStart     = ref dest;
-            ref byte simdSrcEnd = ref Unsafe.Add(ref src, (IntPtr)((uint)sourceLength - 16 + 1));   //  +1 for <=
+            ref byte simdSrcEnd = ref Unsafe.Add(ref srcStart, (IntPtr)((uint)sourceLength - 16 + 1));   //  +1 for <=
 
             // Shift to workspace
             src  = ref Unsafe.Add(ref src , (IntPtr)sourceIndex);
