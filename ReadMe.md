@@ -1,6 +1,6 @@
 | Azure Pipelines | Code Coverage | NuGet | MyGet |  
 | -- | -- | -- | -- |   
-| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5)| [![codecov](https://codecov.io/gh/gfoidl/Base64/branch/master/graph/badge.svg)](https://codecov.io/gh/gfoidl/Base64) | [![NuGet](https://img.shields.io/nuget/v/gfoidl.Base64.svg?style=flat-square)](https://www.nuget.org/packages/gfoidl.Base64/) | [![MyGet](https://img.shields.io/myget/gfoidl/v/gfoidl.Base64.svg?style=flat-square)](https://www.myget.org/feed/gfoidl/package/nuget/gfoidl.Base64) |  
+| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5)| [![codecov](https://codecov.io/gh/gfoidl/Base64/branch/master/graph/badge.svg)](https://codecov.io/gh/gfoidl/Base64) | [![NuGet](https://img.shields.io/nuget/v/gfoidl.Base64.svg?style=flat-square)](https://www.nuget.org/packages/gfoidl.Base64/) | [![MyGet](https://img.shields.io/myget/gfoidl/vpre/gfoidl.Base64?style=flat-square)](https://www.myget.org/feed/gfoidl/package/nuget/gfoidl.Base64) |  
 
 # gfoidl.Base64
 
