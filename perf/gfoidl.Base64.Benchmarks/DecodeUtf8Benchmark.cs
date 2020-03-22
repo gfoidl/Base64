@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes;
 namespace gfoidl.Base64.Benchmarks
 {
     [Config(typeof(HardwareIntrinsicsCustomConfig))]
+    [MemoryDiagnoser]
     public class DecodeUtf8Benchmark
     {
         private byte[]? _base64;

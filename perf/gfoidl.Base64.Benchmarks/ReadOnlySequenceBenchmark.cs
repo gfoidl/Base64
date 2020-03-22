@@ -16,6 +16,7 @@ namespace gfoidl.Base64.Benchmarks
     }
     //-------------------------------------------------------------------------
     //[Config(typeof(HardwareIntrinsicsCustomConfig))]
+    [MemoryDiagnoser]
     public abstract class ReadOnlySequenceBaseBenchmark
     {
         private const int ByteArraySize = 10_000_000;

@@ -3,7 +3,18 @@ using BenchmarkDotNet.Attributes;
 
 namespace gfoidl.Base64.Benchmarks
 {
+    public class Base64EncoderBenchmark : BaseBenchmark
+    {
+        public Base64EncoderBenchmark() : base(Base64.Default) { }
+    }
+    //-------------------------------------------------------------------------
+    public class Base64UrlEncoderBenchmark : BaseBenchmark
+    {
+        public Base64UrlEncoderBenchmark() : base(Base64.Url) { }
+    }
+    //-------------------------------------------------------------------------
     [Config(typeof(HardwareIntrinsicsCustomConfig))]
+    [MemoryDiagnoser]
     public abstract class BaseBenchmark
     {
         private const int ByteArraySize = 500;
