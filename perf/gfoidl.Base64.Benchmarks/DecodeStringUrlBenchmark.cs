@@ -36,7 +36,9 @@ namespace gfoidl.Base64.Benchmarks
 
             sb.Append(_base64Url);
             sb.Append('=', noPaddingChars);
-            string base64 = sb.ToString().Replace('-', '+').Replace('_', '/');
+            sb.Replace('-', '+');
+            sb.Replace('_', '/');
+            string base64 = sb.ToString();
 
             return Convert.FromBase64String(base64);
         }
