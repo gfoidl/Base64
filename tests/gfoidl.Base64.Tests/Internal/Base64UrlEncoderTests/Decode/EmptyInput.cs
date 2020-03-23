@@ -34,7 +34,11 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests.Decode
 
             byte[] actual = sut.Decode(encoded.AsSpan());               // AsSpan() for net48
 
+#if NETCOREAPP3_0
             Assert.AreEqual(Array.Empty<byte>(), actual);
+#else
+            Assert.AreEqual(0, actual.Length);
+#endif
         }
     }
 }

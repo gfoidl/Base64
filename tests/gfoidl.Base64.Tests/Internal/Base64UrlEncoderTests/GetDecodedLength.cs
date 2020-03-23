@@ -25,7 +25,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64UrlEncoderTests
         public void EncodedSpan_is_empty___0()
         {
             var sut       = new Base64UrlEncoder();
-            var emptySpan = Array.Empty<T>().AsSpan();
+            var emptySpan = ReadOnlySpan<T>.Empty;
 
             int actual;
 

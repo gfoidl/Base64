@@ -27,7 +27,7 @@ namespace gfoidl.Base64.Tests.Internal.Base64EncoderTests
         public void EncodedSpan_is_empty___0()
         {
             var sut       = new Base64Encoder();
-            var emptySpan = Array.Empty<T>().AsSpan();
+            var emptySpan = ReadOnlySpan<T>.Empty;
 
             int actual = sut.GetDecodedLengthImpl<T>(emptySpan);
 

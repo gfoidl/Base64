@@ -22,6 +22,7 @@
     <PropertyGroup>
         <LangVersion>latest</LangVersion>
         <StandardTfms>netcoreapp3.0;netstandard2.1;netstandard2.0</StandardTfms>
+        <StandardTfms Condition="'$(OS)' == 'Windows_NT'">$(StandardTfms);net45</StandardTfms>
     </PropertyGroup>
 
     <PropertyGroup>

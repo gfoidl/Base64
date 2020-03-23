@@ -33,7 +33,7 @@ For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
         <PackageReference Include="LocalsInit.Fody" Version="1.1.0" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'net45'">
         <PackageReference Include="System.Buffers" Version="4.5.0" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
         <PackageReference Include="System.Memory" Version="4.5.3" />
@@ -73,7 +73,7 @@ For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
         <Compile Include="Extensions\ReadOnlySequenceExtensions*.cs" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'net45'">
         <Compile Include="**\*.netstandard.cs" />
     </ItemGroup>
 

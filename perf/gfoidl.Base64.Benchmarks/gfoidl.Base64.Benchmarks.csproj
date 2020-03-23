@@ -2,13 +2,25 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp3.0</TargetFrameworks>
+        <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">netcoreapp3.0;net461</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net461'">
+        <!-- Ignore possible null-reference, as the analysis won't kick in properly -->
+        <NoWarn>$(NoWarn);CS8602</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Include="..\..\source\SimdInfo.cs" Link="SimdInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+        <Compile Remove="StringBenchmarks\Base64EncodeToString.cs" />
+        <Compile Remove="Vector*HelperBenchmarks\*.cs" />
+        <Compile Remove="ReadOnlySequenceBenchmark.cs" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,14 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Resources;
 
-#if NETSTANDARD2_0
-namespace System.Diagnostics.CodeAnalysis
-{
-    [AttributeUsage(AttributeTargets.Method, Inherited = false)]
-    internal sealed class DoesNotReturnAttribute : Attribute { }
-}
-#endif
-
 namespace gfoidl.Base64
 {
     internal static class ThrowHelper

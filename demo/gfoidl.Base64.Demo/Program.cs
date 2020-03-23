@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace gfoidl.Base64.Demo
 {
-    class Program
+    public static class Program
     {
         static async Task Main()
         {

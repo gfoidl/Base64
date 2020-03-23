@@ -1,4 +1,11 @@
 #!/bin/bash
+#
+## Helper for running Benchmarks. Per default Benchmarks are run on .NET Core 3.0.
+#  If Benchmarks should be run for .NET 4.6.1 the Environment Variables
+#  BENCH_FX must be set (see below).
+#
+# Environment Variables:
+#   BENCH_FX            netcoreapp3.0 (default) or net461
 #------------------------------------------------------------------------------
 set -e
 #------------------------------------------------------------------------------
@@ -16,21 +23,34 @@ if [[ "$1" == "--install-sdk" ]]; then
     echo ""
 fi
 
-echo 'installed sdks:'
-dotnet --list-sdks
+tfm=${BENCH_FX:-netcoreapp3.0}
+
+echo ""
+echo "Running benchmarks with tfm: $tfm"
 echo "-------------------------------------------------"
 
+if [[ "$tfm" == "netcoreapp3.0" ]]; then
+    echo "installed sdks:"
+    dotnet --list-sdks
+    echo "-------------------------------------------------"
+fi
+
 cd perf/gfoidl.Base64.Benchmarks
-dotnet build -c Release
-cd bin/Release/netcoreapp3.0
-dotnet gfoidl.Base64.Benchmarks.dll --list tree
-dotnet gfoidl.Base64.Benchmarks.dll -f *Base64EncoderBenchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *Base64UrlEncoderBenchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeStringBenchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeStringUrlBenchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *DecodeUtf8Benchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *EncodeStringBenchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *EncodeStringUrlBenchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *EncodeUtf8Benchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *ReadOnlySequenceBase64Benchmark*
-dotnet gfoidl.Base64.Benchmarks.dll -f *ReadOnlySequenceBase64UrlBenchmark*
+dotnet build -c Release -f "$tfm"
+
+cd bin/Release/$tfm
+./gfoidl.Base64.Benchmarks --list tree
+
+./gfoidl.Base64.Benchmarks -f *Base64EncoderBenchmark*
+./gfoidl.Base64.Benchmarks -f *Base64UrlEncoderBenchmark*
+./gfoidl.Base64.Benchmarks -f *DecodeStringBenchmark*
+./gfoidl.Base64.Benchmarks -f *DecodeStringUrlBenchmark*
+./gfoidl.Base64.Benchmarks -f *DecodeUtf8Benchmark*
+./gfoidl.Base64.Benchmarks -f *EncodeStringBenchmark*
+./gfoidl.Base64.Benchmarks -f *EncodeStringUrlBenchmark*
+./gfoidl.Base64.Benchmarks -f *EncodeUtf8Benchmark*
+
+if [[ "$tfm" == "netcoreapp3.0" ]]; then
+    ./gfoidl.Base64.Benchmarks -f *ReadOnlySequenceBase64Benchmark*
+    ./gfoidl.Base64.Benchmarks -f *ReadOnlySequenceBase64UrlBenchmark*
+fi

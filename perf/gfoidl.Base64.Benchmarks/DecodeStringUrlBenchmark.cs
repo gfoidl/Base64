@@ -5,7 +5,9 @@ using BenchmarkDotNet.Attributes;
 
 namespace gfoidl.Base64.Benchmarks
 {
+#if NETCOREAPP
     [Config(typeof(HardwareIntrinsicsCustomConfig))]
+#endif
     [MemoryDiagnoser]
     public class DecodeStringUrlBenchmark
     {

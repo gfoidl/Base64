@@ -13,7 +13,9 @@ namespace gfoidl.Base64.Benchmarks
         public Base64UrlEncoderBenchmark() : base(Base64.Url) { }
     }
     //-------------------------------------------------------------------------
+#if NETCOREAPP
     [Config(typeof(HardwareIntrinsicsCustomConfig))]
+#endif
     [MemoryDiagnoser]
     public abstract class BaseBenchmark
     {
@@ -38,22 +40,22 @@ namespace gfoidl.Base64.Benchmarks
         }
         //---------------------------------------------------------------------
         [Benchmark]
-        public string Encode_Data() => _encoder.Encode(_data);
+        public string Encode_Data() => _encoder.Encode(_data.AsSpan());                                 // AsSpan for .NET Full
         //---------------------------------------------------------------------
         [Benchmark]
-        public string Encode_Guid() => _encoder.Encode(_guid);
+        public string Encode_Guid() => _encoder.Encode(_guid.AsSpan());                                 // AsSpan for .NET Full
         //---------------------------------------------------------------------
         [Benchmark]
-        public byte[] Decode_Data() => _encoder.Decode(_dataEncoded);
+        public byte[] Decode_Data() => _encoder.Decode(_dataEncoded.AsSpan());                          // AsSpan for .NET Full
         //---------------------------------------------------------------------
         [Benchmark]
-        public byte[] Decode_Guid() => _encoder.Decode(_guidEncoded);
+        public byte[] Decode_Guid() => _encoder.Decode(_guidEncoded.AsSpan());                          // AsSpan for .NET Full
         //---------------------------------------------------------------------
         [Benchmark]
         public int GetArraySizeRequiredToEncode() => _encoder.GetEncodedLength(ByteArraySize);
         //---------------------------------------------------------------------
         [Benchmark]
-        public int GetArraySizeRequiredToDecode() => _encoder.GetDecodedLength(_dataEncoded);
+        public int GetArraySizeRequiredToDecode() => _encoder.GetDecodedLength(_dataEncoded.AsSpan());  // AsSpan for .NET Full
         //---------------------------------------------------------------------
         [Benchmark]
         public int GetMaxDecodedLength() => _encoder.GetMaxDecodedLength(_dataEncoded.Length);

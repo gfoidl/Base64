@@ -15,7 +15,7 @@ In .NET Core 3.0 onwards encoding / decoding is done with SIMD-support:
 | Framework | scalar | SSSE3 | AVX2 |
 | -- | -- | -- | -- |
 | .NET Core 3.0 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| .NET Standard 2.0 | :heavy_check_mark: | :x: | :x: |
+| .NET Standard 2.0 / .NET 4.5 | :heavy_check_mark: | :x: | :x: |
 
 If available AVX will "eat" up as much as possible, then SSE will "eat" up as much as possible,
 finally scalar code processes the rest (including padding).

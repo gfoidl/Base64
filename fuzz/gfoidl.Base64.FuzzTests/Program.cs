@@ -11,7 +11,7 @@ using SharpFuzz;
 
 namespace gfoidl.Base64.FuzzTests
 {
-    class Program
+    public static class Program
     {
         static void Main(string[] args)
         {
