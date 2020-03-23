@@ -1,6 +1,6 @@
-| Azure Pipelines | Code Coverage | NuGet | MyGet |  
-| -- | -- | -- | -- |   
-| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5)| [![codecov](https://codecov.io/gh/gfoidl/Base64/branch/master/graph/badge.svg)](https://codecov.io/gh/gfoidl/Base64) | [![NuGet](https://img.shields.io/nuget/v/gfoidl.Base64.svg?style=flat-square)](https://www.nuget.org/packages/gfoidl.Base64/) | [![MyGet](https://img.shields.io/myget/gfoidl/vpre/gfoidl.Base64?style=flat-square)](https://www.myget.org/feed/gfoidl/package/nuget/gfoidl.Base64) |  
+| Azure Pipelines | Code Coverage | NuGet | MyGet |
+| -- | -- | -- | -- |
+| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5)| [![codecov](https://codecov.io/gh/gfoidl/Base64/branch/master/graph/badge.svg)](https://codecov.io/gh/gfoidl/Base64) | [![NuGet](https://img.shields.io/nuget/v/gfoidl.Base64.svg?style=flat-square)](https://www.nuget.org/packages/gfoidl.Base64/) | [![MyGet](https://img.shields.io/myget/gfoidl/vpre/gfoidl.Base64?style=flat-square)](https://www.myget.org/feed/gfoidl/package/nuget/gfoidl.Base64) |
 
 # gfoidl.Base64
 
@@ -31,7 +31,7 @@ See [demo](./demo/gfoidl.Base64.Demo/Program.cs) for further examples.
 ```c#
 byte[] guid = Guid.NewGuid().ToByteArray();
 
-string guidBase64 = Base64.Default.Encode(guid);
+string guidBase64     = Base64.Default.Encode(guid);
 string guidBases64Url = Base64.Url.Encode(guid);
 ```
 
@@ -135,7 +135,7 @@ base64Url isn't supported, so hacky solutions like
 string base64 = Convert.ToBase64String(data);
 string base64Url = base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
 ```
-are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string (see [here](perf/gfoidl.Base64.Benchmarks/results/EncodeStringUrlBenchmark-report.md) and [here](perf/gfoidl.Base64.Benchmarks/results/DecodeStringUrlBenchmark-report.md) for benchmark results).
+are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string (see [here](perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeStringUrlBenchmark-report.md) and [here](perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeStringUrlBenchmark-report.md) for benchmark results).
 
 _gfoidl.Base64_ supports encoding / decoding to / from base64Url in a direct way.
 Encoding `byte[] -> byte[]` for UTF-8 is supported, as well as `byte[] -> char[]`.
@@ -173,12 +173,12 @@ For all benchmarks see [results](/perf/gfoidl.Base64.Benchmarks/results).
 
 Performance gain depends, among a lot of other things, on the workload size, so here no table will with superior results will be shown.
 
-[Direct encoding to a string](perf/gfoidl.Base64.Benchmarks/results/EncodeStringBenchmark-report.md) is for small inputs slower than `Convert.ToBase64String` (has less overhead, and can write to string-buffer in a direct way).
-But the larger the workload, the better this libraray works. For data-length of 1000 speedup can be ~4x with AVX2 encoding.
+[Direct encoding to a string](perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeStringBenchmark-report.md) is for small inputs slower than `Convert.ToBase64String` (has less overhead, and can write to string-buffer in a direct way).
+But the larger the workload, the better this library works. For data-length of 1000 speedup can be ~5x with AVX2 encoding.
 
-[Direct decoding from a string](perf/gfoidl.Base64.Benchmarks/results/DecodeStringBenchmark-report.md) is generally (a lot) faster than `Convert.ConvertFromBase64CharArray`, also depending on workload size, but in the benchmark the speedup is from 1.5 to 10x.
+[Direct decoding from a string](perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeStringBenchmark-report.md) is generally (a lot) faster than `Convert.ConvertFromBase64CharArray`, also depending on workload size, but in the benchmark the speedup is from 1.5 to 12x.
 
-For UTF-8 [encoding](perf/gfoidl.Base64.Benchmarks/results/EncodeUtf8Benchmark-report.md) and [decoding](perf/gfoidl.Base64.Benchmarks/results/DecodeUtf8Benchmark-report.md)
+For UTF-8 [encoding](perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeUtf8Benchmark-report.md) and [decoding](perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeUtf8Benchmark-report.md)
 speedups for input-length 1000 can be in the height of 5 to 12x.
 
 **Note:** please measure / profile in your real usecase, as this are just micro-benchmarks.
