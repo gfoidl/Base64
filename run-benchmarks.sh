@@ -39,18 +39,29 @@ cd perf/gfoidl.Base64.Benchmarks
 dotnet build -c Release -f "$tfm"
 
 cd bin/Release/$tfm
-./gfoidl.Base64.Benchmarks --list tree
+exe=gfoidl.Base64.Benchmarks
+cmd=
 
-./gfoidl.Base64.Benchmarks -f *Base64EncoderBenchmark*
-./gfoidl.Base64.Benchmarks -f *Base64UrlEncoderBenchmark*
-./gfoidl.Base64.Benchmarks -f *DecodeStringBenchmark*
-./gfoidl.Base64.Benchmarks -f *DecodeStringUrlBenchmark*
-./gfoidl.Base64.Benchmarks -f *DecodeUtf8Benchmark*
-./gfoidl.Base64.Benchmarks -f *EncodeStringBenchmark*
-./gfoidl.Base64.Benchmarks -f *EncodeStringUrlBenchmark*
-./gfoidl.Base64.Benchmarks -f *EncodeUtf8Benchmark*
+if [[ -f "$exe" || -f "$exe".exe ]]; then
+    cmd="./$exe"
+    echo "using exe"
+else
+    cmd="dotnet ./$exe.dll"
+    echo "using dotnet command"
+fi
+
+$cmd --list tree
+
+$cmd -f *Base64EncoderBenchmark*
+$cmd -f *Base64UrlEncoderBenchmark*
+$cmd -f *DecodeStringBenchmark*
+$cmd -f *DecodeStringUrlBenchmark*
+$cmd -f *DecodeUtf8Benchmark*
+$cmd -f *EncodeStringBenchmark*
+$cmd -f *EncodeStringUrlBenchmark*
+$cmd -f *EncodeUtf8Benchmark*
 
 if [[ "$tfm" == "netcoreapp3.0" ]]; then
-    ./gfoidl.Base64.Benchmarks -f *ReadOnlySequenceBase64Benchmark*
-    ./gfoidl.Base64.Benchmarks -f *ReadOnlySequenceBase64UrlBenchmark*
+    $cmd -f *ReadOnlySequenceBase64Benchmark*
+    $cmd -f *ReadOnlySequenceBase64UrlBenchmark*
 fi
