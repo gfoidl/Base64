@@ -89,6 +89,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{6920
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "gfoidl.Base64.WebDemo", "demo\gfoidl.Base64.WebDemo\gfoidl.Base64.WebDemo.csproj", "{66E1E4B6-BD9B-40FF-85A9-070B0D497E59}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{8C82D040-527E-4C94-A76D-78C4FCB158C2}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\auto-merge.yml = .github\workflows\auto-merge.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -144,6 +149,7 @@ Global
 		{3F0FD9C1-1B52-4BC6-9BD8-8FD3B0162E88} = {CD033330-6EDE-4E8E-976C-5CB7C58217E8}
 		{692006B6-CD1B-4A91-97C5-0A98C25EAD23} = {89ADD037-F9FC-4ADE-99B8-D89307057409}
 		{66E1E4B6-BD9B-40FF-85A9-070B0D497E59} = {A52BCD9C-4216-42E5-AB37-FD5F6C46A9E7}
+		{8C82D040-527E-4C94-A76D-78C4FCB158C2} = {CD033330-6EDE-4E8E-976C-5CB7C58217E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A902DC31-2F3E-4397-93D1-5004F325B71C}
