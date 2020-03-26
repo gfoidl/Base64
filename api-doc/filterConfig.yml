@@ -1,0 +1,4 @@
+apiRules:
+    - exclude:
+          uidRegex: ^gfoidl\.Base64\.Internal$
+          type: Namespace
