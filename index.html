@@ -1,5 +1,259 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
 <html>
-<body>
-Hi.
-</body>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>gfoidl.Base64 | gfoidl.Base64 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="gfoidl.Base64 | gfoidl.Base64 ">
+    <meta name="generator" content="docfx 2.51.0.0">
+    
+    <link rel="shortcut icon" href="null">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <meta property="docfx:navrel" content="toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="images/logo_32.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="gfoidlbase64">gfoidl.Base64</h1>
+
+<p>A .NET library for base64 encoding / decoding, as well as base64Url support.
+Encoding can be done to buffers of type <code>byte</code> (for UTF-8) or <code>char</code>.
+Decoding can read from buffers of type <code>byte</code> (for UTF-8) or <code>char</code>.</p>
+<p>Encoding / decoding supports buffer-chains, for example for very large data or when the data arrives in chunks.</p>
+<p>In .NET Core 3.0 onwards encoding / decoding is done with SIMD-support:</p>
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>scalar</th>
+<th>SSSE3</th>
+<th>AVX2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.NET Core 3.0</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>.NET Standard 2.0 / .NET 4.5</td>
+<td>✔️</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<p>If available AVX will &quot;eat&quot; up as much as possible, then SSE will &quot;eat&quot; up as much as possible,
+finally scalar code processes the rest (including padding).</p>
+<h2 id="usage">Usage</h2>
+<p>Basically the entry to encoder / decoder is <code>Base64.Default</code> for <em>base64</em>, and <code>Base64.Url</code> for <em>base64Url</em>.</p>
+<p>See <a href="https://github.com/gfoidl/Base64/blob/master/demo/gfoidl.Base64.Demo/Program.cs">demo</a> for further examples.</p>
+<h3 id="encoding">Encoding</h3>
+<pre><code class="lang-c#">byte[] guid = Guid.NewGuid().ToByteArray();
+
+string guidBase64     = Base64.Default.Encode(guid);
+string guidBases64Url = Base64.Url.Encode(guid);
+</code></pre>
+<p>or <code>Span&lt;byte&gt;</code> based (for UTF-8 encoded output):</p>
+<pre><code class="lang-c#">int guidBase64EncodedLength = Base64.Default.GetEncodedLength(guid.Length);
+Span&lt;byte&gt; guidBase64UTF8   = stackalloc byte[guidBase64EncodedLength];
+OperationStatus status      = Base64.Default.Encode(guid, guidBase64UTF8, out int consumed, out int written);
+
+int guidBase64UrlEncodedLength = Base64.Url.GetEncodedLength(guid.Length);
+Span&lt;byte&gt; guidBase64UrlUTF8   = stackalloc byte[guidBase64UrlEncodedLength];
+status                         = Base64.Url.Encode(guid, guidBase64UrlUTF8, out consumed, out written);
+</code></pre>
+<h3 id="decoding">Decoding</h3>
+<pre><code class="lang-c#">Guid guid = Guid.NewGuid();
+
+string guidBase64    = Convert.ToBase64String(guid.ToByteArray());
+string guidBase64Url = guidBase64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
+
+byte[] guidBase64Decoded    = Base64.Default.Decode(guidBase64);
+byte[] guidBase64UrlDecoded = Base64.Url.Decode(guidBase64Url);
+</code></pre>
+<p>or <code>Span&lt;char&gt;</code> based:</p>
+<pre><code class="lang-c#">int guidBase64DecodedLen    = Base64.Default.GetDecodedLength(guidBase64);
+int guidBase64UrlDecodedLen = Base64.Url.GetDecodedLength(guidBase64Url);
+
+Span&lt;byte&gt; guidBase64DecodedBuffer    = stackalloc byte[guidBase64DecodedLen];
+Span&lt;byte&gt; guidBase64UrlDecodedBuffer = stackalloc byte[guidBase64UrlDecodedLen];
+
+OperationStatus status = Base64.Default.Decode(guidBase64, guidBase64DecodedBuffer, out int consumed, out int written);
+status                 = Base64.Url.Decode(guidBase64Url, guidBase64UrlDecodedBuffer, out consumed, out written);
+</code></pre>
+<h3 id="buffer-chains">Buffer chains</h3>
+<p>Buffer chains are handy when for encoding / decoding</p>
+<ul>
+<li>very large data</li>
+<li>data arrives is chunks, e.g. by reading from a (buffered) stream / pipeline</li>
+<li>the size of data is initially unknown</li>
+<li>...</li>
+</ul>
+<pre><code class="lang-c#">var rnd         = new Random();
+Span&lt;byte&gt; data = new byte[1000];
+rnd.NextBytes(data);
+
+// exact length could be computed by Base64.Default.GetEncodedLength, here for demo exzessive size
+Span&lt;char&gt; base64 = new char[5000];
+
+OperationStatus status = Base64.Default.Encode(data.Slice(0, 400), base64, out int consumed, out int written, isFinalBlock: false);
+status                 = Base64.Default.Encode(data.Slice(consumed), base64.Slice(written), out consumed, out int written1, isFinalBlock: true);
+
+base64 = base64.Slice(0, written + written1);
+
+Span&lt;byte&gt; decoded = new byte[5000];
+status             = Base64.Default.Decode(base64.Slice(0, 100), decoded, out consumed, out written, isFinalBlock: false);
+status             = Base64.Default.Decode(base64.Slice(consumed), decoded.Slice(written), out consumed, out written1, isFinalBlock: true);
+
+decoded = decoded.Slice(0, written + written1);
+</code></pre>
+<h3 id="readonlysequence--ibufferwriter">ReadOnlySequence / IBufferWriter</h3>
+<p>Encoding / decoding with <code>ReadOnlySequence&lt;byte&gt;</code> and <code>IBufferWriter&lt;byte&gt;</code> can be used together with <code>System.IO.Pipelines</code>.</p>
+<pre><code class="lang-c#">var pipeOptions = PipeOptions.Default;
+var pipe        = new Pipe(pipeOptions);
+
+var rnd  = new Random(42);
+var data = new byte[4097];
+rnd.NextBytes(data);
+
+pipe.Writer.Write(data);
+await pipe.Writer.CompleteAsync();
+
+ReadResult readResult = await pipe.Reader.ReadAsync();
+
+var resultPipe = new Pipe();
+Base64.Default.Encode(readResult.Buffer, resultPipe.Writer, out long consumed, out long written);
+await resultPipe.Writer.CompleteAsync();
+</code></pre>
+<h2 id="functional-comparison-to-classes-in-net">(Functional) Comparison to classes in .NET</h2>
+<h3 id="general">General</h3>
+<p>.NET provides the classes <a href="https://docs.microsoft.com/en-us/dotnet/api/system.convert">System.Convert</a> and <a href="https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64">System.Buffers.Text.Base64</a>
+for base64 operations.</p>
+<p>base64Url isn't supported, so hacky solutions like</p>
+<pre><code class="lang-c#">string base64 = Convert.ToBase64String(data);
+string base64Url = base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
+</code></pre>
+<p>are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string (see <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeStringUrlBenchmark-report.md">here</a> and <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeStringUrlBenchmark-report.md">here</a> for benchmark results).</p>
+<p><em>gfoidl.Base64</em> supports encoding / decoding to / from base64Url in a direct way.
+Encoding <code>byte[] -&gt; byte[]</code> for UTF-8 is supported, as well as <code>byte[] -&gt; char[]</code>.
+Decoding <code>byte[] -&gt; byte[]</code> for UTF-8 is supported, as well as <code>char[] -&gt; byte[]</code>.</p>
+<p>Further SIMD isn't utilized in the .NET classes.
+(Note: I've opened an <a href="https://github.com/dotnet/corefx/issues/32365">issue</a> to add SIMD-support to these classes).</p>
+<h3 id="converttobase64xyz--convertfrombase64xyz">Convert.ToBase64XYZ / Convert.FromBase64XYZ</h3>
+<p>These methods only support <code>byte[] -&gt; char[]</code> as types for encoding,
+and <code>char[] -&gt; byte[]</code> as types for decoding, where <code>char[]</code> can also be <code>string</code> or <code>(ReadOnly)Span&lt;char&gt;</code>.</p>
+<p>To support UTF-8 another method call like</p>
+<pre><code class="lang-c#">byte[] utf8Encoded = Encoding.ASCII.GetBytes(base64String);
+</code></pre>
+<p>is needed.</p>
+<p>An potential advantage of this class is that it allows the insertion of line-breaks (cf. <a href="https://docs.microsoft.com/en-us/dotnet/api/system.base64formattingoptions">Base64FormattingOptions.InsertLineBreaks</a>).</p>
+<h3 id="systembufferstextbase64">System.Buffers.Text.Base64</h3>
+<p>This class only supports <code>byte[] -&gt; byte[]</code> for encoding / decoding. So in order to get a <code>string</code>
+<code>Encoding</code> has to be used.</p>
+<p>An potential advantage of this class is the support for in-place encoding / decoding (cf.
+<a href="https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.encodetoutf8inplace">Base64.EncodeToUtf8InPlace</a>,
+<a href="https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.base64.decodefromutf8inplace">Base64.DecodeFromUtf8InPlace</a>
+)</p>
+<h2 id="benchmarks">Benchmarks</h2>
+<p>For all benchmarks see <a href="/perf/gfoidl.Base64.Benchmarks/results">results</a>.</p>
+<p>Performance gain depends, among a lot of other things, on the workload size, so here no table will with superior results will be shown.</p>
+<p><a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeStringBenchmark-report.md">Direct encoding to a string</a> is for small inputs slower than <code>Convert.ToBase64String</code> (has less overhead, and can write to string-buffer in a direct way).
+But the larger the workload, the better this library works. For data-length of 1000 speedup can be ~5x with AVX2 encoding.</p>
+<p><a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeStringBenchmark-report.md">Direct decoding from a string</a> is generally (a lot) faster than <code>Convert.ConvertFromBase64CharArray</code>, also depending on workload size, but in the benchmark the speedup is from 1.5 to 12x.</p>
+<p>For UTF-8 <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeUtf8Benchmark-report.md">encoding</a> and <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeUtf8Benchmark-report.md">decoding</a>
+speedups for input-length 1000 can be in the height of 5 to 12x.</p>
+<p><strong>Note:</strong> please measure / profile in your real usecase, as this are just micro-benchmarks.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>The scalar version of the base64 encoding / decoding is based on <a href="https://github.com/dotnet/corefx/tree/9c68db7fb016c6c9ae4d0f6152798d7ab1e38a37/src/System.Memory/src/System/Buffers/Text">System.Buffers.Text.Base64</a>.</p>
+<p>The scalar version of the base64Url encoding / decoding is based on <a href="https://github.com/aspnet/Extensions/pull/334">https://github.com/aspnet/Extensions/pull/334</a> and <a href="https://github.com/aspnet/Extensions/pull/338">https://github.com/aspnet/Extensions/pull/338</a>.</p>
+<p>Vectorized versions (SSE, AVX) for base64 encoding / decoding is based on <a href="https://github.com/aklomp/base64">https://github.com/aklomp/base64</a> (see also <em>Acknowledgements</em> in that repository).</p>
+<p>Vectorized versions (SSE, AVX) for base64Url encoding / decoding is based on <a href="https://github.com/aklomp/base64">https://github.com/aklomp/base64</a> (see <em>Acknowledgements</em> in that repository).
+For decoding (SSE, AVX) code is based on <a href="http://0x80.pl/notesen/2016-01-17-sse-base64-decoding.html#vector-lookup-pshufb">Vector lookup (pshufb)</a> by Wojciech Mula.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/gfoidl/Base64/blob/api-doc/api-doc/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © Foidl Günther 2018-2020
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
 </html>

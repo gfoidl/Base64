@@ -1,0 +1,264 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/Work-Git/gfoidl/Base64/api-doc",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.Base64.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.Base64.html",
+          "hash": "9gXWXe7q1fQiDkXnAI03DA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.EncodingType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.EncodingType.html",
+          "hash": "x9gvlcJO4Fnn7Lo5wzuF6w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.IBase64.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.IBase64.html",
+          "hash": "ntJCbmMN+EjVzPj+fbTHdQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.Internal.Base64Encoder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.Internal.Base64Encoder.html",
+          "hash": "6pdP53ySEizL4B9SrjtLDw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.Internal.Base64EncoderImpl.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.Internal.Base64EncoderImpl.html",
+          "hash": "ejuux9pgG5tSjZJ4Htkqqw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.Internal.Base64UrlEncoder.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.Internal.Base64UrlEncoder.html",
+          "hash": "D//5uXycoPAsYzHQv8s86g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.Internal.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.Internal.html",
+          "hash": "MeZXnimlcNaPgeaVUX0WGg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.ReadOnlySequenceExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.ReadOnlySequenceExtensions.html",
+          "hash": "MGHnJ2QWvW41RuBGb5+43w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/gfoidl.Base64.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/gfoidl.Base64.html",
+          "hash": "+6g23xYtJ6r/cs3+7KNyZw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "Q1r43L94kBB214jVV2drGw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "hT2Gk70iXjIyBgeBJ7Bykw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/benchmarks.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/benchmarks.html",
+          "hash": "IVMpdwUnkcJJQ5MdY9mFsQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "7rxB9w6CVh9UUujjOFo3MA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "qby+thGgSkDTypowIxhFmw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/logo_32.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/logo_32.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "YO3aOKzQzTfg50DaZyg0vQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "apjajBPSvEsX7WbbhQ6JzQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 4,
+          "skipped_file_count": 4
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 9,
+          "skipped_file_count": 9
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

@@ -1,0 +1,929 @@
+### YamlMime:XRefMap
+sorted: true
+references:
+- uid: gfoidl.Base64
+  name: gfoidl.Base64
+  href: api/gfoidl.Base64.html
+  commentId: N:gfoidl.Base64
+  fullName: gfoidl.Base64
+  nameWithType: gfoidl.Base64
+- uid: gfoidl.Base64.Base64
+  name: Base64
+  href: api/gfoidl.Base64.Base64.html
+  commentId: T:gfoidl.Base64.Base64
+  fullName: gfoidl.Base64.Base64
+  nameWithType: Base64
+- uid: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Decode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Decode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64.Decode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64.Decode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Char})
+  name: Decode(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Char})
+  name.vb: Decode(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan(Of System.Char))
+  nameWithType: Base64.Decode(ReadOnlySpan<Char>)
+  nameWithType.vb: Base64.Decode(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Decode(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Decode(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan<System.Char>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Base64.Decode(System.ReadOnlySpan(Of System.Char), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64.Decode(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64.Decode(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Base64.Decode*
+  name: Decode
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Decode_
+  commentId: Overload:gfoidl.Base64.Base64.Decode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.Decode
+  nameWithType: Base64.Decode
+- uid: gfoidl.Base64.Base64.Default
+  name: Default
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Default
+  commentId: P:gfoidl.Base64.Base64.Default
+  fullName: gfoidl.Base64.Base64.Default
+  nameWithType: Base64.Default
+- uid: gfoidl.Base64.Base64.Default*
+  name: Default
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Default_
+  commentId: Overload:gfoidl.Base64.Base64.Default
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.Default
+  nameWithType: Base64.Default
+- uid: gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan{System.Byte},System.Boolean)
+  name: DetectEncoding(ReadOnlySpan<Byte>, Boolean)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Byte__System_Boolean_
+  commentId: M:gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan{System.Byte},System.Boolean)
+  name.vb: DetectEncoding(ReadOnlySpan(Of Byte), Boolean)
+  fullName: gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan<System.Byte>, System.Boolean)
+  fullName.vb: gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan(Of System.Byte), System.Boolean)
+  nameWithType: Base64.DetectEncoding(ReadOnlySpan<Byte>, Boolean)
+  nameWithType.vb: Base64.DetectEncoding(ReadOnlySpan(Of Byte), Boolean)
+- uid: gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan{System.Char},System.Boolean)
+  name: DetectEncoding(ReadOnlySpan<Char>, Boolean)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Char__System_Boolean_
+  commentId: M:gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan{System.Char},System.Boolean)
+  name.vb: DetectEncoding(ReadOnlySpan(Of Char), Boolean)
+  fullName: gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan<System.Char>, System.Boolean)
+  fullName.vb: gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan(Of System.Char), System.Boolean)
+  nameWithType: Base64.DetectEncoding(ReadOnlySpan<Char>, Boolean)
+  nameWithType.vb: Base64.DetectEncoding(ReadOnlySpan(Of Char), Boolean)
+- uid: gfoidl.Base64.Base64.DetectEncoding*
+  name: DetectEncoding
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_DetectEncoding_
+  commentId: Overload:gfoidl.Base64.Base64.DetectEncoding
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.DetectEncoding
+  nameWithType: Base64.DetectEncoding
+- uid: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte})
+  name: Encode(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte})
+  name.vb: Encode(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: Base64.Encode(ReadOnlySpan<Byte>)
+  nameWithType.vb: Base64.Encode(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Encode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Encode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64.Encode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64.Encode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)
+  name: Encode(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Encode(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan<System.Byte>, System.Span<System.Char>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Base64.Encode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Char), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64.Encode(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64.Encode(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Base64.Encode*
+  name: Encode
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Encode_
+  commentId: Overload:gfoidl.Base64.Base64.Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.Encode
+  nameWithType: Base64.Encode
+- uid: gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name: GetDecodedLength(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetDecodedLength_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: Base64.GetDecodedLength(ReadOnlySpan<Byte>)
+  nameWithType.vb: Base64.GetDecodedLength(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name: GetDecodedLength(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetDecodedLength_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan(Of System.Char))
+  nameWithType: Base64.GetDecodedLength(ReadOnlySpan<Char>)
+  nameWithType.vb: Base64.GetDecodedLength(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.Base64.GetDecodedLength*
+  name: GetDecodedLength
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetDecodedLength_
+  commentId: Overload:gfoidl.Base64.Base64.GetDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.GetDecodedLength
+  nameWithType: Base64.GetDecodedLength
+- uid: gfoidl.Base64.Base64.GetEncodedLength(System.Int32)
+  name: GetEncodedLength(Int32)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetEncodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Base64.GetEncodedLength(System.Int32)
+  fullName: gfoidl.Base64.Base64.GetEncodedLength(System.Int32)
+  nameWithType: Base64.GetEncodedLength(Int32)
+- uid: gfoidl.Base64.Base64.GetEncodedLength*
+  name: GetEncodedLength
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetEncodedLength_
+  commentId: Overload:gfoidl.Base64.Base64.GetEncodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.GetEncodedLength
+  nameWithType: Base64.GetEncodedLength
+- uid: gfoidl.Base64.Base64.GetMaxDecodedLength(System.Int32)
+  name: GetMaxDecodedLength(Int32)
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetMaxDecodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Base64.GetMaxDecodedLength(System.Int32)
+  fullName: gfoidl.Base64.Base64.GetMaxDecodedLength(System.Int32)
+  nameWithType: Base64.GetMaxDecodedLength(Int32)
+- uid: gfoidl.Base64.Base64.GetMaxDecodedLength*
+  name: GetMaxDecodedLength
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_GetMaxDecodedLength_
+  commentId: Overload:gfoidl.Base64.Base64.GetMaxDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.GetMaxDecodedLength
+  nameWithType: Base64.GetMaxDecodedLength
+- uid: gfoidl.Base64.Base64.MaximumEncodeLength
+  name: MaximumEncodeLength
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_MaximumEncodeLength
+  commentId: F:gfoidl.Base64.Base64.MaximumEncodeLength
+  fullName: gfoidl.Base64.Base64.MaximumEncodeLength
+  nameWithType: Base64.MaximumEncodeLength
+- uid: gfoidl.Base64.Base64.Url
+  name: Url
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Url
+  commentId: P:gfoidl.Base64.Base64.Url
+  fullName: gfoidl.Base64.Base64.Url
+  nameWithType: Base64.Url
+- uid: gfoidl.Base64.Base64.Url*
+  name: Url
+  href: api/gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_Url_
+  commentId: Overload:gfoidl.Base64.Base64.Url
+  isSpec: "True"
+  fullName: gfoidl.Base64.Base64.Url
+  nameWithType: Base64.Url
+- uid: gfoidl.Base64.EncodingType
+  name: EncodingType
+  href: api/gfoidl.Base64.EncodingType.html
+  commentId: T:gfoidl.Base64.EncodingType
+  fullName: gfoidl.Base64.EncodingType
+  nameWithType: EncodingType
+- uid: gfoidl.Base64.EncodingType.Base64
+  name: Base64
+  href: api/gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Base64
+  commentId: F:gfoidl.Base64.EncodingType.Base64
+  fullName: gfoidl.Base64.EncodingType.Base64
+  nameWithType: EncodingType.Base64
+- uid: gfoidl.Base64.EncodingType.Base64Url
+  name: Base64Url
+  href: api/gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Base64Url
+  commentId: F:gfoidl.Base64.EncodingType.Base64Url
+  fullName: gfoidl.Base64.EncodingType.Base64Url
+  nameWithType: EncodingType.Base64Url
+- uid: gfoidl.Base64.EncodingType.Unknown
+  name: Unknown
+  href: api/gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Unknown
+  commentId: F:gfoidl.Base64.EncodingType.Unknown
+  fullName: gfoidl.Base64.EncodingType.Unknown
+  nameWithType: EncodingType.Unknown
+- uid: gfoidl.Base64.IBase64
+  name: IBase64
+  href: api/gfoidl.Base64.IBase64.html
+  commentId: T:gfoidl.Base64.IBase64
+  fullName: gfoidl.Base64.IBase64
+  nameWithType: IBase64
+- uid: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Decode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Decode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Decode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: IBase64.Decode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: IBase64.Decode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan{System.Char})
+  name: Decode(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Decode_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan{System.Char})
+  name.vb: Decode(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan(Of System.Char))
+  nameWithType: IBase64.Decode(ReadOnlySpan<Char>)
+  nameWithType.vb: IBase64.Decode(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Decode(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Decode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Decode(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan<System.Char>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.IBase64.Decode(System.ReadOnlySpan(Of System.Char), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: IBase64.Decode(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: IBase64.Decode(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.IBase64.Decode*
+  name: Decode
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Decode_
+  commentId: Overload:gfoidl.Base64.IBase64.Decode
+  isSpec: "True"
+  fullName: gfoidl.Base64.IBase64.Decode
+  nameWithType: IBase64.Decode
+- uid: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan{System.Byte})
+  name: Encode(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Encode_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan{System.Byte})
+  name.vb: Encode(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: IBase64.Encode(ReadOnlySpan<Byte>)
+  nameWithType.vb: IBase64.Encode(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Encode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Encode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: IBase64.Encode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: IBase64.Encode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)
+  name: Encode(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Encode(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan<System.Byte>, System.Span<System.Char>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.IBase64.Encode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Char), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: IBase64.Encode(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Boolean)
+  nameWithType.vb: IBase64.Encode(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.IBase64.Encode*
+  name: Encode
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_Encode_
+  commentId: Overload:gfoidl.Base64.IBase64.Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.IBase64.Encode
+  nameWithType: IBase64.Encode
+- uid: gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name: GetDecodedLength(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetDecodedLength_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: IBase64.GetDecodedLength(ReadOnlySpan<Byte>)
+  nameWithType.vb: IBase64.GetDecodedLength(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name: GetDecodedLength(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetDecodedLength_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.IBase64.GetDecodedLength(System.ReadOnlySpan(Of System.Char))
+  nameWithType: IBase64.GetDecodedLength(ReadOnlySpan<Char>)
+  nameWithType.vb: IBase64.GetDecodedLength(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.IBase64.GetDecodedLength*
+  name: GetDecodedLength
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetDecodedLength_
+  commentId: Overload:gfoidl.Base64.IBase64.GetDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.IBase64.GetDecodedLength
+  nameWithType: IBase64.GetDecodedLength
+- uid: gfoidl.Base64.IBase64.GetEncodedLength(System.Int32)
+  name: GetEncodedLength(Int32)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetEncodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.IBase64.GetEncodedLength(System.Int32)
+  fullName: gfoidl.Base64.IBase64.GetEncodedLength(System.Int32)
+  nameWithType: IBase64.GetEncodedLength(Int32)
+- uid: gfoidl.Base64.IBase64.GetEncodedLength*
+  name: GetEncodedLength
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetEncodedLength_
+  commentId: Overload:gfoidl.Base64.IBase64.GetEncodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.IBase64.GetEncodedLength
+  nameWithType: IBase64.GetEncodedLength
+- uid: gfoidl.Base64.IBase64.GetMaxDecodedLength(System.Int32)
+  name: GetMaxDecodedLength(Int32)
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetMaxDecodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.IBase64.GetMaxDecodedLength(System.Int32)
+  fullName: gfoidl.Base64.IBase64.GetMaxDecodedLength(System.Int32)
+  nameWithType: IBase64.GetMaxDecodedLength(Int32)
+- uid: gfoidl.Base64.IBase64.GetMaxDecodedLength*
+  name: GetMaxDecodedLength
+  href: api/gfoidl.Base64.IBase64.html#gfoidl_Base64_IBase64_GetMaxDecodedLength_
+  commentId: Overload:gfoidl.Base64.IBase64.GetMaxDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.IBase64.GetMaxDecodedLength
+  nameWithType: IBase64.GetMaxDecodedLength
+- uid: gfoidl.Base64.Internal
+  name: gfoidl.Base64.Internal
+  href: api/gfoidl.Base64.Internal.html
+  commentId: N:gfoidl.Base64.Internal
+  fullName: gfoidl.Base64.Internal
+  nameWithType: gfoidl.Base64.Internal
+- uid: gfoidl.Base64.Internal.Base64Encoder
+  name: Base64Encoder
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html
+  commentId: T:gfoidl.Base64.Internal.Base64Encoder
+  fullName: gfoidl.Base64.Internal.Base64Encoder
+  nameWithType: Base64Encoder
+- uid: gfoidl.Base64.Internal.Base64Encoder.Decode(System.ReadOnlySpan{System.Char})
+  name: Decode(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_Decode_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.Decode(System.ReadOnlySpan{System.Char})
+  name.vb: Decode(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.Internal.Base64Encoder.Decode(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.Decode(System.ReadOnlySpan(Of System.Char))
+  nameWithType: Base64Encoder.Decode(ReadOnlySpan<Char>)
+  nameWithType.vb: Base64Encoder.Decode(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.Internal.Base64Encoder.Decode*
+  name: Decode
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_Decode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.Decode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.Decode
+  nameWithType: Base64Encoder.Decode
+- uid: gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: DecodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_DecodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: DecodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64Encoder.DecodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64Encoder.DecodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: DecodeCore(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_DecodeCore_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: DecodeCore(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan<System.Char>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.DecodeCore(System.ReadOnlySpan(Of System.Char), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64Encoder.DecodeCore(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64Encoder.DecodeCore(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64Encoder.DecodeCore*
+  name: DecodeCore
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_DecodeCore_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.DecodeCore
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.DecodeCore
+  nameWithType: Base64Encoder.DecodeCore
+- uid: gfoidl.Base64.Internal.Base64Encoder.Encode(System.ReadOnlySpan{System.Byte})
+  name: Encode(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_Encode_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.Encode(System.ReadOnlySpan{System.Byte})
+  name.vb: Encode(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.Internal.Base64Encoder.Encode(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.Encode(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: Base64Encoder.Encode(ReadOnlySpan<Byte>)
+  nameWithType.vb: Base64Encoder.Encode(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.Internal.Base64Encoder.Encode*
+  name: Encode
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_Encode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.Encode
+  nameWithType: Base64Encoder.Encode
+- uid: gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: EncodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_EncodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: EncodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64Encoder.EncodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64Encoder.EncodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: EncodeCore(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_EncodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: EncodeCore(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Char>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.EncodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Char), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64Encoder.EncodeCore(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64Encoder.EncodeCore(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64Encoder.EncodeCore*
+  name: EncodeCore
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_EncodeCore_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.EncodeCore
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.EncodeCore
+  nameWithType: Base64Encoder.EncodeCore
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name: GetDecodedLength(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetDecodedLength_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: Base64Encoder.GetDecodedLength(ReadOnlySpan<Byte>)
+  nameWithType.vb: Base64Encoder.GetDecodedLength(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name: GetDecodedLength(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetDecodedLength_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength(System.ReadOnlySpan(Of System.Char))
+  nameWithType: Base64Encoder.GetDecodedLength(ReadOnlySpan<Char>)
+  nameWithType.vb: Base64Encoder.GetDecodedLength(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength*
+  name: GetDecodedLength
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetDecodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetDecodedLength
+  nameWithType: Base64Encoder.GetDecodedLength
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetEncodedLength(System.Int32)
+  name: GetEncodedLength(Int32)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetEncodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.GetEncodedLength(System.Int32)
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetEncodedLength(System.Int32)
+  nameWithType: Base64Encoder.GetEncodedLength(Int32)
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetEncodedLength*
+  name: GetEncodedLength
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetEncodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.GetEncodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetEncodedLength
+  nameWithType: Base64Encoder.GetEncodedLength
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetMaxDecodedLength(System.Int32)
+  name: GetMaxDecodedLength(Int32)
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetMaxDecodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Internal.Base64Encoder.GetMaxDecodedLength(System.Int32)
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetMaxDecodedLength(System.Int32)
+  nameWithType: Base64Encoder.GetMaxDecodedLength(Int32)
+- uid: gfoidl.Base64.Internal.Base64Encoder.GetMaxDecodedLength*
+  name: GetMaxDecodedLength
+  href: api/gfoidl.Base64.Internal.Base64Encoder.html#gfoidl_Base64_Internal_Base64Encoder_GetMaxDecodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64Encoder.GetMaxDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64Encoder.GetMaxDecodedLength
+  nameWithType: Base64Encoder.GetMaxDecodedLength
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl
+  name: Base64EncoderImpl
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html
+  commentId: T:gfoidl.Base64.Internal.Base64EncoderImpl
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl
+  nameWithType: Base64EncoderImpl
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodePermuteVec
+  name: AvxDecodePermuteVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxDecodePermuteVec
+  commentId: P:gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodePermuteVec
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodePermuteVec
+  nameWithType: Base64EncoderImpl.AvxDecodePermuteVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodePermuteVec*
+  name: AvxDecodePermuteVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxDecodePermuteVec_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodePermuteVec
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodePermuteVec
+  nameWithType: Base64EncoderImpl.AvxDecodePermuteVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodeShuffleVec
+  name: AvxDecodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxDecodeShuffleVec
+  commentId: P:gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodeShuffleVec
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodeShuffleVec
+  nameWithType: Base64EncoderImpl.AvxDecodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodeShuffleVec*
+  name: AvxDecodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxDecodeShuffleVec_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodeShuffleVec
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxDecodeShuffleVec
+  nameWithType: Base64EncoderImpl.AvxDecodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodePermuteVec
+  name: AvxEncodePermuteVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxEncodePermuteVec
+  commentId: P:gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodePermuteVec
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodePermuteVec
+  nameWithType: Base64EncoderImpl.AvxEncodePermuteVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodePermuteVec*
+  name: AvxEncodePermuteVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxEncodePermuteVec_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodePermuteVec
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodePermuteVec
+  nameWithType: Base64EncoderImpl.AvxEncodePermuteVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodeShuffleVec
+  name: AvxEncodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxEncodeShuffleVec
+  commentId: P:gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodeShuffleVec
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodeShuffleVec
+  nameWithType: Base64EncoderImpl.AvxEncodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodeShuffleVec*
+  name: AvxEncodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_AvxEncodeShuffleVec_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodeShuffleVec
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.AvxEncodeShuffleVec
+  nameWithType: Base64EncoderImpl.AvxEncodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Decode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_Decode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Decode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.Decode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.Decode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Decode(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_Decode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Decode(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan<System.Char>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.Decode(System.ReadOnlySpan(Of System.Char), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.Decode(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.Decode(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.Decode*
+  name: Decode
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_Decode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.Decode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.Decode
+  nameWithType: Base64EncoderImpl.Decode
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: DecodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_DecodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: DecodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.DecodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.DecodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: DecodeCore(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_DecodeCore_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: DecodeCore(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan<System.Char>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore(System.ReadOnlySpan(Of System.Char), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.DecodeCore(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.DecodeCore(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore*
+  name: DecodeCore
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_DecodeCore_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeCore
+  nameWithType: Base64EncoderImpl.DecodeCore
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour*
+  name: DecodeFour
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_DecodeFour_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour
+  nameWithType: Base64EncoderImpl.DecodeFour
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour``1(``0@,System.SByte@)
+  name: DecodeFour<T>(ref T, ref SByte)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_DecodeFour__1___0__System_SByte__
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour``1(``0@,System.SByte@)
+  name.vb: DecodeFour(Of T)(ByRef T, ByRef SByte)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour<T>(ref T, ref System.SByte)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.DecodeFour(Of T)(ByRef T, ByRef System.SByte)
+  nameWithType: Base64EncoderImpl.DecodeFour<T>(ref T, ref SByte)
+  nameWithType.vb: Base64EncoderImpl.DecodeFour(Of T)(ByRef T, ByRef SByte)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name: Encode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Encode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.Encode(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.Encode(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)
+  name: Encode(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)
+  name.vb: Encode(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan<System.Byte>, System.Span<System.Char>, out System.Int32, out System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.Encode(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Char), ByRef System.Int32, ByRef System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.Encode(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.Encode(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.Encode*
+  name: Encode
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_Encode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.Encode
+  nameWithType: Base64EncoderImpl.Encode
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: EncodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_EncodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: EncodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.EncodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.EncodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: EncodeCore(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_EncodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: EncodeCore(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Char>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Char), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64EncoderImpl.EncodeCore(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64EncoderImpl.EncodeCore(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore*
+  name: EncodeCore
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_EncodeCore_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeCore
+  nameWithType: Base64EncoderImpl.EncodeCore
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes*
+  name: EncodeThreeBytes
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_EncodeThreeBytes_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes
+  nameWithType: Base64EncoderImpl.EncodeThreeBytes
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes``1(System.Byte@,``0@,System.Byte@)
+  name: EncodeThreeBytes<T>(ref Byte, ref T, ref Byte)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_EncodeThreeBytes__1_System_Byte____0__System_Byte__
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes``1(System.Byte@,``0@,System.Byte@)
+  name.vb: EncodeThreeBytes(Of T)(ByRef Byte, ByRef T, ByRef Byte)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes<T>(ref System.Byte, ref T, ref System.Byte)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.EncodeThreeBytes(Of T)(ByRef System.Byte, ByRef T, ByRef System.Byte)
+  nameWithType: Base64EncoderImpl.EncodeThreeBytes<T>(ref Byte, ref T, ref Byte)
+  nameWithType.vb: Base64EncoderImpl.EncodeThreeBytes(Of T)(ByRef Byte, ByRef T, ByRef Byte)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.GetBase64EncodedLength(System.Int32)
+  name: GetBase64EncodedLength(Int32)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_GetBase64EncodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.GetBase64EncodedLength(System.Int32)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.GetBase64EncodedLength(System.Int32)
+  nameWithType: Base64EncoderImpl.GetBase64EncodedLength(Int32)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.GetBase64EncodedLength*
+  name: GetBase64EncodedLength
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_GetBase64EncodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.GetBase64EncodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.GetBase64EncodedLength
+  nameWithType: Base64EncoderImpl.GetBase64EncodedLength
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.MaxStackallocBytes
+  name: MaxStackallocBytes
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_MaxStackallocBytes
+  commentId: F:gfoidl.Base64.Internal.Base64EncoderImpl.MaxStackallocBytes
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.MaxStackallocBytes
+  nameWithType: Base64EncoderImpl.MaxStackallocBytes
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.SseDecodeShuffleVec
+  name: SseDecodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_SseDecodeShuffleVec
+  commentId: P:gfoidl.Base64.Internal.Base64EncoderImpl.SseDecodeShuffleVec
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.SseDecodeShuffleVec
+  nameWithType: Base64EncoderImpl.SseDecodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.SseDecodeShuffleVec*
+  name: SseDecodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_SseDecodeShuffleVec_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.SseDecodeShuffleVec
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.SseDecodeShuffleVec
+  nameWithType: Base64EncoderImpl.SseDecodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.SseEncodeShuffleVec
+  name: SseEncodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_SseEncodeShuffleVec
+  commentId: P:gfoidl.Base64.Internal.Base64EncoderImpl.SseEncodeShuffleVec
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.SseEncodeShuffleVec
+  nameWithType: Base64EncoderImpl.SseEncodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.SseEncodeShuffleVec*
+  name: SseEncodeShuffleVec
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_SseEncodeShuffleVec_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.SseEncodeShuffleVec
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.SseEncodeShuffleVec
+  nameWithType: Base64EncoderImpl.SseEncodeShuffleVec
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes(System.Byte@,System.UInt32,System.Int32)
+  name: WriteThreeLowOrderBytes(ref Byte, UInt32, Int32)
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_WriteThreeLowOrderBytes_System_Byte__System_UInt32_System_Int32_
+  commentId: M:gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes(System.Byte@,System.UInt32,System.Int32)
+  name.vb: WriteThreeLowOrderBytes(ByRef Byte, UInt32, Int32)
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes(ref System.Byte, System.UInt32, System.Int32)
+  fullName.vb: gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes(ByRef System.Byte, System.UInt32, System.Int32)
+  nameWithType: Base64EncoderImpl.WriteThreeLowOrderBytes(ref Byte, UInt32, Int32)
+  nameWithType.vb: Base64EncoderImpl.WriteThreeLowOrderBytes(ByRef Byte, UInt32, Int32)
+- uid: gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes*
+  name: WriteThreeLowOrderBytes
+  href: api/gfoidl.Base64.Internal.Base64EncoderImpl.html#gfoidl_Base64_Internal_Base64EncoderImpl_WriteThreeLowOrderBytes_
+  commentId: Overload:gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64EncoderImpl.WriteThreeLowOrderBytes
+  nameWithType: Base64EncoderImpl.WriteThreeLowOrderBytes
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder
+  name: Base64UrlEncoder
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html
+  commentId: T:gfoidl.Base64.Internal.Base64UrlEncoder
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder
+  nameWithType: Base64UrlEncoder
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.Decode(System.ReadOnlySpan{System.Char})
+  name: Decode(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_Decode_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.Decode(System.ReadOnlySpan{System.Char})
+  name.vb: Decode(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.Decode(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.Decode(System.ReadOnlySpan(Of System.Char))
+  nameWithType: Base64UrlEncoder.Decode(ReadOnlySpan<Char>)
+  nameWithType.vb: Base64UrlEncoder.Decode(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.Decode*
+  name: Decode
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_Decode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.Decode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.Decode
+  nameWithType: Base64UrlEncoder.Decode
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: DecodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_DecodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: DecodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64UrlEncoder.DecodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64UrlEncoder.DecodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: DecodeCore(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_DecodeCore_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: DecodeCore(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan<System.Char>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore(System.ReadOnlySpan(Of System.Char), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64UrlEncoder.DecodeCore(ReadOnlySpan<Char>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64UrlEncoder.DecodeCore(ReadOnlySpan(Of Char), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore*
+  name: DecodeCore
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_DecodeCore_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.DecodeCore
+  nameWithType: Base64UrlEncoder.DecodeCore
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.Encode(System.ReadOnlySpan{System.Byte})
+  name: Encode(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_Encode_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.Encode(System.ReadOnlySpan{System.Byte})
+  name.vb: Encode(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.Encode(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.Encode(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: Base64UrlEncoder.Encode(ReadOnlySpan<Byte>)
+  nameWithType.vb: Base64UrlEncoder.Encode(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.Encode*
+  name: Encode
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_Encode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.Encode
+  nameWithType: Base64UrlEncoder.Encode
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: EncodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_EncodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: EncodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Byte>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Byte), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64UrlEncoder.EncodeCore(ReadOnlySpan<Byte>, Span<Byte>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64UrlEncoder.EncodeCore(ReadOnlySpan(Of Byte), Span(Of Byte), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name: EncodeCore(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Int32, Boolean)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_EncodeCore_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Int32_System_Boolean_
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Int32,System.Boolean)
+  name.vb: EncodeCore(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Int32, Boolean)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan<System.Byte>, System.Span<System.Char>, out System.Int32, out System.Int32, System.Int32, System.Boolean)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore(System.ReadOnlySpan(Of System.Byte), System.Span(Of System.Char), ByRef System.Int32, ByRef System.Int32, System.Int32, System.Boolean)
+  nameWithType: Base64UrlEncoder.EncodeCore(ReadOnlySpan<Byte>, Span<Char>, out Int32, out Int32, Int32, Boolean)
+  nameWithType.vb: Base64UrlEncoder.EncodeCore(ReadOnlySpan(Of Byte), Span(Of Char), ByRef Int32, ByRef Int32, Int32, Boolean)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore*
+  name: EncodeCore
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_EncodeCore_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.EncodeCore
+  nameWithType: Base64UrlEncoder.EncodeCore
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode(System.Int32,System.Int32@)
+  name: GetBufferSizeRequiredToBase64Encode(Int32, out Int32)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetBufferSizeRequiredToBase64Encode_System_Int32_System_Int32__
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode(System.Int32,System.Int32@)
+  name.vb: GetBufferSizeRequiredToBase64Encode(Int32, ByRef Int32)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode(System.Int32, out System.Int32)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode(System.Int32, ByRef System.Int32)
+  nameWithType: Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode(Int32, out Int32)
+  nameWithType.vb: Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode(Int32, ByRef Int32)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode*
+  name: GetBufferSizeRequiredToBase64Encode
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetBufferSizeRequiredToBase64Encode_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode
+  nameWithType: Base64UrlEncoder.GetBufferSizeRequiredToBase64Encode
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name: GetDecodedLength(ReadOnlySpan<Byte>)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetDecodedLength_System_ReadOnlySpan_System_Byte__
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan{System.Byte})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Byte))
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan<System.Byte>)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan(Of System.Byte))
+  nameWithType: Base64UrlEncoder.GetDecodedLength(ReadOnlySpan<Byte>)
+  nameWithType.vb: Base64UrlEncoder.GetDecodedLength(ReadOnlySpan(Of Byte))
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name: GetDecodedLength(ReadOnlySpan<Char>)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetDecodedLength_System_ReadOnlySpan_System_Char__
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan{System.Char})
+  name.vb: GetDecodedLength(ReadOnlySpan(Of Char))
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan<System.Char>)
+  fullName.vb: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength(System.ReadOnlySpan(Of System.Char))
+  nameWithType: Base64UrlEncoder.GetDecodedLength(ReadOnlySpan<Char>)
+  nameWithType.vb: Base64UrlEncoder.GetDecodedLength(ReadOnlySpan(Of Char))
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength*
+  name: GetDecodedLength
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetDecodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetDecodedLength
+  nameWithType: Base64UrlEncoder.GetDecodedLength
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetEncodedLength(System.Int32)
+  name: GetEncodedLength(Int32)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetEncodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.GetEncodedLength(System.Int32)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetEncodedLength(System.Int32)
+  nameWithType: Base64UrlEncoder.GetEncodedLength(Int32)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetEncodedLength*
+  name: GetEncodedLength
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetEncodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.GetEncodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetEncodedLength
+  nameWithType: Base64UrlEncoder.GetEncodedLength
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetMaxDecodedLength(System.Int32)
+  name: GetMaxDecodedLength(Int32)
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetMaxDecodedLength_System_Int32_
+  commentId: M:gfoidl.Base64.Internal.Base64UrlEncoder.GetMaxDecodedLength(System.Int32)
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetMaxDecodedLength(System.Int32)
+  nameWithType: Base64UrlEncoder.GetMaxDecodedLength(Int32)
+- uid: gfoidl.Base64.Internal.Base64UrlEncoder.GetMaxDecodedLength*
+  name: GetMaxDecodedLength
+  href: api/gfoidl.Base64.Internal.Base64UrlEncoder.html#gfoidl_Base64_Internal_Base64UrlEncoder_GetMaxDecodedLength_
+  commentId: Overload:gfoidl.Base64.Internal.Base64UrlEncoder.GetMaxDecodedLength
+  isSpec: "True"
+  fullName: gfoidl.Base64.Internal.Base64UrlEncoder.GetMaxDecodedLength
+  nameWithType: Base64UrlEncoder.GetMaxDecodedLength
+- uid: gfoidl.Base64.ReadOnlySequenceExtensions
+  name: ReadOnlySequenceExtensions
+  href: api/gfoidl.Base64.ReadOnlySequenceExtensions.html
+  commentId: T:gfoidl.Base64.ReadOnlySequenceExtensions
+  fullName: gfoidl.Base64.ReadOnlySequenceExtensions
+  nameWithType: ReadOnlySequenceExtensions
+- uid: gfoidl.Base64.ReadOnlySequenceExtensions.Encode(gfoidl.Base64.Base64,System.Buffers.ReadOnlySequence{System.Byte}@,System.Buffers.IBufferWriter{System.Byte},System.Int64@,System.Int64@)
+  name: Encode(Base64, ReadOnlySequence<Byte>, IBufferWriter<Byte>, out Int64, out Int64)
+  href: api/gfoidl.Base64.ReadOnlySequenceExtensions.html#gfoidl_Base64_ReadOnlySequenceExtensions_Encode_gfoidl_Base64_Base64_System_Buffers_ReadOnlySequence_System_Byte___System_Buffers_IBufferWriter_System_Byte__System_Int64__System_Int64__
+  commentId: M:gfoidl.Base64.ReadOnlySequenceExtensions.Encode(gfoidl.Base64.Base64,System.Buffers.ReadOnlySequence{System.Byte}@,System.Buffers.IBufferWriter{System.Byte},System.Int64@,System.Int64@)
+  name.vb: Encode(Base64, ByRef ReadOnlySequence(Of Byte), IBufferWriter(Of Byte), ByRef Int64, ByRef Int64)
+  fullName: gfoidl.Base64.ReadOnlySequenceExtensions.Encode(gfoidl.Base64.Base64, System.Buffers.ReadOnlySequence<System.Byte>, System.Buffers.IBufferWriter<System.Byte>, out System.Int64, out System.Int64)
+  fullName.vb: gfoidl.Base64.ReadOnlySequenceExtensions.Encode(gfoidl.Base64.Base64, ByRef System.Buffers.ReadOnlySequence(Of System.Byte), System.Buffers.IBufferWriter(Of System.Byte), ByRef System.Int64, ByRef System.Int64)
+  nameWithType: ReadOnlySequenceExtensions.Encode(Base64, ReadOnlySequence<Byte>, IBufferWriter<Byte>, out Int64, out Int64)
+  nameWithType.vb: ReadOnlySequenceExtensions.Encode(Base64, ByRef ReadOnlySequence(Of Byte), IBufferWriter(Of Byte), ByRef Int64, ByRef Int64)
+- uid: gfoidl.Base64.ReadOnlySequenceExtensions.Encode*
+  name: Encode
+  href: api/gfoidl.Base64.ReadOnlySequenceExtensions.html#gfoidl_Base64_ReadOnlySequenceExtensions_Encode_
+  commentId: Overload:gfoidl.Base64.ReadOnlySequenceExtensions.Encode
+  isSpec: "True"
+  fullName: gfoidl.Base64.ReadOnlySequenceExtensions.Encode
+  nameWithType: ReadOnlySequenceExtensions.Encode
+- uid: gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode(gfoidl.Base64.Base64,System.Buffers.ReadOnlySequence{System.Byte}@,System.Buffers.IBufferWriter{System.Byte},System.Int64@,System.Int64@)
+  name: TryDecode(Base64, ReadOnlySequence<Byte>, IBufferWriter<Byte>, out Int64, out Int64)
+  href: api/gfoidl.Base64.ReadOnlySequenceExtensions.html#gfoidl_Base64_ReadOnlySequenceExtensions_TryDecode_gfoidl_Base64_Base64_System_Buffers_ReadOnlySequence_System_Byte___System_Buffers_IBufferWriter_System_Byte__System_Int64__System_Int64__
+  commentId: M:gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode(gfoidl.Base64.Base64,System.Buffers.ReadOnlySequence{System.Byte}@,System.Buffers.IBufferWriter{System.Byte},System.Int64@,System.Int64@)
+  name.vb: TryDecode(Base64, ByRef ReadOnlySequence(Of Byte), IBufferWriter(Of Byte), ByRef Int64, ByRef Int64)
+  fullName: gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode(gfoidl.Base64.Base64, System.Buffers.ReadOnlySequence<System.Byte>, System.Buffers.IBufferWriter<System.Byte>, out System.Int64, out System.Int64)
+  fullName.vb: gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode(gfoidl.Base64.Base64, ByRef System.Buffers.ReadOnlySequence(Of System.Byte), System.Buffers.IBufferWriter(Of System.Byte), ByRef System.Int64, ByRef System.Int64)
+  nameWithType: ReadOnlySequenceExtensions.TryDecode(Base64, ReadOnlySequence<Byte>, IBufferWriter<Byte>, out Int64, out Int64)
+  nameWithType.vb: ReadOnlySequenceExtensions.TryDecode(Base64, ByRef ReadOnlySequence(Of Byte), IBufferWriter(Of Byte), ByRef Int64, ByRef Int64)
+- uid: gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode*
+  name: TryDecode
+  href: api/gfoidl.Base64.ReadOnlySequenceExtensions.html#gfoidl_Base64_ReadOnlySequenceExtensions_TryDecode_
+  commentId: Overload:gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode
+  isSpec: "True"
+  fullName: gfoidl.Base64.ReadOnlySequenceExtensions.TryDecode
+  nameWithType: ReadOnlySequenceExtensions.TryDecode

@@ -1,0 +1,964 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Base64
+   | gfoidl.Base64 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Base64
+   | gfoidl.Base64 ">
+    <meta name="generator" content="docfx 2.51.0.0">
+    
+    <link rel="shortcut icon" href="../null">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../images/logo_32.png" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="gfoidl.Base64.Base64">
+  
+  
+  <h1 id="gfoidl_Base64_Base64" data-uid="gfoidl.Base64.Base64" class="text-break">Class Base64
+  </h1>
+  <div class="markdown level0 summary"><p>Base64 encoding / decoding.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Base64</span></div>
+      <div class="level2"><a class="xref" href="gfoidl.Base64.Internal.Base64EncoderImpl.html">Base64EncoderImpl</a></div>
+  </div>
+  <div classs="implements">
+    <h5>Implements</h5>
+    <div><a class="xref" href="gfoidl.Base64.IBase64.html">IBase64</a></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="gfoidl.Base64.html">gfoidl.Base64</a></h6>
+  <h6><strong>Assembly</strong>: gfoidl.Base64.dll</h6>
+  <h5 id="gfoidl_Base64_Base64_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract class Base64 : IBase64</code></pre>
+  </div>
+  <h3 id="fields">Fields
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_MaximumEncodeLength.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.MaximumEncodeLength%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L20">View Source</a>
+  </span>
+  <h4 id="gfoidl_Base64_Base64_MaximumEncodeLength" data-uid="gfoidl.Base64.Base64.MaximumEncodeLength">MaximumEncodeLength</h4>
+  <div class="markdown level1 summary"><p>The maximum length that can be encoded.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int MaximumEncodeLength = 1610612733</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="gfoidl_Base64_Base64_MaximumEncodeLength_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If you need to encode data that is larger than <a class="xref" href="gfoidl.Base64.Base64.html#gfoidl_Base64_Base64_MaximumEncodeLength">MaximumEncodeLength</a>,
+you can <span class="xref">System.Span`1.Slice(System.Int32,System.Int32)</span> the data and encode with
+buffer chains.</p>
+</div>
+  <h3 id="properties">Properties
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Default.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Default%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L30">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Default_" data-uid="gfoidl.Base64.Base64.Default*"></a>
+  <h4 id="gfoidl_Base64_Base64_Default" data-uid="gfoidl.Base64.Base64.Default">Default</h4>
+  <div class="markdown level1 summary"><p>The base64 encoder / decoder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Base64Encoder Default { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="gfoidl.Base64.Internal.Base64Encoder.html">Base64Encoder</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Url.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Url%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L35">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Url_" data-uid="gfoidl.Base64.Base64.Url*"></a>
+  <h4 id="gfoidl_Base64_Base64_Url" data-uid="gfoidl.Base64.Base64.Url">Url</h4>
+  <div class="markdown level1 summary"><p>The base64Url encoder / decoder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Base64UrlEncoder Url { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="gfoidl.Base64.Internal.Base64UrlEncoder.html">Base64UrlEncoder</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Decode(System.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Span%7BSystem.Byte%7D%2CSystem.Int32%40%2CSystem.Int32%40%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L68">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Decode_" data-uid="gfoidl.Base64.Base64.Decode*"></a>
+  <h4 id="gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_" data-uid="gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">Decode(ReadOnlySpan&lt;Byte&gt;, Span&lt;Byte&gt;, out Int32, out Int32, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract OperationStatus Decode(ReadOnlySpan&lt;byte&gt; encoded, Span&lt;byte&gt; data, out int consumed, out int written, bool isFinalBlock = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Span</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">data</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">consumed</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">written</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isFinalBlock</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Buffers.OperationStatus</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Char__.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Decode(System.ReadOnlySpan%7BSystem.Char%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L87">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Decode_" data-uid="gfoidl.Base64.Base64.Decode*"></a>
+  <h4 id="gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Char__" data-uid="gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Char})">Decode(ReadOnlySpan&lt;Char&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract byte[] Decode(ReadOnlySpan&lt;char&gt; encoded)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Char</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Byte</span>[]</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Decode(System.ReadOnlySpan%7BSystem.Char%7D%2CSystem.Span%7BSystem.Byte%7D%2CSystem.Int32%40%2CSystem.Int32%40%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L76">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Decode_" data-uid="gfoidl.Base64.Base64.Decode*"></a>
+  <h4 id="gfoidl_Base64_Base64_Decode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_" data-uid="gfoidl.Base64.Base64.Decode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">Decode(ReadOnlySpan&lt;Char&gt;, Span&lt;Byte&gt;, out Int32, out Int32, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract OperationStatus Decode(ReadOnlySpan&lt;char&gt; encoded, Span&lt;byte&gt; data, out int consumed, out int written, bool isFinalBlock = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Char</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Span</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">data</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">consumed</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">written</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isFinalBlock</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Buffers.OperationStatus</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Byte__System_Boolean_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L111">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_DetectEncoding_" data-uid="gfoidl.Base64.Base64.DetectEncoding*"></a>
+  <h4 id="gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Byte__System_Boolean_" data-uid="gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan{System.Byte},System.Boolean)">DetectEncoding(ReadOnlySpan&lt;Byte&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Detects whether <code data-dev-comment-type="paramref" class="paramref">encoded</code> is base64 or base64Url.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EncodingType DetectEncoding(ReadOnlySpan&lt;byte&gt; encoded, bool fast = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td><p>The base64 encoded data.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">fast</span></td>
+        <td><p>When <code>false</code> (default) <code data-dev-comment-type="paramref" class="paramref">encoded</code> is scanned
+one time for base64 chars and a second time for base64Url chars.
+So if there is a mix of them, <a class="xref" href="gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Unknown">Unknown</a>
+will be returned.</p>
+<p>
+When <code>true</code> <code data-dev-comment-type="paramref" class="paramref">encoded</code> is scanned only once
+and for base64Url chars. So if there is a mix of base64 and base64Url,
+the result will be <a class="xref" href="gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Base64Url">Base64Url</a>, and may
+throw a <span class="xref">System.FormatException</span> on decoding.
+</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="gfoidl.Base64.EncodingType.html">EncodingType</a></td>
+        <td><p>base64 or base64Url</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Byte__System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>It is an O(n) scan / detection of the encoding type, and input is
+not validated for conforming the base64 standard. Thus there is no
+'Invalid' encoding type.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Char__System_Boolean_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan%7BSystem.Char%7D%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L136">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_DetectEncoding_" data-uid="gfoidl.Base64.Base64.DetectEncoding*"></a>
+  <h4 id="gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Char__System_Boolean_" data-uid="gfoidl.Base64.Base64.DetectEncoding(System.ReadOnlySpan{System.Char},System.Boolean)">DetectEncoding(ReadOnlySpan&lt;Char&gt;, Boolean)</h4>
+  <div class="markdown level1 summary"><p>Detects whether <code data-dev-comment-type="paramref" class="paramref">encoded</code> is base64 or base64Url.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static EncodingType DetectEncoding(ReadOnlySpan&lt;char&gt; encoded, bool fast = false)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Char</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td><p>The base64 encoded data.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">fast</span></td>
+        <td><p>When <code>false</code> (default) <code data-dev-comment-type="paramref" class="paramref">encoded</code> is scanned
+one time for base64 chars and a second time for base64Url chars.
+So if there is a mix of them, <a class="xref" href="gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Unknown">Unknown</a>
+will be returned.</p>
+<p>
+When <code>true</code> <code data-dev-comment-type="paramref" class="paramref">encoded</code> is scanned only once
+and for base64Url chars. So if there is a mix of base64 and base64Url,
+the result will be <a class="xref" href="gfoidl.Base64.EncodingType.html#gfoidl_Base64_EncodingType_Base64Url">Base64Url</a>, and may
+throw a <span class="xref">System.FormatException</span> on decoding.
+</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="gfoidl.Base64.EncodingType.html">EncodingType</a></td>
+        <td><p>base64 or base64Url</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="gfoidl_Base64_Base64_DetectEncoding_System_ReadOnlySpan_System_Char__System_Boolean__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>It is an O(n) fast scan / detection of the encoding type, and input is
+not validated for conforming the base64 standard. Thus there is no
+'Invalid' encoding type.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Encode(System.ReadOnlySpan%7BSystem.Byte%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L84">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Encode_" data-uid="gfoidl.Base64.Base64.Encode*"></a>
+  <h4 id="gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__" data-uid="gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte})">Encode(ReadOnlySpan&lt;Byte&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract string Encode(ReadOnlySpan&lt;byte&gt; data)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">data</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Encode(System.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Span%7BSystem.Byte%7D%2CSystem.Int32%40%2CSystem.Int32%40%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L52">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Encode_" data-uid="gfoidl.Base64.Base64.Encode*"></a>
+  <h4 id="gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__System_Boolean_" data-uid="gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">Encode(ReadOnlySpan&lt;Byte&gt;, Span&lt;Byte&gt;, out Int32, out Int32, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract OperationStatus Encode(ReadOnlySpan&lt;byte&gt; data, Span&lt;byte&gt; encoded, out int consumed, out int written, bool isFinalBlock = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">data</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Span</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">consumed</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">written</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isFinalBlock</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Buffers.OperationStatus</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Boolean_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.Encode(System.ReadOnlySpan%7BSystem.Byte%7D%2CSystem.Span%7BSystem.Char%7D%2CSystem.Int32%40%2CSystem.Int32%40%2CSystem.Boolean)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L60">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_Encode_" data-uid="gfoidl.Base64.Base64.Encode*"></a>
+  <h4 id="gfoidl_Base64_Base64_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__System_Int32__System_Boolean_" data-uid="gfoidl.Base64.Base64.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)">Encode(ReadOnlySpan&lt;Byte&gt;, Span&lt;Char&gt;, out Int32, out Int32, Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract OperationStatus Encode(ReadOnlySpan&lt;byte&gt; data, Span&lt;char&gt; encoded, out int consumed, out int written, bool isFinalBlock = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">data</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Span</span>&lt;<span class="xref">System.Char</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">consumed</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">written</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">isFinalBlock</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Buffers.OperationStatus</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_GetDecodedLength_System_ReadOnlySpan_System_Byte__.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan%7BSystem.Byte%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L46">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_GetDecodedLength_" data-uid="gfoidl.Base64.Base64.GetDecodedLength*"></a>
+  <h4 id="gfoidl_Base64_Base64_GetDecodedLength_System_ReadOnlySpan_System_Byte__" data-uid="gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan{System.Byte})">GetDecodedLength(ReadOnlySpan&lt;Byte&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract int GetDecodedLength(ReadOnlySpan&lt;byte&gt; encoded)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Byte</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_GetDecodedLength_System_ReadOnlySpan_System_Char__.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan%7BSystem.Char%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L49">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_GetDecodedLength_" data-uid="gfoidl.Base64.Base64.GetDecodedLength*"></a>
+  <h4 id="gfoidl_Base64_Base64_GetDecodedLength_System_ReadOnlySpan_System_Char__" data-uid="gfoidl.Base64.Base64.GetDecodedLength(System.ReadOnlySpan{System.Char})">GetDecodedLength(ReadOnlySpan&lt;Char&gt;)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract int GetDecodedLength(ReadOnlySpan&lt;char&gt; encoded)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.ReadOnlySpan</span>&lt;<span class="xref">System.Char</span>&gt;</td>
+        <td><span class="parametername">encoded</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_GetEncodedLength_System_Int32_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.GetEncodedLength(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L40">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_GetEncodedLength_" data-uid="gfoidl.Base64.Base64.GetEncodedLength*"></a>
+  <h4 id="gfoidl_Base64_Base64_GetEncodedLength_System_Int32_" data-uid="gfoidl.Base64.Base64.GetEncodedLength(System.Int32)">GetEncodedLength(Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract int GetEncodedLength(int sourceLength)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">sourceLength</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64_GetMaxDecodedLength_System_Int32_.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64.GetMaxDecodedLength(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L43">View Source</a>
+  </span>
+  <a id="gfoidl_Base64_Base64_GetMaxDecodedLength_" data-uid="gfoidl.Base64.Base64.GetMaxDecodedLength*"></a>
+  <h4 id="gfoidl_Base64_Base64_GetMaxDecodedLength_System_Int32_" data-uid="gfoidl.Base64.Base64.GetMaxDecodedLength(System.Int32)">GetMaxDecodedLength(Int32)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public abstract int GetMaxDecodedLength(int encodedLength)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">encodedLength</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="implements">Implements</h3>
+  <div>
+      <a class="xref" href="gfoidl.Base64.IBase64.html">IBase64</a>
+  </div>
+  <h3 id="extensionmethods">Extension Methods</h3>
+  <div>
+      <a class="xref" href="gfoidl.Base64.ReadOnlySequenceExtensions.html#gfoidl_Base64_ReadOnlySequenceExtensions_TryDecode_gfoidl_Base64_Base64_System_Buffers_ReadOnlySequence_System_Byte___System_Buffers_IBufferWriter_System_Byte__System_Int64__System_Int64__">ReadOnlySequenceExtensions.TryDecode(Base64, ReadOnlySequence&lt;Byte&gt;, IBufferWriter&lt;Byte&gt;, out Int64, out Int64)</a>
+  </div>
+  <div>
+      <a class="xref" href="gfoidl.Base64.ReadOnlySequenceExtensions.html#gfoidl_Base64_ReadOnlySequenceExtensions_Encode_gfoidl_Base64_Base64_System_Buffers_ReadOnlySequence_System_Byte___System_Buffers_IBufferWriter_System_Byte__System_Int64__System_Int64__">ReadOnlySequenceExtensions.Encode(Base64, ReadOnlySequence&lt;Byte&gt;, IBufferWriter&lt;Byte&gt;, out Int64, out Int64)</a>
+  </div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/gfoidl/Base64/new/master/apiSpec/new?filename=gfoidl_Base64_Base64.md&amp;value=---%0Auid%3A%20gfoidl.Base64.Base64%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/gfoidl/Base64/blob/master/source/gfoidl.Base64/Base64.cs/#L10" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Copyright © Foidl Günther 2018-2020
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
