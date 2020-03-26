@@ -9,10 +9,10 @@
       "output": {
         ".html": {
           "relative_path": "api/gfoidl.Base64.Base64.html",
-          "hash": "9gXWXe7q1fQiDkXnAI03DA=="
+          "hash": "0IOJZqDUf6UwKKsXEM8nqQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -21,10 +21,10 @@
       "output": {
         ".html": {
           "relative_path": "api/gfoidl.Base64.EncodingType.html",
-          "hash": "x9gvlcJO4Fnn7Lo5wzuF6w=="
+          "hash": "2TXqvHwQNU8ubdKU+E2+wA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -33,58 +33,10 @@
       "output": {
         ".html": {
           "relative_path": "api/gfoidl.Base64.IBase64.html",
-          "hash": "ntJCbmMN+EjVzPj+fbTHdQ=="
+          "hash": "L0CZ3mYqEApN/YH9KlHDxw=="
         }
       },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/gfoidl.Base64.Internal.Base64Encoder.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/gfoidl.Base64.Internal.Base64Encoder.html",
-          "hash": "6pdP53ySEizL4B9SrjtLDw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/gfoidl.Base64.Internal.Base64EncoderImpl.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/gfoidl.Base64.Internal.Base64EncoderImpl.html",
-          "hash": "ejuux9pgG5tSjZJ4Htkqqw=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/gfoidl.Base64.Internal.Base64UrlEncoder.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/gfoidl.Base64.Internal.Base64UrlEncoder.html",
-          "hash": "D//5uXycoPAsYzHQv8s86g=="
-        }
-      },
-      "is_incremental": true,
-      "version": ""
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/gfoidl.Base64.Internal.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/gfoidl.Base64.Internal.html",
-          "hash": "MeZXnimlcNaPgeaVUX0WGg=="
-        }
-      },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -93,10 +45,10 @@
       "output": {
         ".html": {
           "relative_path": "api/gfoidl.Base64.ReadOnlySequenceExtensions.html",
-          "hash": "MGHnJ2QWvW41RuBGb5+43w=="
+          "hash": "o5747b46PinXeP6btAGdrg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -108,7 +60,7 @@
           "hash": "+6g23xYtJ6r/cs3+7KNyZw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -129,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "hT2Gk70iXjIyBgeBJ7Bykw=="
+          "hash": "xfszdDkrkhxaJdeLD/P2rg=="
         }
       },
       "is_incremental": false,
@@ -200,7 +152,7 @@
       "output": {
         ".html": {
           "relative_path": "toc.html",
-          "hash": "apjajBPSvEsX7WbbhQ6JzQ=="
+          "hash": "u4TGkPpuQBj4NhrZCVf5jg=="
         }
       },
       "is_incremental": false,
@@ -225,8 +177,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 9,
-          "skipped_file_count": 9
+          "total_file_count": 5,
+          "skipped_file_count": 1
         },
         "ResourceDocumentProcessor": {
           "can_incremental": false,
