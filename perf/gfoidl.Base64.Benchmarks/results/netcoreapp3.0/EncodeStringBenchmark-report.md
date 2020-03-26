@@ -1,41 +1,40 @@
 ``` ini
 
-BenchmarkDotNet=v0.11.3, OS=ubuntu 16.04
-Intel Xeon CPU 2.00GHz, 1 CPU, 2 logical cores and 1 physical core
-.NET Core SDK=3.0.100-preview-009765
-  [Host] : .NET Core 3.0.0-preview-27117-01 (CoreCLR 4.6.27116.05, CoreFX 4.7.18.56608), 64bit RyuJIT
-  AVX2   : .NET Core 3.0.0-preview-27117-01 (CoreCLR 4.6.27116.05, CoreFX 4.7.18.56608), 64bit RyuJIT
-  SSSE3  : .NET Core 3.0.0-preview-27117-01 (CoreCLR 4.6.27116.05, CoreFX 4.7.18.56608), 64bit RyuJIT
-  Scalar : .NET Core 3.0.0-preview-27117-01 (CoreCLR 4.6.27116.05, CoreFX 4.7.18.56608), 64bit RyuJIT
+BenchmarkDotNet=v0.12.0, OS=Windows 10.0.18362
+Intel Core i7-7700HQ CPU 2.80GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=5.0.100-preview.1.20167.6
+  [Host] : .NET Core 3.1.2 (CoreCLR 4.700.20.6602, CoreFX 4.700.20.6702), X64 RyuJIT
+  AVX2   : .NET Core 3.1.2 (CoreCLR 4.700.20.6602, CoreFX 4.700.20.6702), X64 RyuJIT
+  SSSE3  : .NET Core 3.1.2 (CoreCLR 4.700.20.6602, CoreFX 4.700.20.6702), X64 RyuJIT
+  Scalar : .NET Core 3.1.2 (CoreCLR 4.700.20.6602, CoreFX 4.700.20.6702), X64 RyuJIT
 
-Runtime=Core  
 
 ```
-|          Method |    Job |                       EnvironmentVariables | DataLen |        Mean |      Error |      StdDev | Ratio | RatioSD |
-|---------------- |------- |------------------------------------------- |-------- |------------:|-----------:|------------:|------:|--------:|
-| **ConvertToBase64** |   **AVX2** |                                      **Empty** |       **5** |    **48.56 ns** |  **1.0831 ns** |   **1.1123 ns** |  **1.00** |    **0.00** |
-|    gfoidlBase64 |   AVX2 |                                      Empty |       5 |    62.86 ns |  0.5955 ns |   0.5571 ns |  1.30 |    0.03 |
-|                 |        |                                            |         |             |            |             |       |         |
-| ConvertToBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    47.92 ns |  0.2538 ns |   0.2374 ns |  1.00 |    0.00 |
-|    gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |       5 |    62.24 ns |  0.3788 ns |   0.3543 ns |  1.30 |    0.01 |
-|                 |        |                                            |         |             |            |             |       |         |
-| ConvertToBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    47.66 ns |  0.5100 ns |   0.4770 ns |  1.00 |    0.00 |
-|    gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |       5 |    62.91 ns |  0.9498 ns |   0.8885 ns |  1.32 |    0.02 |
-|                 |        |                                            |         |             |            |             |       |         |
-| **ConvertToBase64** |   **AVX2** |                                      **Empty** |      **16** |    **80.50 ns** |  **0.5481 ns** |   **0.5127 ns** |  **1.00** |    **0.00** |
-|    gfoidlBase64 |   AVX2 |                                      Empty |      16 |    96.80 ns |  1.7645 ns |   1.4734 ns |  1.20 |    0.02 |
-|                 |        |                                            |         |             |            |             |       |         |
-| ConvertToBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    81.08 ns |  0.9530 ns |   0.8915 ns |  1.00 |    0.00 |
-|    gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |      16 |    94.69 ns |  0.4199 ns |   0.3927 ns |  1.17 |    0.01 |
-|                 |        |                                            |         |             |            |             |       |         |
-| ConvertToBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    81.88 ns |  0.4063 ns |   0.3801 ns |  1.00 |    0.00 |
-|    gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |      16 |    96.64 ns |  1.1701 ns |   1.0946 ns |  1.18 |    0.02 |
-|                 |        |                                            |         |             |            |             |       |         |
-| **ConvertToBase64** |   **AVX2** |                                      **Empty** |    **1000** | **2,555.03 ns** | **54.1682 ns** | **103.0607 ns** |  **1.00** |    **0.00** |
-|    gfoidlBase64 |   AVX2 |                                      Empty |    1000 |   515.73 ns | 11.0901 ns |  32.3503 ns |  0.21 |    0.01 |
-|                 |        |                                            |         |             |            |             |       |         |
-| ConvertToBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 | 2,636.10 ns | 33.0553 ns |  30.9199 ns |  1.00 |    0.00 |
-|    gfoidlBase64 |  SSSE3 |                       COMPlus_EnableAVX2=0 |    1000 |   634.12 ns | 14.9216 ns |  43.7625 ns |  0.26 |    0.01 |
-|                 |        |                                            |         |             |            |             |       |         |
-| ConvertToBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 2,550.14 ns | 49.3073 ns |  60.5538 ns |  1.00 |    0.00 |
-|    gfoidlBase64 | Scalar | COMPlus_EnableAVX2=0,COMPlus_EnableSSSE3=0 |    1000 | 1,935.25 ns | 37.0688 ns |  45.5239 ns |  0.76 |    0.02 |
+|          Method |    Job | EnvironmentVariables | DataLen |        Mean |     Error |    StdDev | Ratio | RatioSD |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|---------------- |------- |--------------------- |-------- |------------:|----------:|----------:|------:|--------:|-------:|------:|------:|----------:|
+| **ConvertToBase64** |   **AVX2** |                **Empty** |       **5** |    **23.77 ns** |  **0.378 ns** |  **0.335 ns** |  **1.00** |    **0.00** | **0.0127** |     **-** |     **-** |      **40 B** |
+|    gfoidlBase64 |   AVX2 |                Empty |       5 |    24.26 ns |  0.213 ns |  0.199 ns |  1.02 |    0.01 | 0.0127 |     - |     - |      40 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| ConvertToBase64 |  SSSE3 |  COMPlus_EnableAVX=0 |       5 |    24.55 ns |  0.621 ns |  0.715 ns |  1.00 |    0.00 | 0.0127 |     - |     - |      40 B |
+|    gfoidlBase64 |  SSSE3 |  COMPlus_EnableAVX=0 |       5 |    24.60 ns |  0.542 ns |  0.507 ns |  1.00 |    0.02 | 0.0127 |     - |     - |      40 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| ConvertToBase64 | Scalar |  COMPlus_EnableSSE=0 |       5 |    23.93 ns |  0.340 ns |  0.318 ns |  1.00 |    0.00 | 0.0127 |     - |     - |      40 B |
+|    gfoidlBase64 | Scalar |  COMPlus_EnableSSE=0 |       5 |    27.02 ns |  0.823 ns |  2.360 ns |  1.12 |    0.12 | 0.0127 |     - |     - |      40 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| **ConvertToBase64** |   **AVX2** |                **Empty** |      **16** |    **42.17 ns** |  **0.989 ns** |  **1.387 ns** |  **1.00** |    **0.00** | **0.0229** |     **-** |     **-** |      **72 B** |
+|    gfoidlBase64 |   AVX2 |                Empty |      16 |    37.23 ns |  0.993 ns |  2.834 ns |  0.92 |    0.06 | 0.0229 |     - |     - |      72 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| ConvertToBase64 |  SSSE3 |  COMPlus_EnableAVX=0 |      16 |    41.97 ns |  0.807 ns |  0.715 ns |  1.00 |    0.00 | 0.0229 |     - |     - |      72 B |
+|    gfoidlBase64 |  SSSE3 |  COMPlus_EnableAVX=0 |      16 |    34.63 ns |  0.600 ns |  0.561 ns |  0.82 |    0.02 | 0.0229 |     - |     - |      72 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| ConvertToBase64 | Scalar |  COMPlus_EnableSSE=0 |      16 |    42.37 ns |  0.512 ns |  0.479 ns |  1.00 |    0.00 | 0.0229 |     - |     - |      72 B |
+|    gfoidlBase64 | Scalar |  COMPlus_EnableSSE=0 |      16 |    39.13 ns |  0.810 ns |  0.758 ns |  0.92 |    0.02 | 0.0229 |     - |     - |      72 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| **ConvertToBase64** |   **AVX2** |                **Empty** |    **1000** | **1,571.76 ns** | **11.677 ns** | **10.923 ns** |  **1.00** |    **0.00** | **0.8583** |     **-** |     **-** |    **2696 B** |
+|    gfoidlBase64 |   AVX2 |                Empty |    1000 |   376.48 ns |  5.348 ns |  5.003 ns |  0.24 |    0.00 | 0.8793 |     - |     - |    2760 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| ConvertToBase64 |  SSSE3 |  COMPlus_EnableAVX=0 |    1000 | 1,562.76 ns | 15.192 ns | 13.467 ns |  1.00 |    0.00 | 0.8583 |     - |     - |    2696 B |
+|    gfoidlBase64 |  SSSE3 |  COMPlus_EnableAVX=0 |    1000 |   449.36 ns |  8.947 ns | 15.193 ns |  0.29 |    0.01 | 0.8793 |     - |     - |    2760 B |
+|                 |        |                      |         |             |           |           |       |         |        |       |       |           |
+| ConvertToBase64 | Scalar |  COMPlus_EnableSSE=0 |    1000 | 1,611.21 ns | 32.101 ns | 46.038 ns |  1.00 |    0.00 | 0.8583 |     - |     - |    2696 B |
+|    gfoidlBase64 | Scalar |  COMPlus_EnableSSE=0 |    1000 | 1,130.69 ns | 19.930 ns | 22.152 ns |  0.71 |    0.02 | 0.8793 |     - |     - |    2760 B |

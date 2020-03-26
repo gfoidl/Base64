@@ -22,9 +22,19 @@ namespace gfoidl.Base64.Internal
 
 #if NETCOREAPP || NETSTANDARD2_1
             // Threshould found by testing -- may not be ideal on all targets
-            return data.Length < 72
+#if CAN_USE_CONVERT_BASE64
+            if (data.Length < 16)
+                return Convert.ToBase64String(data);
+
+            if (data.Length < 50)
+                return EncodeWithNewString(data);
+
+            return EncodeWithStringCreate(data);
+#else
+            return data.Length < 50
                 ? EncodeWithNewString(data)
                 : EncodeWithStringCreate(data);
+#endif
             //-----------------------------------------------------------------
             string EncodeWithNewString(ReadOnlySpan<byte> data)
             {

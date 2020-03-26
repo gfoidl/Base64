@@ -8,6 +8,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
+        <DefineConstants>$(DefineConstants);CAN_USE_CONVERT_BASE64</DefineConstants>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <Description>A library for base64 encoding / decoding, as well as base64url support.
 For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
         </Description>
