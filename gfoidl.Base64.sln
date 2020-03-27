@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "pipelines", "pipelines", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3522-4A1F-87F7-1D88280529C5}"
 	ProjectSection(SolutionItems) = preProject
+		.azure\pipelines\jobs\api-doc.yml = .azure\pipelines\jobs\api-doc.yml
 		.azure\pipelines\jobs\benchmarks.yml = .azure\pipelines\jobs\benchmarks.yml
 		.azure\pipelines\jobs\benchmarks_net_full.yml = .azure\pipelines\jobs\benchmarks_net_full.yml
 		.azure\pipelines\jobs\build_and_test.yml = .azure\pipelines\jobs\build_and_test.yml
@@ -94,6 +95,33 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{F8CF9ED3-55C6-4C71-87B1-2BF860B1A9C9}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\automerge.yml = .github\workflows\automerge.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api-doc", "api-doc", "{B064262E-B0CE-464E-922D-3A7563A49FB6}"
+	ProjectSection(SolutionItems) = preProject
+		api-doc\.gitignore = api-doc\.gitignore
+		api-doc\docfx.json = api-doc\docfx.json
+		api-doc\filterConfig.yml = api-doc\filterConfig.yml
+		api-doc\index.md = api-doc\index.md
+		api-doc\toc.yml = api-doc\toc.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{C83936D6-A39A-49F3-A386-71376149E1C8}"
+	ProjectSection(SolutionItems) = preProject
+		api-doc\images\logo_32.png = api-doc\images\logo_32.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "articles", "articles", "{6830EE14-70FC-4DDA-8370-4E3EE7A1076E}"
+	ProjectSection(SolutionItems) = preProject
+		api-doc\articles\benchmarks.md = api-doc\articles\benchmarks.md
+		api-doc\articles\intro.md = api-doc\articles\intro.md
+		api-doc\articles\toc.yml = api-doc\articles\toc.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "api", "api", "{3E4FD8C2-DABC-413D-B4BA-8F160A32ED5E}"
+	ProjectSection(SolutionItems) = preProject
+		api-doc\api\.gitignore = api-doc\api\.gitignore
+		api-doc\api\index.md = api-doc\api\index.md
 	EndProjectSection
 EndProject
 Global
@@ -153,6 +181,10 @@ Global
 		{66E1E4B6-BD9B-40FF-85A9-070B0D497E59} = {A52BCD9C-4216-42E5-AB37-FD5F6C46A9E7}
 		{BD59807B-C788-497A-9E78-BFD789BB7639} = {E4259BCE-EA4C-434C-8896-CEBBEC38222D}
 		{F8CF9ED3-55C6-4C71-87B1-2BF860B1A9C9} = {BD59807B-C788-497A-9E78-BFD789BB7639}
+		{B064262E-B0CE-464E-922D-3A7563A49FB6} = {403238BD-BE8A-4E78-924A-C841CD8C7955}
+		{C83936D6-A39A-49F3-A386-71376149E1C8} = {B064262E-B0CE-464E-922D-3A7563A49FB6}
+		{6830EE14-70FC-4DDA-8370-4E3EE7A1076E} = {B064262E-B0CE-464E-922D-3A7563A49FB6}
+		{3E4FD8C2-DABC-413D-B4BA-8F160A32ED5E} = {B064262E-B0CE-464E-922D-3A7563A49FB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A902DC31-2F3E-4397-93D1-5004F325B71C}
