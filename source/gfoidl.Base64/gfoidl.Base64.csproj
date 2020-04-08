@@ -28,13 +28,10 @@ For .NET Core 3.0 onwards encoding / decoding is done with SIMD-support.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Fody" Version="6.0.4">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="gfoidl.Analyzers" Version="0.1.2" />
-        <PackageReference Include="Internal.AspNetCore.Analyzers" Version="2.2.0" PrivateAssets="All" />
-        <PackageReference Include="LocalsInit.Fody" Version="1.1.0" />
+        <PackageReference Include="Fody" Version="6.0.4" PrivateAssets="all" />
+        <PackageReference Include="LocalsInit.Fody" Version="1.1.0" PrivateAssets="all" />
+        <PackageReference Include="gfoidl.Analyzers" Version="0.2.0" />
+        <PackageReference Include="Internal.AspNetCore.Analyzers" Version="2.2.0" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'net45'">
