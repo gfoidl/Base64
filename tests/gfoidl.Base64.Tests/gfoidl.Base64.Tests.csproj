@@ -8,7 +8,7 @@
         <ProjectReference Include="..\..\source\gfoidl.Base64\gfoidl.Base64.csproj" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <ItemGroup Condition="'$(TargetFramework)' == '$(ExeTfm)'">
         <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
     </ItemGroup>
 

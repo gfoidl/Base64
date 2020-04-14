@@ -3,7 +3,7 @@
 set -e
 
 lib="gfoidl.Base64.dll"
-tfm="netcoreapp3.0"
+tfm="netcoreapp3.1"
 path="gfoidl.Base64.FuzzTests/bin/Release/$tfm"
 
 dotnet "$path"/gfoidl.Base64.FuzzTests.dll "PrintSimdInfo"

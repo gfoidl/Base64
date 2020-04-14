@@ -2,8 +2,8 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netcoreapp3.0</TargetFrameworks>
-        <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">netcoreapp3.0;net461</TargetFrameworks>
+        <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">$(ExeTfm)</TargetFrameworks>
+        <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(ExeTfm);net461</TargetFrameworks>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Nullable>enable</Nullable>
     </PropertyGroup>
