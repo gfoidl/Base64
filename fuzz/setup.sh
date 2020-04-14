@@ -2,12 +2,14 @@
 
 set -e
 
-# Download and extract the latest afl-fuzz source package
-wget http://lcamtuf.coredump.cx/afl/releases/afl-latest.tgz
-tar -xvf afl-latest.tgz
+aflVersion=2.52b
 
-rm afl-latest.tgz
-cd afl-2.52b/
+# Download and extract the afl-fuzz source package
+wget https://lcamtuf.coredump.cx/afl/releases/afl-"$aflVersion".tgz
+tar -xvf afl-"$aflVersion".tgz
+
+rm afl-"$aflVersion".tgz
+cd afl-"$aflVersion"/
 
 # Patch afl-fuzz so that it doesn't check whether the binary
 # being fuzzed is instrumented (we have to do this because
@@ -19,7 +21,7 @@ patch < RemoveInstrumentationCheck.diff
 # Install afl-fuzz
 sudo make install
 cd ..
-rm -rf afl-2.52b/
+rm -rf afl-"$aflVersion"/
 
 # Install SharpFuzz.CommandLine global .NET tool
 dotnet tool install --global SharpFuzz.CommandLine
