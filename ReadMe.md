@@ -1,6 +1,6 @@
-| Azure Pipelines | Code Coverage | NuGet | MyGet |
-| -- | -- | -- | -- |
-| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5)| [![codecov](https://codecov.io/gh/gfoidl/Base64/branch/master/graph/badge.svg)](https://codecov.io/gh/gfoidl/Base64) | [![NuGet](https://img.shields.io/nuget/v/gfoidl.Base64.svg?style=flat-square)](https://www.nuget.org/packages/gfoidl.Base64/) | [![MyGet](https://img.shields.io/myget/gfoidl/vpre/gfoidl.Base64?style=flat-square)](https://www.myget.org/feed/gfoidl/package/nuget/gfoidl.Base64) |
+| Azure Pipelines | Code Coverage | NuGet |
+| -- | -- | -- |
+| [![Build Status](https://dev.azure.com/gh-gfoidl/github-Projects/_apis/build/status/github-Projects-CI)](https://dev.azure.com/gh-gfoidl/github-Projects/_build/latest?definitionId=5)| [![codecov](https://codecov.io/gh/gfoidl/Base64/branch/master/graph/badge.svg)](https://codecov.io/gh/gfoidl/Base64) | [![NuGet](https://img.shields.io/nuget/v/gfoidl.Base64.svg?style=flat-square)](https://www.nuget.org/packages/gfoidl.Base64/) |
 
 # gfoidl.Base64
 
@@ -194,3 +194,16 @@ Vectorized versions (SSE, AVX) for base64 encoding / decoding is based on https:
 
 Vectorized versions (SSE, AVX) for base64Url encoding / decoding is based on https://github.com/aklomp/base64 (see _Acknowledgements_ in that repository).
 For decoding (SSE, AVX) code is based on [Vector lookup (pshufb)](http://0x80.pl/notesen/2016-01-17-sse-base64-decoding.html#vector-lookup-pshufb) by Wojciech Mula.
+
+
+## Development channel
+
+To get packages from the development channel use a `nuget.config` similar to this one:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <packageSources>
+        <add key="gfoidl-public" value="https://pkgs.dev.azure.com/gh-gfoidl/github-Projects/_packaging/gfoidl-public/nuget/v3/index.json" />
+    </packageSources>
+</configuration>
+```
