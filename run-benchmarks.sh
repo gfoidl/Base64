@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-## Helper for running Benchmarks. Per default Benchmarks are run on .NET Core 3.0.
+## Helper for running Benchmarks. Per default Benchmarks are run on .NET Core 3.1.
 #  If Benchmarks should be run for .NET 4.6.1 the Environment Variables
 #  BENCH_FX must be set (see below).
 #
 # Environment Variables:
-#   BENCH_FX            netcoreapp3.0 (default) or net461
+#   BENCH_FX            netcoreapp3.1 (default) or net461
 #------------------------------------------------------------------------------
 set -e
 #------------------------------------------------------------------------------
@@ -23,13 +23,13 @@ if [[ "$1" == "--install-sdk" ]]; then
     echo ""
 fi
 
-tfm=${BENCH_FX:-netcoreapp3.0}
+tfm=${BENCH_FX:-netcoreapp3.1}
 
 echo ""
 echo "Running benchmarks with tfm: $tfm"
 echo "-------------------------------------------------"
 
-if [[ "$tfm" == "netcoreapp3.0" ]]; then
+if [[ "$tfm" == "netcoreapp3.1" ]]; then
     echo "installed sdks:"
     dotnet --list-sdks
     echo "-------------------------------------------------"
@@ -61,7 +61,7 @@ $cmd -f *EncodeStringBenchmark*
 $cmd -f *EncodeStringUrlBenchmark*
 $cmd -f *EncodeUtf8Benchmark*
 
-if [[ "$tfm" == "netcoreapp3.0" ]]; then
+if [[ "$tfm" == "netcoreapp3.1" ]]; then
     $cmd -f *ReadOnlySequenceBase64Benchmark*
     $cmd -f *ReadOnlySequenceBase64UrlBenchmark*
 fi
