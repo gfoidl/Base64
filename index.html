@@ -8,7 +8,7 @@
     <title>gfoidl.Base64 | gfoidl.Base64 </title>
     <meta name="viewport" content="width=device-width">
     <meta name="title" content="gfoidl.Base64 | gfoidl.Base64 ">
-    <meta name="generator" content="docfx 2.52.0.0">
+    <meta name="generator" content="docfx 2.53.1.0">
     
     <link rel="shortcut icon" href="null">
     <link rel="stylesheet" href="styles/docfx.vendor.css">
@@ -182,7 +182,7 @@ for base64 operations.</p>
 <pre><code class="lang-c#">string base64 = Convert.ToBase64String(data);
 string base64Url = base64.Replace('+', '-').Replace('/', '_').TrimEnd('=');
 </code></pre>
-<p>are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string (see <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeStringUrlBenchmark-report.md">here</a> and <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeStringUrlBenchmark-report.md">here</a> for benchmark results).</p>
+<p>are needed. This isn't ideal, as there are avoidable allocations and several iterations over the encoded string (see <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.1/EncodeStringUrlBenchmark-report.md">here</a> and <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.1/DecodeStringUrlBenchmark-report.md">here</a> for benchmark results).</p>
 <p><em>gfoidl.Base64</em> supports encoding / decoding to / from base64Url in a direct way.
 Encoding <code>byte[] -&gt; byte[]</code> for UTF-8 is supported, as well as <code>byte[] -&gt; char[]</code>.
 Decoding <code>byte[] -&gt; byte[]</code> for UTF-8 is supported, as well as <code>char[] -&gt; byte[]</code>.</p>
@@ -206,10 +206,10 @@ and <code>char[] -&gt; byte[]</code> as types for decoding, where <code>char[]</
 <h2 id="benchmarks">Benchmarks</h2>
 <p>For all benchmarks see <a href="/perf/gfoidl.Base64.Benchmarks/results">results</a>.</p>
 <p>Performance gain depends, among a lot of other things, on the workload size, so here no table will with superior results will be shown.</p>
-<p><a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeStringBenchmark-report.md">Direct encoding to a string</a> is for small inputs slower than <code>Convert.ToBase64String</code> (has less overhead, and can write to string-buffer in a direct way).
+<p><a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.1/EncodeStringBenchmark-report.md">Direct encoding to a string</a> is for small inputs slower than <code>Convert.ToBase64String</code> (has less overhead, and can write to string-buffer in a direct way).
 But the larger the workload, the better this library works. For data-length of 1000 speedup can be ~5x with AVX2 encoding.</p>
-<p><a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeStringBenchmark-report.md">Direct decoding from a string</a> is generally (a lot) faster than <code>Convert.ConvertFromBase64CharArray</code>, also depending on workload size, but in the benchmark the speedup is from 1.5 to 12x.</p>
-<p>For UTF-8 <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/EncodeUtf8Benchmark-report.md">encoding</a> and <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.0/DecodeUtf8Benchmark-report.md">decoding</a>
+<p><a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.1/DecodeStringBenchmark-report.md">Direct decoding from a string</a> is generally (a lot) faster than <code>Convert.ConvertFromBase64CharArray</code>, also depending on workload size, but in the benchmark the speedup is from 1.5 to 12x.</p>
+<p>For UTF-8 <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.1/EncodeUtf8Benchmark-report.md">encoding</a> and <a href="https://github.com/gfoidl/Base64/blob/master/perf/gfoidl.Base64.Benchmarks/results/netcoreapp3.1/DecodeUtf8Benchmark-report.md">decoding</a>
 speedups for input-length 1000 can be in the height of 5 to 12x.</p>
 <p><strong>Note:</strong> please measure / profile in your real usecase, as this are just micro-benchmarks.</p>
 <h2 id="acknowledgements">Acknowledgements</h2>
@@ -226,7 +226,7 @@ For decoding (SSE, AVX) code is based on <a href="http://0x80.pl/notesen/2016-01
               <div class="contribution">
                 <ul class="nav">
                   <li>
-                    <a href="https://github.com/gfoidl/Base64/blob/v1.1.0-preview-5/api-doc/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                    <a href="https://github.com/gfoidl/Base64/blob/v1.1.0-preview-100/api-doc/index.md/#L1" class="contribution-link">Improve this Doc</a>
                   </li>
                 </ul>
               </div>
