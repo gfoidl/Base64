@@ -15,7 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{E4259BCE-EA4C-434C-8896-CEBBEC38222D}"
 	ProjectSection(SolutionItems) = preProject
-		.codecov.yml = .codecov.yml
 		build.sh = build.sh
 		Directory.Build.props = Directory.Build.props
 		nuget.config = nuget.config
@@ -48,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "jobs", "jobs", "{BBE8166F-3
 		.azure\pipelines\jobs\build_and_test.yml = .azure\pipelines\jobs\build_and_test.yml
 		.azure\pipelines\jobs\build_and_test_intrinsics.yml = .azure\pipelines\jobs\build_and_test_intrinsics.yml
 		.azure\pipelines\jobs\build_docs.yml = .azure\pipelines\jobs\build_docs.yml
+		.azure\pipelines\jobs\coverage.yml = .azure\pipelines\jobs\coverage.yml
 		.azure\pipelines\jobs\demo.yml = .azure\pipelines\jobs\demo.yml
 		.azure\pipelines\jobs\deploy_docs.yml = .azure\pipelines\jobs\deploy_docs.yml
 		.azure\pipelines\jobs\deploy_nuget.yml = .azure\pipelines\jobs\deploy_nuget.yml

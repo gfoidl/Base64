@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace gfoidl.Base64.Internal
 {
+    [ExcludeFromCodeCoverage]
     internal static class AssertHelper
     {
         [Conditional("DEBUG")]
