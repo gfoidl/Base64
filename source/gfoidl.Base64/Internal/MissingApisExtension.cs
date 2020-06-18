@@ -1,7 +1,7 @@
 ﻿#if NET45
 namespace gfoidl.Base64.Internal
 {
-    public static class Array
+    internal static class Array
     {
         public static T[] Empty<T>() => EmptyArray<T>.s_value;
         //---------------------------------------------------------------------
