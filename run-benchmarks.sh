@@ -52,13 +52,13 @@ fi
 
 $cmd --list tree
 
-$cmd -f *Base64EncoderBenchmark*
-$cmd -f *Base64UrlEncoderBenchmark*
-$cmd -f *DecodeStringBenchmark*
-$cmd -f *DecodeStringUrlBenchmark*
-$cmd -f *DecodeUtf8Benchmark*
-$cmd -f *EncodeStringBenchmark*
-$cmd -f *EncodeStringUrlBenchmark*
+#$cmd -f *Base64EncoderBenchmark*
+#$cmd -f *Base64UrlEncoderBenchmark*
+#$cmd -f *DecodeStringBenchmark*
+#$cmd -f *DecodeStringUrlBenchmark*
+#$cmd -f *DecodeUtf8Benchmark*
+#$cmd -f *EncodeStringBenchmark*
+#$cmd -f *EncodeStringUrlBenchmark*
 $cmd -f *EncodeUtf8Benchmark*
 
 if [[ "$tfm" == "netcoreapp3.1" ]]; then
